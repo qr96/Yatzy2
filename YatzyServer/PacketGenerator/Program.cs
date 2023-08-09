@@ -69,7 +69,7 @@ namespace PacketGenerator
             packetEnums += string.Format(PacketFormat.packetEnumFormat, packetName, ++packetId)
                 + Environment.NewLine + "\t";
 
-            if (packetName.StartsWith("S_") || packetName.StartsWith("s_"))
+            if (packetName.StartsWith("ToC_"))
                 clientRegister += string.Format(PacketFormat.managerRegisterFormat, packetName) + Environment.NewLine;
             else
                 serverRegister += string.Format(PacketFormat.managerRegisterFormat, packetName) + Environment.NewLine;

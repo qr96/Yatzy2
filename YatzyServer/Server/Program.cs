@@ -9,11 +9,12 @@ namespace Server
     class Program
     {
         static Listener _listener = new Listener();
-        public static GameRoom Room = new GameRoom();
+        public static GameRoom Lobby = new GameRoom();
+        public List<GameRoom> roomList = new List<GameRoom>();
 
         static void FlushRoom()
         {
-            Room.Push(() => Room.Flush());
+            Lobby.Push(() => Lobby.Flush());
             JobTimer.Instance.Push(FlushRoom, 250);
         }
 

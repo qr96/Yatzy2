@@ -38,12 +38,13 @@ public class NetworkManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(3f);
-
+            /*
             C_Chat chat = new C_Chat();
             chat.chat = "Hello Unity";
             ArraySegment<byte> seg = chat.Write();
 
             _session.Send(seg);
+            */
         }
     }
 }

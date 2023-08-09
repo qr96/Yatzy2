@@ -8,15 +8,19 @@ using System.Threading.Tasks;
 
 class PacketHandler
 {
-    public static void C_ChatHandler(PacketSession session, IPacket packet)
+    public static void ToS_ReqRoomListHandler(PacketSession session, IPacket packet)
     {
-        C_Chat chatPacket = packet as C_Chat;
         ClientSession clientSession = session as ClientSession;
 
         if (clientSession.Room == null)
             return;
 
+        ToC_ResRoomList roomList = new ToC_ResRoomList();
+        roomList.roomInfos.Add(new ToC_ResRoomList.RoomInfo() { roomId = 0, roomName = "한판조져~" });
+        roomList.roomInfos.Add(new ToC_ResRoomList.RoomInfo() { roomId = 1, roomName = "으자아~" });
+        roomList.roomInfos.Add(new ToC_ResRoomList.RoomInfo() { roomId = 2, roomName = "가즈앗~" });
+
         GameRoom room = clientSession.Room;
-        room.Push(() => room.BroadCast(clientSession, chatPacket.chat));
+        room.Push(() => room.UniCast(clientSession, roomList));
     }
 }

@@ -7,11 +7,14 @@ using System.Text;
 using UnityEngine;
 class PacketHandler
 {
-    public static void S_ChatHandler(PacketSession session, IPacket packet)
+    public static void ToC_ResRoomListHandler(PacketSession session, IPacket packet)
     {
-        S_Chat chatPacket = packet as S_Chat;
+        ToC_ResRoomList resRoomList = packet as ToC_ResRoomList;
         ServerSession serverSession = session as ServerSession;
-        
-        Debug.Log(chatPacket.chat);
+
+        foreach (var roomInfo in resRoomList.roomInfos)
+        {
+            Console.WriteLine($"roomID : {roomInfo.roomId} {roomInfo.roomName}");
+        }
     }
 }

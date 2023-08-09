@@ -6,8 +6,8 @@ using ServerCore;
 
 public enum PacketID
 {
-	C_Chat = 1,
-	S_Chat = 2,
+	ToS_ReqRoomList = 1,
+	ToC_ResRoomList = 2,
 	
 }
 
@@ -19,11 +19,11 @@ public interface IPacket
 }
 
 
-class C_Chat : IPacket
+class ToS_ReqRoomList : IPacket
 {
-    public string chat;
+    public string authToken;
 
-    public ushort Protocol { get { return (ushort)PacketID.C_Chat; } }
+    public ushort Protocol { get { return (ushort)PacketID.ToS_ReqRoomList; } }
 
     public void Read(ArraySegment<byte> segment)
     {
@@ -33,10 +33,10 @@ class C_Chat : IPacket
 
         count += sizeof(ushort);
         count += sizeof(ushort);
-        ushort chatLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+        ushort authTokenLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
 		count += sizeof(ushort);
-		this.chat = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, chatLen);
-		count += chatLen;
+		this.authToken = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, authTokenLen);
+		count += authTokenLen;
     }
 
     public ArraySegment<byte> Write()
@@ -48,12 +48,12 @@ class C_Chat : IPacket
         Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
 
         count += sizeof(ushort);
-        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.C_Chat);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToS_ReqRoomList);
         count += sizeof(ushort);
-        ushort chatLen = (ushort)Encoding.Unicode.GetBytes(this.chat, 0, this.chat.Length, segment.Array, segment.Offset + count + sizeof(ushort));
-		Array.Copy(BitConverter.GetBytes(chatLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+        ushort authTokenLen = (ushort)Encoding.Unicode.GetBytes(this.authToken, 0, this.authToken.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes(authTokenLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
-		count += chatLen;
+		count += authTokenLen;
         success &= BitConverter.TryWriteBytes(s, count);
         if (success == false) 
             return null;
@@ -61,12 +61,43 @@ class C_Chat : IPacket
     }
 }
 
-class S_Chat : IPacket
+class ToC_ResRoomList : IPacket
 {
-    public int playerId;
-	public string chat;
+    public class RoomInfo
+	{
+		public int roomId;
+		public string roomName;
+		public bool privateRoom;
+	
+		public void Read(ArraySegment<byte> segment, ref ushort count)
+		{
+			this.roomId = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+			count += sizeof(int);
+			ushort roomNameLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+			count += sizeof(ushort);
+			this.roomName = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, roomNameLen);
+			count += roomNameLen;
+			this.privateRoom = BitConverter.ToBoolean(segment.Array, segment.Offset + count);
+			count += sizeof(bool);
+		}
+	
+		public bool Write(ArraySegment<byte> segment, ref ushort count)
+		{
+			bool success = true;
+			Array.Copy(BitConverter.GetBytes(this.roomId), 0, segment.Array, segment.Offset + count, sizeof(int));
+			count += sizeof(int);
+			ushort roomNameLen = (ushort)Encoding.Unicode.GetBytes(this.roomName, 0, this.roomName.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+			Array.Copy(BitConverter.GetBytes(roomNameLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+			count += sizeof(ushort);
+			count += roomNameLen;
+			Array.Copy(BitConverter.GetBytes(this.privateRoom), 0, segment.Array, segment.Offset + count, sizeof(bool));
+			count += sizeof(bool);
+			return success;
+		}	
+	}
+	public List<RoomInfo> roomInfos = new List<RoomInfo>();
 
-    public ushort Protocol { get { return (ushort)PacketID.S_Chat; } }
+    public ushort Protocol { get { return (ushort)PacketID.ToC_ResRoomList; } }
 
     public void Read(ArraySegment<byte> segment)
     {
@@ -76,12 +107,15 @@ class S_Chat : IPacket
 
         count += sizeof(ushort);
         count += sizeof(ushort);
-        this.playerId = BitConverter.ToInt32(segment.Array, segment.Offset + count);
-		count += sizeof(int);
-		ushort chatLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+        this.roomInfos.Clear();
+		ushort roomInfoLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
 		count += sizeof(ushort);
-		this.chat = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, chatLen);
-		count += chatLen;
+		for (int i = 0; i < roomInfoLen; i++)
+		{
+			RoomInfo roomInfo = new RoomInfo();
+			roomInfo.Read(segment, ref count);
+			roomInfos.Add(roomInfo);
+		}
     }
 
     public ArraySegment<byte> Write()
@@ -93,14 +127,12 @@ class S_Chat : IPacket
         Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
 
         count += sizeof(ushort);
-        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.S_Chat);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_ResRoomList);
         count += sizeof(ushort);
-        Array.Copy(BitConverter.GetBytes(this.playerId), 0, segment.Array, segment.Offset + count, sizeof(int));
-		count += sizeof(int);
-		ushort chatLen = (ushort)Encoding.Unicode.GetBytes(this.chat, 0, this.chat.Length, segment.Array, segment.Offset + count + sizeof(ushort));
-		Array.Copy(BitConverter.GetBytes(chatLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+        Array.Copy(BitConverter.GetBytes((ushort)this.roomInfos.Count), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
-		count += chatLen;
+		foreach (RoomInfo roomInfo in this.roomInfos)
+			roomInfo.Write(segment, ref count);
         success &= BitConverter.TryWriteBytes(s, count);
         if (success == false) 
             return null;

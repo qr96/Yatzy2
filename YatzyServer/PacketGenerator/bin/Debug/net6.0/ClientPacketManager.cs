@@ -19,8 +19,8 @@ public class PacketManager
 		
 	public void Register()
 	{
-		_makeFunc.Add((ushort)PacketID.S_Test, MakePacket<S_Test>);
-		_handler.Add((ushort)PacketID.S_Test, PacketHandler.S_TestHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_ResRoomList, MakePacket<ToC_ResRoomList>);
+		_handler.Add((ushort)PacketID.ToC_ResRoomList, PacketHandler.ToC_ResRoomListHandler);
 
 	}
 

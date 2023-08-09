@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
 
 namespace DummyClient
 {
@@ -20,6 +21,16 @@ namespace DummyClient
         {
             lock (_lock)
             {
+                /*
+                if (_sessions[0] != null)
+                {
+                    ToS_ReqRoomList packet = new ToS_ReqRoomList();
+                    packet.authToken = "141241fs";
+                    ArraySegment<byte> segment = packet.Write();
+
+                    _sessions[0].Send(segment);
+                }*/
+                /*
                 foreach (ServerSession session in _sessions)
                 {
                     C_Chat packet = new C_Chat();
@@ -28,6 +39,7 @@ namespace DummyClient
 
                     session.Send(segment);
                 }
+                */
             }
         }
 
