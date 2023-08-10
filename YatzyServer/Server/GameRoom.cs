@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-    class GameRoom : IJobQueue
+    public class GameRoom : IJobQueue
     {
         List<ClientSession> _sessions = new List<ClientSession>();
         JobQueue _jobQueue = new JobQueue();
@@ -31,7 +31,7 @@ namespace Server
                 pending.Item1.Send(pending.Item2);
             }
             
-            Console.WriteLine($"Flushed {_pendingList.Count}");
+            //Console.WriteLine($"Flushed {_pendingList.Count}");
             _pendingList.Clear();
             _pendingListUni.Clear();
         }
@@ -53,7 +53,7 @@ namespace Server
         public void Enter(ClientSession session)
         {
             _sessions.Add(session);
-            session.Room = this;
+            session.Lobby = this;
         }
 
         public void Leave(ClientSession session)

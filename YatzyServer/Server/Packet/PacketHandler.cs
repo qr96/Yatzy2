@@ -12,15 +12,53 @@ class PacketHandler
     {
         ClientSession clientSession = session as ClientSession;
 
-        if (clientSession.Room == null)
+        if (clientSession.Lobby == null)
             return;
 
-        ToC_ResRoomList roomList = new ToC_ResRoomList();
-        roomList.roomInfos.Add(new ToC_ResRoomList.RoomInfo() { roomId = 0, roomName = "한판조져~" });
-        roomList.roomInfos.Add(new ToC_ResRoomList.RoomInfo() { roomId = 1, roomName = "으자아~" });
-        roomList.roomInfos.Add(new ToC_ResRoomList.RoomInfo() { roomId = 2, roomName = "가즈앗~" });
+        Console.WriteLine("ToS_ReqRoomListHandler");
 
-        GameRoom room = clientSession.Room;
-        room.Push(() => room.UniCast(clientSession, roomList));
+        ToC_ResRoomList roomListPacket = new ToC_ResRoomList();
+        List<YatzyGameRoom> roomList = GameRoomManager.Instance.GetRoomList();
+
+        foreach (var roomInfo in roomList)
+            roomListPacket.roomInfos.Add(new ToC_ResRoomList.RoomInfo() { roomId = roomInfo.roomID, roomName = roomInfo.roomName });
+
+        GameRoom gameRoom = clientSession.Lobby;
+        gameRoom.Push(() => gameRoom.UniCast(clientSession, roomListPacket));
+    }
+
+    public static void ToS_ReqMakeRoomHandler(PacketSession session, IPacket packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        ToS_ReqMakeRoom room = packet as ToS_ReqMakeRoom;
+
+        if (clientSession.Lobby == null)
+            return;
+
+        YatzyGameRoom makedRoom = GameRoomManager.Instance.MakeRoom(room.roomName);
+        makedRoom.Enter(clientSession);
+    }
+
+    public static void ToS_ReqEnterRoomHandler(PacketSession session, IPacket ipacket)
+    {
+        ClientSession clientSession = session as ClientSession;
+        ToS_ReqEnterRoom packet = ipacket as ToS_ReqEnterRoom;
+
+        if (clientSession.Lobby == null)
+            return;
+
+        YatzyGameRoom room = GameRoomManager.Instance.EnterRoom(clientSession, packet.roomId);
+        if (room != null)
+            clientSession.Lobby.UniCast(clientSession, new ToC_ResEnterRoom() { success = true, roomId = room.roomID, roomName = room.roomName });
+        else
+            clientSession.Lobby.UniCast(clientSession, new ToC_ResEnterRoom() { success = false, roomId = -1, roomName = "-" });
+    }
+
+    public static void ToS_ReqLeaveRoomHandler(PacketSession session, IPacket packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession.Lobby == null)
+            return;
     }
 }

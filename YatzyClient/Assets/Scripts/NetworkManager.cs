@@ -8,20 +8,20 @@ using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
 {
+    public static NetworkManager Instance;
+
     ServerSession _session = new ServerSession();
 
-    void Start()
+    private void Awake()
     {
-        string host = Dns.GetHostName();
-        IPHostEntry ipHost = Dns.GetHostEntry(host);
-        IPAddress ipAddr = ipHost.AddressList[0];
-        IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+        Instance = this;
+    }
 
-        Connector connector = new Connector();
+    private void Start()
+    {
+        ConnectToServer();
 
-        connector.Connect(endPoint, () => { return _session; }, 1);
-
-        StartCoroutine(SendCo());
+        //StartCoroutine(SendCo());
     }
 
     private void Update()
@@ -33,11 +33,34 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
+    public void ConnectToServer()
+    {
+        string host = Dns.GetHostName();
+        IPHostEntry ipHost = Dns.GetHostEntry(host);
+        IPAddress ipAddr = ipHost.AddressList[0];
+        IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+
+        Connector connector = new Connector();
+
+        connector.Connect(endPoint, () => { return _session; }, 1);
+    }
+
+    public void Send(ArraySegment<byte> sendBuff)
+    {
+        _session.Send(sendBuff);
+    }
+
     IEnumerator SendCo()
     {
         while (true)
         {
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(5f);
+
+            ToS_ReqRoomList req = new ToS_ReqRoomList();
+            req.authToken = "1234";
+            ArraySegment<byte> seg = req.Write();
+            _session.Send(seg);
+
             /*
             C_Chat chat = new C_Chat();
             chat.chat = "Hello Unity";

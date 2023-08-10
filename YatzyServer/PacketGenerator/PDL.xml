@@ -10,4 +10,22 @@
       <bool name="privateRoom"/>
     </list>
   </packet>
+  <packet name="ToS_ReqMakeRoom">
+    <string name="roomName"/>
+  </packet>
+  <packet name="ToC_ResMakeRoom">
+    <string name="roomName"/>
+  </packet>
+  <packet name="ToS_ReqEnterRoom">
+    <int name="roomId"/>
+  </packet>
+  <packet name="ToC_ResEnterRoom">
+    <bool name="success"/>
+    <int name="roomId"/>
+    <string name="roomName"/>
+  </packet>
+  <packet name="ToS_ReqLeaveRoom">
+  </packet>
+  <packet name="ToC_ResLeaveRoom">
+  </packet>
 </PDL>

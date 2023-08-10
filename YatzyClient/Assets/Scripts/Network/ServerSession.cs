@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace DummyClient
 {
@@ -14,13 +15,14 @@ namespace DummyClient
     {
         public override void OnConnected(EndPoint endPoint)
         {
-            Console.WriteLine($"OnConnected : {endPoint}");
-
+            //Console.WriteLine($"OnConnected : {endPoint}");
+            Debug.Log($"OnConnected : {endPoint}");
         }
 
         public override void OnDisconnected(EndPoint endPoint)
         {
-            Console.WriteLine($"OnDisconnected : {endPoint}");
+            //Console.WriteLine($"OnDisconnected : {endPoint}");
+            Debug.Log($"OnDisconnected : {endPoint}");
         }
 
         public override void OnRecvPacket(ArraySegment<byte> buffer)

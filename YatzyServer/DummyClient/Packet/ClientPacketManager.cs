@@ -21,6 +21,12 @@ public class PacketManager
 	{
 		_makeFunc.Add((ushort)PacketID.ToC_ResRoomList, MakePacket<ToC_ResRoomList>);
 		_handler.Add((ushort)PacketID.ToC_ResRoomList, PacketHandler.ToC_ResRoomListHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_ResMakeRoom, MakePacket<ToC_ResMakeRoom>);
+		_handler.Add((ushort)PacketID.ToC_ResMakeRoom, PacketHandler.ToC_ResMakeRoomHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_ResEnterRoom, MakePacket<ToC_ResEnterRoom>);
+		_handler.Add((ushort)PacketID.ToC_ResEnterRoom, PacketHandler.ToC_ResEnterRoomHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_ResLeaveRoom, MakePacket<ToC_ResLeaveRoom>);
+		_handler.Add((ushort)PacketID.ToC_ResLeaveRoom, PacketHandler.ToC_ResLeaveRoomHandler);
 
 	}
 

@@ -8,6 +8,12 @@ public enum PacketID
 {
 	ToS_ReqRoomList = 1,
 	ToC_ResRoomList = 2,
+	ToS_ReqMakeRoom = 3,
+	ToC_ResMakeRoom = 4,
+	ToS_ReqEnterRoom = 5,
+	ToC_ResEnterRoom = 6,
+	ToS_ReqLeaveRoom = 7,
+	ToC_ResLeaveRoom = 8,
 	
 }
 
@@ -133,6 +139,252 @@ class ToC_ResRoomList : IPacket
 		count += sizeof(ushort);
 		foreach (RoomInfo roomInfo in this.roomInfos)
 			roomInfo.Write(segment, ref count);
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToS_ReqMakeRoom : IPacket
+{
+    public string roomName;
+
+    public ushort Protocol { get { return (ushort)PacketID.ToS_ReqMakeRoom; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        ushort roomNameLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+		count += sizeof(ushort);
+		this.roomName = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, roomNameLen);
+		count += roomNameLen;
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToS_ReqMakeRoom);
+        count += sizeof(ushort);
+        ushort roomNameLen = (ushort)Encoding.Unicode.GetBytes(this.roomName, 0, this.roomName.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes(roomNameLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		count += roomNameLen;
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToC_ResMakeRoom : IPacket
+{
+    public string roomName;
+
+    public ushort Protocol { get { return (ushort)PacketID.ToC_ResMakeRoom; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        ushort roomNameLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+		count += sizeof(ushort);
+		this.roomName = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, roomNameLen);
+		count += roomNameLen;
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_ResMakeRoom);
+        count += sizeof(ushort);
+        ushort roomNameLen = (ushort)Encoding.Unicode.GetBytes(this.roomName, 0, this.roomName.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes(roomNameLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		count += roomNameLen;
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToS_ReqEnterRoom : IPacket
+{
+    public int roomId;
+
+    public ushort Protocol { get { return (ushort)PacketID.ToS_ReqEnterRoom; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        this.roomId = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToS_ReqEnterRoom);
+        count += sizeof(ushort);
+        Array.Copy(BitConverter.GetBytes(this.roomId), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToC_ResEnterRoom : IPacket
+{
+    public bool success;
+	public int roomId;
+	public string roomName;
+
+    public ushort Protocol { get { return (ushort)PacketID.ToC_ResEnterRoom; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        this.success = BitConverter.ToBoolean(segment.Array, segment.Offset + count);
+		count += sizeof(bool);
+		this.roomId = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+		ushort roomNameLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+		count += sizeof(ushort);
+		this.roomName = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, roomNameLen);
+		count += roomNameLen;
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_ResEnterRoom);
+        count += sizeof(ushort);
+        Array.Copy(BitConverter.GetBytes(this.success), 0, segment.Array, segment.Offset + count, sizeof(bool));
+		count += sizeof(bool);
+		Array.Copy(BitConverter.GetBytes(this.roomId), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+		ushort roomNameLen = (ushort)Encoding.Unicode.GetBytes(this.roomName, 0, this.roomName.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes(roomNameLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		count += roomNameLen;
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToS_ReqLeaveRoom : IPacket
+{
+    
+
+    public ushort Protocol { get { return (ushort)PacketID.ToS_ReqLeaveRoom; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToS_ReqLeaveRoom);
+        count += sizeof(ushort);
+        
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToC_ResLeaveRoom : IPacket
+{
+    
+
+    public ushort Protocol { get { return (ushort)PacketID.ToC_ResLeaveRoom; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_ResLeaveRoom);
+        count += sizeof(ushort);
+        
         success &= BitConverter.TryWriteBytes(s, count);
         if (success == false) 
             return null;

@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 namespace Server
 {
 
-    class ClientSession : PacketSession
+    public class ClientSession : PacketSession
     {
         public int SessionId {  get; set; }
-        public GameRoom Room { get; set; }
+        public GameRoom Lobby { get; set; }
+        public YatzyGameRoom GameRoom { get; set; }
 
         public override void OnConnected(EndPoint endPoint)
         {
@@ -29,11 +30,18 @@ namespace Server
         public override void OnDisconnected(EndPoint endPoint)
         {
             SessionManager.Instance.Remove(this);
-            if(Room != null)
+            if(Lobby != null)
             {
                 GameRoom room = Program.Lobby;
-                Room.Push(() => room.Leave(this));
-                Room = null;
+                Lobby.Push(() => room.Leave(this));
+                Lobby = null;
+            }
+            
+            if(GameRoom != null)
+            {
+                YatzyGameRoom room = GameRoomManager.Instance.Find(GameRoom.roomID);
+                GameRoom.Push(() => room.Leave(this));
+                GameRoom = null;
             }
 
             Console.WriteLine($"OnDisconnected : {endPoint}");
