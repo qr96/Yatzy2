@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <PDL>
+  <packet name="ToS_ReqLogin">
+    <string name="nickName"/>
+  </packet>
+  <packet name="ToC_ResLogin">
+    <bool name="loginSuccess"/>
+  </packet>
   <packet name="ToS_ReqRoomList">
     <string name="authToken"/>
   </packet>
@@ -21,11 +27,43 @@
   </packet>
   <packet name="ToC_ResEnterRoom">
     <bool name="success"/>
-    <int name="roomId"/>
-    <string name="roomName"/>
   </packet>
   <packet name="ToS_ReqLeaveRoom">
   </packet>
   <packet name="ToC_ResLeaveRoom">
+  </packet>
+  <packet name="ToS_ReqRoomInfo">
+  </packet>
+  <packet name="ToC_ResRoomInfo">
+    <string name="roomName"/>
+    <int name="myServerIndex"/>
+    <list name="userInfo">
+      <string name="userName"/>
+    </list>
+  </packet>
+
+  <packet name="ToS_ReadyToStart">
+  </packet>
+  <packet name="ToC_PlayerTurn">
+    <int name="playerTurn"/>
+  </packet>
+  <packet name="ToS_RollDice">
+    <list name="fixDice">
+      <int name="diceIndex"/>
+    </list>
+  </packet>
+  <packet name="ToC_DiceResult">
+    <int name="playerIndex"/>
+    <list name="diceResult">
+      <int name="dice"/>
+    </list>
+  </packet>
+  <packet name="ToS_ScoreJocbo">
+    <int name="jocboIndex"/>
+  </packet>
+  <packet name="ToC_ScoreUpdate">
+    <int name="playerIndex"/>
+    <int name="jocboIndex"/>
+    <int name="score"/>
   </packet>
 </PDL>

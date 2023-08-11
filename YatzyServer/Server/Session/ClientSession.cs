@@ -15,6 +15,13 @@ namespace Server
         public GameRoom Lobby { get; set; }
         public YatzyGameRoom GameRoom { get; set; }
 
+        public string nickName = "None";
+
+        public void SetInfo(string nickName)
+        {
+            this.nickName = nickName;
+        }
+
         public override void OnConnected(EndPoint endPoint)
         {
             Console.WriteLine($"OnConnected : {endPoint}");

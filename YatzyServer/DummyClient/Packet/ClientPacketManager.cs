@@ -19,6 +19,8 @@ public class PacketManager
 		
 	public void Register()
 	{
+		_makeFunc.Add((ushort)PacketID.ToC_ResLogin, MakePacket<ToC_ResLogin>);
+		_handler.Add((ushort)PacketID.ToC_ResLogin, PacketHandler.ToC_ResLoginHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_ResRoomList, MakePacket<ToC_ResRoomList>);
 		_handler.Add((ushort)PacketID.ToC_ResRoomList, PacketHandler.ToC_ResRoomListHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_ResMakeRoom, MakePacket<ToC_ResMakeRoom>);
@@ -27,6 +29,14 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.ToC_ResEnterRoom, PacketHandler.ToC_ResEnterRoomHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_ResLeaveRoom, MakePacket<ToC_ResLeaveRoom>);
 		_handler.Add((ushort)PacketID.ToC_ResLeaveRoom, PacketHandler.ToC_ResLeaveRoomHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_ResRoomInfo, MakePacket<ToC_ResRoomInfo>);
+		_handler.Add((ushort)PacketID.ToC_ResRoomInfo, PacketHandler.ToC_ResRoomInfoHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_PlayerTurn, MakePacket<ToC_PlayerTurn>);
+		_handler.Add((ushort)PacketID.ToC_PlayerTurn, PacketHandler.ToC_PlayerTurnHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_DiceResult, MakePacket<ToC_DiceResult>);
+		_handler.Add((ushort)PacketID.ToC_DiceResult, PacketHandler.ToC_DiceResultHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_ScoreUpdate, MakePacket<ToC_ScoreUpdate>);
+		_handler.Add((ushort)PacketID.ToC_ScoreUpdate, PacketHandler.ToC_ScoreUpdateHandler);
 
 	}
 

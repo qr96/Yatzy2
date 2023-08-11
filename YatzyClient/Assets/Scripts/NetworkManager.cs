@@ -15,6 +15,7 @@ public class NetworkManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        DontDestroyOnLoad(this);
     }
 
     private void Start()

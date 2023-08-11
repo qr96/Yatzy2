@@ -10,10 +10,10 @@ namespace Server
     {
         static Listener _listener = new Listener();
         public static GameRoom Lobby = new GameRoom();
-        public List<GameRoom> roomList = new List<GameRoom>();
 
         static void FlushRoom()
         {
+            GameRoomManager.Instance.Flush();
             Lobby.Push(() => Lobby.Flush());
             JobTimer.Instance.Push(FlushRoom, 250);
         }

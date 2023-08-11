@@ -8,14 +8,29 @@ using System.Threading.Tasks;
 
 class PacketHandler
 {
-    public static void ToS_ReqRoomListHandler(PacketSession session, IPacket packet)
+    public static void ToS_ReqLoginHandler(PacketSession session, IPacket packet)
     {
+        Console.WriteLine("ToS_ReqLoginHandler");
         ClientSession clientSession = session as ClientSession;
+        ToS_ReqLogin loginPacket = packet as ToS_ReqLogin;
 
         if (clientSession.Lobby == null)
             return;
 
+        if (loginPacket != null)
+            clientSession.SetInfo(loginPacket.nickName);
+
+        GameRoom lobby = clientSession.Lobby;
+        lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResLogin() { loginSuccess = true }));
+    }
+
+    public static void ToS_ReqRoomListHandler(PacketSession session, IPacket packet)
+    {
         Console.WriteLine("ToS_ReqRoomListHandler");
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession.Lobby == null)
+            return;
 
         ToC_ResRoomList roomListPacket = new ToC_ResRoomList();
         List<YatzyGameRoom> roomList = GameRoomManager.Instance.GetRoomList();
@@ -29,14 +44,20 @@ class PacketHandler
 
     public static void ToS_ReqMakeRoomHandler(PacketSession session, IPacket packet)
     {
+        Console.WriteLine("ToS_ReqRoomListHandler");
         ClientSession clientSession = session as ClientSession;
-        ToS_ReqMakeRoom room = packet as ToS_ReqMakeRoom;
+        ToS_ReqMakeRoom newRoom = packet as ToS_ReqMakeRoom;
 
         if (clientSession.Lobby == null)
             return;
 
-        YatzyGameRoom makedRoom = GameRoomManager.Instance.MakeRoom(room.roomName);
-        makedRoom.Enter(clientSession);
+        YatzyGameRoom gameRoom = GameRoomManager.Instance.MakeRoom(clientSession, newRoom.roomName);
+        GameRoom lobby = clientSession.Lobby;
+
+        if (gameRoom != null)
+            lobby.Push(() => clientSession.Lobby.UniCast(clientSession, new ToC_ResEnterRoom() { success = true }));
+        else
+            lobby.Push(() => clientSession.Lobby.UniCast(clientSession, new ToC_ResEnterRoom() { success = false }));
     }
 
     public static void ToS_ReqEnterRoomHandler(PacketSession session, IPacket ipacket)
@@ -48,10 +69,12 @@ class PacketHandler
             return;
 
         YatzyGameRoom room = GameRoomManager.Instance.EnterRoom(clientSession, packet.roomId);
+        GameRoom lobby = clientSession.Lobby;
+
         if (room != null)
-            clientSession.Lobby.UniCast(clientSession, new ToC_ResEnterRoom() { success = true, roomId = room.roomID, roomName = room.roomName });
+            lobby.Push(() => clientSession.Lobby.UniCast(clientSession, new ToC_ResEnterRoom() { success = true }));
         else
-            clientSession.Lobby.UniCast(clientSession, new ToC_ResEnterRoom() { success = false, roomId = -1, roomName = "-" });
+            lobby.Push(() => clientSession.Lobby.UniCast(clientSession, new ToC_ResEnterRoom() { success = false }));
     }
 
     public static void ToS_ReqLeaveRoomHandler(PacketSession session, IPacket packet)
@@ -60,5 +83,65 @@ class PacketHandler
 
         if (clientSession.Lobby == null)
             return;
+    }
+
+
+    // ROOM
+
+    public static void ToS_ReqRoomInfoHandler(PacketSession session, IPacket packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession.GameRoom == null)
+            return;
+
+        YatzyGameRoom gameRoom = clientSession.GameRoom;
+        gameRoom.Push(() => {
+            var userList = gameRoom.GetUserInfos();
+            var userInfoList = new List<ToC_ResRoomInfo.UserInfo>();
+            foreach (var user in userList)
+                userInfoList.Add(new ToC_ResRoomInfo.UserInfo() { userName = user });
+
+            gameRoom.UniCast(clientSession, new ToC_ResRoomInfo()
+            {
+                myServerIndex = gameRoom.GetUserIndex(clientSession),
+                roomName = gameRoom.roomName,
+                userInfos = userInfoList
+            });
+        });
+    }
+
+    public static void ToS_ReadyToStartHandler(PacketSession session, IPacket packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        ToS_ReadyToStart ready = packet as ToS_ReadyToStart;
+
+        if (clientSession.GameRoom == null)
+            return;
+
+        YatzyGameRoom gameRoom = clientSession.GameRoom;
+
+        gameRoom.Push(() => { gameRoom.ReadyUser(clientSession); });
+    }
+
+    public static void ToS_RollDiceHandler(PacketSession session, IPacket packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        ToS_RollDice rollDice = packet as ToS_RollDice;
+
+        if (clientSession.GameRoom == null)
+            return;
+
+        YatzyGameRoom gameRoom = clientSession.GameRoom;
+        List<int> fixDices = new List<int>();
+        foreach (var fix in rollDice.fixDices)
+            fixDices.Add(fix.diceIndex);
+
+        gameRoom.Push(() => { gameRoom.RollDice(clientSession, fixDices); });
+    }
+
+    public static void ToS_ScoreJocboHandler(PacketSession session, IPacket packet)
+    {
+
     }
 }

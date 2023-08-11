@@ -182,8 +182,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u200B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e768295c315de8541ad14f796d37d3e7, type: 2}
+  m_sharedMaterial: {fileID: 7527296824268857955, guid: e768295c315de8541ad14f796d37d3e7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -207,15 +207,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
   m_fontSizeMax: 0
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -837,7 +837,7 @@ GameObject:
   - component: {fileID: 1212513750}
   - component: {fileID: 1212513749}
   m_Layer: 5
-  m_Name: Button
+  m_Name: LoginBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1338,6 +1338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc0be0c8d34b16d48824d527bf38aa1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nameInput: {fileID: 211836901}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ public class RoomItem : MonoBehaviour
 {
     public TextMeshProUGUI roomName;
 
-    Action enterRoom;
+    Action onClick;
 
     public void SetInfo(string name)
     {
@@ -17,6 +17,11 @@ public class RoomItem : MonoBehaviour
 
     public void SetClickEvent(Action onClick)
     {
-        this.enterRoom = onClick;
+        this.onClick = onClick;
+    }
+
+    public void OnClick()
+    {
+        if (onClick != null) onClick();
     }
 }

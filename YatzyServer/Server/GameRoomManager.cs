@@ -18,15 +18,29 @@ namespace Server
         Dictionary<int, YatzyGameRoom> _rooms = new Dictionary<int, YatzyGameRoom>();
         object _lock = new object();
 
-        public YatzyGameRoom MakeRoom(string name)
+        public void Flush()
+        {
+            lock (_lock)
+            {
+                foreach (var room in _rooms.Values)
+                {
+                    room.Flush();
+                }
+            }
+        }
+
+        public YatzyGameRoom MakeRoom(ClientSession session, string name)
         {
             lock (_lock)
             {
                 int roomId = ++_roomId;
 
+                if (_rooms.ContainsKey(roomId)) return null;
+
                 YatzyGameRoom room = new YatzyGameRoom(roomId, name);
                 room.roomID = roomId;
                 _rooms.Add(roomId, room);
+                room.Enter(session);
 
                 Console.WriteLine($"MakeRoom : {roomId}");
 

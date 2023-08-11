@@ -19,6 +19,8 @@ public class PacketManager
 		
 	public void Register()
 	{
+		_makeFunc.Add((ushort)PacketID.ToS_ReqLogin, MakePacket<ToS_ReqLogin>);
+		_handler.Add((ushort)PacketID.ToS_ReqLogin, PacketHandler.ToS_ReqLoginHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReqRoomList, MakePacket<ToS_ReqRoomList>);
 		_handler.Add((ushort)PacketID.ToS_ReqRoomList, PacketHandler.ToS_ReqRoomListHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReqMakeRoom, MakePacket<ToS_ReqMakeRoom>);
@@ -27,6 +29,14 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.ToS_ReqEnterRoom, PacketHandler.ToS_ReqEnterRoomHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReqLeaveRoom, MakePacket<ToS_ReqLeaveRoom>);
 		_handler.Add((ushort)PacketID.ToS_ReqLeaveRoom, PacketHandler.ToS_ReqLeaveRoomHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_ReqRoomInfo, MakePacket<ToS_ReqRoomInfo>);
+		_handler.Add((ushort)PacketID.ToS_ReqRoomInfo, PacketHandler.ToS_ReqRoomInfoHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_ReadyToStart, MakePacket<ToS_ReadyToStart>);
+		_handler.Add((ushort)PacketID.ToS_ReadyToStart, PacketHandler.ToS_ReadyToStartHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_RollDice, MakePacket<ToS_RollDice>);
+		_handler.Add((ushort)PacketID.ToS_RollDice, PacketHandler.ToS_RollDiceHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_ScoreJocbo, MakePacket<ToS_ScoreJocbo>);
+		_handler.Add((ushort)PacketID.ToS_ScoreJocbo, PacketHandler.ToS_ScoreJocboHandler);
 
 	}
 
