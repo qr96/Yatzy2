@@ -45,6 +45,8 @@ namespace Server
         List<Tuple<ClientSession, ArraySegment<byte>>> _pendingListUni = new List<Tuple<ClientSession, ArraySegment<byte>>>();
         Dictionary<int, PlayerGameInfo> _playerGameInfoDic = new Dictionary<int, PlayerGameInfo>();
 
+        Random random = new Random();
+
         int gameTurn;
         int diceCount;
 
@@ -149,7 +151,7 @@ namespace Server
 
             for (int i = 0; i < 5; i++)
             {
-                diceResult.diceResults.Add(new ToC_DiceResult.DiceResult() { dice = i });
+                diceResult.diceResults.Add(new ToC_DiceResult.DiceResult() { dice = random.Next(1, 7) });
             }
 
             diceCount++;
