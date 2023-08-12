@@ -58,12 +58,12 @@
       <int name="dice"/>
     </list>
   </packet>
-  <packet name="ToS_ScoreJocbo">
+  <packet name="ToS_WriteScore">
     <int name="jocboIndex"/>
   </packet>
-  <packet name="ToC_ScoreUpdate">
+  <packet name="ToC_WriteScore">
     <int name="playerIndex"/>
     <int name="jocboIndex"/>
-    <int name="score"/>
+    <int name="jocboScore"/>
   </packet>
 </PDL>

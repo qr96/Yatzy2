@@ -31,7 +31,7 @@ namespace Server
     {
         public int index = -1;
         public bool ready = false;
-        public List<int> scoreBoard = new List<int>(12);
+        public List<int> scoreBoard = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     }
 
     public class YatzyGameRoom
@@ -48,7 +48,8 @@ namespace Server
         Random random = new Random();
 
         int gameTurn;
-        int diceCount;
+        int _diceCount;
+        int[] _dices = new int[5];
 
         public YatzyGameRoom(int roomID, string name)
         {
@@ -103,6 +104,8 @@ namespace Server
         {
             _sessions.Remove(session);
             _playerGameInfoDic.Remove(session.SessionId);
+
+            if (_sessions.Count == 0) GameRoomManager.Instance.RemoveRoom(this.roomID);
         }
 
         public List<string> GetUserInfos()
@@ -135,7 +138,7 @@ namespace Server
                 if (info.ready == true) readyCount++;
 
             if (readyCount > 0)
-                Push(StartGame);
+                StartGame();
         }
 
         public void RollDice(ClientSession session, List<int> fixDices)
@@ -144,30 +147,46 @@ namespace Server
             PlayerGameInfo info = null;
             _playerGameInfoDic.TryGetValue(session.SessionId, out info);
 
-            if (isPlayerTurn(info.index) == false || diceCount >= 3)
+            if (isPlayerTurn(info.index) == false)
+                return;
+
+            if (_diceCount <= 0 || fixDices.Count >= 5)
                 return;
 
             diceResult.playerIndex = info.index;
 
             for (int i = 0; i < 5; i++)
             {
-                diceResult.diceResults.Add(new ToC_DiceResult.DiceResult() { dice = random.Next(1, 7) });
+                if (!fixDices.Contains(i)) _dices[i] = random.Next(1, 7);
+                diceResult.diceResults.Add(new ToC_DiceResult.DiceResult() { dice = _dices[i] });
             }
 
-            diceCount++;
+            _diceCount--;
 
             BroadCast(diceResult);
         }
 
-        public void RecordScore(ClientSession session)
+        public void WriteScore(ClientSession session, int jocbo)
         {
-            gameTurn++;
-            diceCount = 0;
+            PlayerGameInfo info = null;
+            _playerGameInfoDic.TryGetValue(session.SessionId, out info);
 
-            ToC_PlayerTurn packet = new ToC_PlayerTurn();
-            packet.playerTurn = gameTurn % _sessions.Count;
+            if (isPlayerTurn(info.index) == false)
+                return;
 
-            BroadCast(packet);
+            if (_diceCount > 2)
+                return;
+
+            if (info.scoreBoard[jocbo] == 0)
+                info.scoreBoard[jocbo] = YatzyUtil.GetScore(_dices, jocbo);
+
+            ToC_WriteScore writeScore = new ToC_WriteScore();
+            writeScore.playerIndex = info.index;
+            writeScore.jocboIndex = jocbo;
+            writeScore.jocboScore = info.scoreBoard[jocbo];
+
+            BroadCast(writeScore);
+            Push(() => ChangeTurn());
         }
 
         void StartGame()
@@ -175,12 +194,25 @@ namespace Server
             ToC_PlayerTurn packet = new ToC_PlayerTurn();
             packet.playerTurn = gameTurn % _sessions.Count;
 
+            _diceCount = 3;
+
             BroadCast(packet);
         }
 
         bool isPlayerTurn(int index)
         {
             return index == gameTurn % _sessions.Count;
+        }
+
+        void ChangeTurn()
+        {
+            gameTurn++;
+            _diceCount = 3;
+
+            ToC_PlayerTurn playerTurn = new ToC_PlayerTurn();
+            playerTurn.playerTurn = gameTurn % _sessions.Count;
+
+            Push(() => BroadCast(playerTurn));
         }
     }
 }

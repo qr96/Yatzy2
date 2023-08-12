@@ -87,7 +87,7 @@ class PacketHandler
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
-    public static void ToC_ScoreUpdateHandler(PacketSession session, IPacket packet)
+    public static void ToC_WriteScoreHandler(PacketSession session, IPacket packet)
     {
         Debug.Log("Recv ToC_ScoreUpdateHandler");
 

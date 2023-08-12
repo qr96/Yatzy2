@@ -35,8 +35,8 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.ToC_PlayerTurn, PacketHandler.ToC_PlayerTurnHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_DiceResult, MakePacket<ToC_DiceResult>);
 		_handler.Add((ushort)PacketID.ToC_DiceResult, PacketHandler.ToC_DiceResultHandler);
-		_makeFunc.Add((ushort)PacketID.ToC_ScoreUpdate, MakePacket<ToC_ScoreUpdate>);
-		_handler.Add((ushort)PacketID.ToC_ScoreUpdate, PacketHandler.ToC_ScoreUpdateHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_WriteScore, MakePacket<ToC_WriteScore>);
+		_handler.Add((ushort)PacketID.ToC_WriteScore, PacketHandler.ToC_WriteScoreHandler);
 
 	}
 

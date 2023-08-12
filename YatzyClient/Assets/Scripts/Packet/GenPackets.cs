@@ -22,8 +22,8 @@ public enum PacketID
 	ToC_PlayerTurn = 14,
 	ToS_RollDice = 15,
 	ToC_DiceResult = 16,
-	ToS_ScoreJocbo = 17,
-	ToC_ScoreUpdate = 18,
+	ToS_WriteScore = 17,
+	ToC_WriteScore = 18,
 	
 }
 
@@ -796,11 +796,11 @@ class ToC_DiceResult : IPacket
     }
 }
 
-class ToS_ScoreJocbo : IPacket
+class ToS_WriteScore : IPacket
 {
     public int jocboIndex;
 
-    public ushort Protocol { get { return (ushort)PacketID.ToS_ScoreJocbo; } }
+    public ushort Protocol { get { return (ushort)PacketID.ToS_WriteScore; } }
 
     public void Read(ArraySegment<byte> segment)
     {
@@ -823,7 +823,7 @@ class ToS_ScoreJocbo : IPacket
         Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
 
         count += sizeof(ushort);
-        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToS_ScoreJocbo);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToS_WriteScore);
         count += sizeof(ushort);
         Array.Copy(BitConverter.GetBytes(this.jocboIndex), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);
@@ -834,13 +834,13 @@ class ToS_ScoreJocbo : IPacket
     }
 }
 
-class ToC_ScoreUpdate : IPacket
+class ToC_WriteScore : IPacket
 {
     public int playerIndex;
 	public int jocboIndex;
-	public int score;
+	public int jocboScore;
 
-    public ushort Protocol { get { return (ushort)PacketID.ToC_ScoreUpdate; } }
+    public ushort Protocol { get { return (ushort)PacketID.ToC_WriteScore; } }
 
     public void Read(ArraySegment<byte> segment)
     {
@@ -854,7 +854,7 @@ class ToC_ScoreUpdate : IPacket
 		count += sizeof(int);
 		this.jocboIndex = BitConverter.ToInt32(segment.Array, segment.Offset + count);
 		count += sizeof(int);
-		this.score = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		this.jocboScore = BitConverter.ToInt32(segment.Array, segment.Offset + count);
 		count += sizeof(int);
     }
 
@@ -867,13 +867,13 @@ class ToC_ScoreUpdate : IPacket
         Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
 
         count += sizeof(ushort);
-        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_ScoreUpdate);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_WriteScore);
         count += sizeof(ushort);
         Array.Copy(BitConverter.GetBytes(this.playerIndex), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);
 		Array.Copy(BitConverter.GetBytes(this.jocboIndex), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);
-		Array.Copy(BitConverter.GetBytes(this.score), 0, segment.Array, segment.Offset + count, sizeof(int));
+		Array.Copy(BitConverter.GetBytes(this.jocboScore), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);
         success &= BitConverter.TryWriteBytes(s, count);
         if (success == false) 

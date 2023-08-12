@@ -7,39 +7,40 @@ using UnityEngine.UI;
 
 public class ScoreItem : MonoBehaviour
 {
-    public GameObject selectMark;
     public TextMeshProUGUI score;
-    public Button button;
+    public Toggle toggle;
 
-    Action onClick;
+    bool isOn = false;
+    Action onChange;
 
     public void SetScore(string score)
     {
         this.score.text = score;
     }
 
-    public void AddListener(Action onClick)
+    public void SetListener(Action onChange)
     {
-        this.onClick = onClick;
+        this.onChange = onChange;
     }
 
-    public void SetButtonEnable(bool enable)
+    public void SetToggleEnable(bool enable)
     {
-        button.interactable = enable;
+        toggle.interactable = enable;
     }
 
-    public void Select()
+    public void SetToggleOff()
     {
-        selectMark.SetActive(true);
+        toggle.SetIsOnWithoutNotify(false);
     }
 
-    public void UnSelect()
+    public bool IsOn()
     {
-        selectMark.SetActive(false);
+        return isOn;
     }
 
-    public void OnClick()
+    public void OnToggle()
     {
-        if (onClick != null) onClick();
+        isOn = toggle.isOn;
+        if (onChange != null) onChange();
     }
 }

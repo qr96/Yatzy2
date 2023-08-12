@@ -140,8 +140,16 @@ class PacketHandler
         gameRoom.Push(() => { gameRoom.RollDice(clientSession, fixDices); });
     }
 
-    public static void ToS_ScoreJocboHandler(PacketSession session, IPacket packet)
+    public static void ToS_WriteScoreHandler(PacketSession session, IPacket packet)
     {
+        ClientSession clientSession = session as ClientSession;
+        ToS_WriteScore writeScore = packet as ToS_WriteScore;
 
+        if (clientSession.GameRoom == null || writeScore == null)
+            return;
+
+        YatzyGameRoom gameRoom = clientSession.GameRoom;
+
+        gameRoom.Push(() => { gameRoom.WriteScore(clientSession, writeScore.jocboIndex); });
     }
 }
