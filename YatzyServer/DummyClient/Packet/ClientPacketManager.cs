@@ -19,6 +19,7 @@ public class PacketManager
 		
 	public void Register()
 	{
+		/*
 		_makeFunc.Add((ushort)PacketID.ToC_ResLogin, MakePacket<ToC_ResLogin>);
 		_handler.Add((ushort)PacketID.ToC_ResLogin, PacketHandler.ToC_ResLoginHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_ResRoomList, MakePacket<ToC_ResRoomList>);
@@ -37,7 +38,7 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.ToC_DiceResult, PacketHandler.ToC_DiceResultHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_WriteScore, MakePacket<ToC_WriteScore>);
 		_handler.Add((ushort)PacketID.ToC_WriteScore, PacketHandler.ToC_WriteScoreHandler);
-
+		*/
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer, Action<PacketSession, IPacket> onRecvCallback = null)

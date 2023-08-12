@@ -7,15 +7,22 @@ using UnityEngine.UI;
 
 public class ScoreItem : MonoBehaviour
 {
-    public TextMeshProUGUI score;
+    public TextMeshProUGUI scoreText;
     public Toggle toggle;
 
     bool isOn = false;
     Action onChange;
+    int score = -1;
 
-    public void SetScore(string score)
+    public void SetScore(int score)
     {
-        this.score.text = score;
+        score = score;
+        this.scoreText.text = score.ToString();
+    }
+
+    public int GetScore()
+    {
+        return score;
     }
 
     public void SetListener(Action onChange)

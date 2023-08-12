@@ -21,25 +21,23 @@ namespace DummyClient
         {
             lock (_lock)
             {
-                /*
-                if (_sessions[0] != null)
-                {
-                    ToS_ReqRoomList packet = new ToS_ReqRoomList();
-                    packet.authToken = "141241fs";
-                    ArraySegment<byte> segment = packet.Write();
-
-                    _sessions[0].Send(segment);
-                }*/
-                /*
+                int i = 0;
                 foreach (ServerSession session in _sessions)
                 {
-                    C_Chat packet = new C_Chat();
-                    packet.chat = $"Hello Server";
-                    ArraySegment<byte> segment = packet.Write();
+                    ToS_ReqLogin req = new ToS_ReqLogin();
+                    req.nickName = "Dummy " + i++;
 
-                    session.Send(segment);
+                    session.Send(req.Write());
                 }
-                */
+
+                int i2 = 0;
+                foreach (ServerSession session in _sessions)
+                {
+                    ToS_ReqMakeRoom req = new ToS_ReqMakeRoom();
+                    req.roomName = "Room " + i2++;
+
+                    session.Send(req.Write());
+                }
             }
         }
 

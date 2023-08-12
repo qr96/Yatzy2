@@ -97,6 +97,7 @@
     <Compile Include="Assets\Scripts\Scene\RoomList\MakeRoomPopup.cs" />
     <Compile Include="Assets\Scripts\Network\SendBuffer.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
+    <Compile Include="Assets\Scripts\Scene\YatzyUtil.cs" />
     <Compile Include="Assets\Scripts\Scene\LoginScene.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />

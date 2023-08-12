@@ -97,10 +97,14 @@ public class YatzyGameScene : MonoBehaviour
         ToC_DiceResult diceResult = packet as ToC_DiceResult;
         if(diceResult != null)
         {
+            List<int> dices = new List<int>();
+
             for (int i = 0; i < diceResult.diceResults.Count; i++)
             {
+                dices.Add(diceResult.diceResults[i].dice);
                 diceList[i].SetDice(diceResult.diceResults[i].dice);
             }
+
             if (diceResult.playerIndex == myServerIndex)
                 EnableScoreButton(diceResult.playerIndex);
             else
@@ -119,9 +123,9 @@ public class YatzyGameScene : MonoBehaviour
         if (writeScore == null) return;
 
         if (writeScore.playerIndex == 0)
-            scoreListPlayer0[writeScore.jocboIndex].SetScore(writeScore.jocboScore.ToString());
+            scoreListPlayer0[writeScore.jocboIndex].SetScore(writeScore.jocboScore);
         else if (writeScore.playerIndex == 1)
-            scoreListPlayer1[writeScore.jocboIndex].SetScore(writeScore.jocboScore.ToString());
+            scoreListPlayer1[writeScore.jocboIndex].SetScore(writeScore.jocboScore);
     }
 
 
