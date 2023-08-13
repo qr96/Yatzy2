@@ -11,9 +11,12 @@ namespace ServerCore
     public class Connector
     {
         Func<Session> _sessionFactory;
+        Action onConnectComplete;
 
-        public void Connect(IPEndPoint endPoint, Func<Session> sessionFactory, int count = 1)
+        public void Connect(IPEndPoint endPoint, Func<Session> sessionFactory, Action onConnectComplete, int count = 1)
         {
+            this.onConnectComplete = onConnectComplete;
+
             for (int i = 0; i < count; i++)
             {
                 // 휴대폰 설정
@@ -47,6 +50,8 @@ namespace ServerCore
                 Session session = _sessionFactory.Invoke();
                 session.Start(args.ConnectSocket);
                 session.OnConnected(args.RemoteEndPoint);
+
+                if (onConnectComplete != null) onConnectComplete();
             }
             else
             {

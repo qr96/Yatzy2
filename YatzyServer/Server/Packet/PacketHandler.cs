@@ -109,6 +109,14 @@ class PacketHandler
                 userInfos = userInfoList
             });
         });
+        gameRoom.Push(() =>
+        {
+            gameRoom.BroadCast(new ToC_PlayerEnterRoom()
+            {
+                playerNickName = clientSession.nickName,
+                playerIndex = gameRoom.GetUserIndex(clientSession),
+            });
+        });
     }
 
     public static void ToS_ReadyToStartHandler(PacketSession session, IPacket packet)

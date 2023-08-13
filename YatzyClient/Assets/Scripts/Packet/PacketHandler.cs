@@ -71,6 +71,14 @@ class PacketHandler
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
+    public static void ToC_PlayerEnterRoomHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_PlayerEnterRoomHandler");
+
+        if (actionDic[(PacketID)packet.Protocol] != null)
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
+
     public static void ToC_PlayerTurnHandler(PacketSession session, IPacket packet)
     {
         Debug.Log("Recv ToC_ResRoomInfoHandler");

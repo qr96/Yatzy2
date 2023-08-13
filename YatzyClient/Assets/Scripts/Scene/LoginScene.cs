@@ -16,15 +16,24 @@ public class LoginScene : MonoBehaviour
 
     public void OnClickLogin()
     {
+        if (nameInput.text.Length <= 2)
+        {
+            ErrorManager.Instance.ShowPopup("안내", "닉네임은 2글자 이상 입력해주세요.", null);
+            return;
+        }
+
         ToS_ReqLogin req = new ToS_ReqLogin();
         req.nickName = nameInput.text;
 
-        NetworkManager.Instance.Send(req.Write());
+        NetworkManager.Instance.ConnectToServer(() => NetworkManager.Instance.Send(req.Write()));
+        
+        ErrorManager.Instance.ShowLoadingIndicator();
     }
 
     void OnRecvLogin(IPacket packet)
     {
         Debug.Log("RecvLogin() ");
+
         ToC_ResLogin res = packet as ToC_ResLogin;
         if (res.loginSuccess)
             SceneManager.LoadScene(1);

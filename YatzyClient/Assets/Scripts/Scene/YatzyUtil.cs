@@ -8,9 +8,9 @@ namespace Server
 {
     public class YatzyUtil
     {
-        public static int GetScore(int[] dices, int type)
+        public static int GetScore(List<int> dices, int type)
         {
-            if (dices.Length != 5) return 0;
+            if (dices.Count != 5) return 0;
 
             int score = 0;
             int[] counts = new int[6];

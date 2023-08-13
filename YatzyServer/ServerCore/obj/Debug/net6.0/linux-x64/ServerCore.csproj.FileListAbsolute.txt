@@ -1,0 +1,12 @@
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\bin\Debug\net6.0\linux-x64\ServerCore.deps.json
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\bin\Debug\net6.0\linux-x64\ServerCore.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\bin\Debug\net6.0\linux-x64\ServerCore.pdb
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\obj\Debug\net6.0\linux-x64\ServerCore.csproj.AssemblyReference.cache
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\obj\Debug\net6.0\linux-x64\ServerCore.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\obj\Debug\net6.0\linux-x64\ServerCore.AssemblyInfoInputs.cache
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\obj\Debug\net6.0\linux-x64\ServerCore.AssemblyInfo.cs
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\obj\Debug\net6.0\linux-x64\ServerCore.csproj.CoreCompileInputs.cache
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\obj\Debug\net6.0\linux-x64\ServerCore.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\obj\Debug\net6.0\linux-x64\refint\ServerCore.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\obj\Debug\net6.0\linux-x64\ServerCore.pdb
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\obj\Debug\net6.0\linux-x64\ref\ServerCore.dll

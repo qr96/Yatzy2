@@ -16,8 +16,21 @@ public class ScoreItem : MonoBehaviour
 
     public void SetScore(int score)
     {
-        score = score;
-        this.scoreText.text = score.ToString();
+        this.score = score;
+        scoreText.text = score.ToString();
+        scoreText.color = new Color(0f, 0f, 0f, 1f);
+    }
+
+    public void SetPrivewScore(int score)
+    {
+        scoreText.text = score.ToString();
+        scoreText.color = new Color(0f, 0f, 0f, 0.5f);
+    }
+
+    public void InitScore()
+    {
+        score = -1;
+        scoreText.text = "";
     }
 
     public int GetScore()

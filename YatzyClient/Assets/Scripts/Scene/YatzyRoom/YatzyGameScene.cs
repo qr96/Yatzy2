@@ -1,13 +1,15 @@
+using Server;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static ToC_DiceResult;
 
 public class YatzyGameScene : MonoBehaviour
 {
-    public TextMeshProUGUI player0;
-    public TextMeshProUGUI player1;
+    public TextMeshProUGUI playerNickName0;
+    public TextMeshProUGUI playerNickName1;
 
     public GameObject playerTurn0;
     public GameObject playerTurn1;
@@ -15,16 +17,22 @@ public class YatzyGameScene : MonoBehaviour
     public ToggleGroup scoreGroup;
     public List<ScoreItem> scoreListPlayer0;
     public List<ScoreItem> scoreListPlayer1;
+    public TextMeshProUGUI subTotalScore0;
+    public TextMeshProUGUI subTotalScore1;
+    public TextMeshProUGUI totalScore0;
+    public TextMeshProUGUI totalScore1;
 
-    public List<DiceToggle> diceList;
+    public List<DiceToggle> diceToggleList;
     public Button rollDice;
     public Button recordScore;
+    public TextMeshProUGUI leftDiceCount;
 
     int myServerIndex = -1;
 
     void Start()
     {
         PacketHandler.AddAction(PacketID.ToC_ResRoomInfo, RecvRoomInfo);
+        PacketHandler.AddAction(PacketID.ToC_PlayerEnterRoom, RecvPlayerEnterRoom);
         PacketHandler.AddAction(PacketID.ToC_PlayerTurn, RecvPlayerTurn);
         PacketHandler.AddAction(PacketID.ToC_DiceResult, RecvDiceResult);
         PacketHandler.AddAction(PacketID.ToC_WriteScore, RecvWriteScore);
@@ -41,15 +49,13 @@ public class YatzyGameScene : MonoBehaviour
         ReqRoomInfo();
     }
 
-    // New User Enter
-
     // Packets
     void ReqRoomInfo()
     {
         ToS_ReqRoomInfo req = new ToS_ReqRoomInfo();
         NetworkManager.Instance.Send(req.Write());
     }
-    
+
     void ReqReadyToStart()
     {
         ToS_ReadyToStart req = new ToS_ReadyToStart();
@@ -60,18 +66,31 @@ public class YatzyGameScene : MonoBehaviour
     {
         Debug.Log("RecvRoomInfo");
 
+        ErrorManager.Instance.HideLoadingIndicator();
+
         ToC_ResRoomInfo roomInfo = packet as ToC_ResRoomInfo;
         if (roomInfo != null)
         {
             myServerIndex = roomInfo.myServerIndex;
 
             if (roomInfo.userInfos.Count > 0)
-                player0.text = roomInfo.userInfos[0].userName;
+                playerNickName0.text = roomInfo.userInfos[0].userName;
             else if (roomInfo.userInfos.Count > 1)
-                player0.text = roomInfo.userInfos[1].userName;
+                playerNickName1.text = roomInfo.userInfos[1].userName;
         }
 
         ReqReadyToStart();
+    }
+    void RecvPlayerEnterRoom(IPacket packet)
+    {
+        ToC_PlayerEnterRoom playerInfo = packet as ToC_PlayerEnterRoom;
+        if (playerInfo != null)
+        {
+            if (playerInfo.playerIndex == 0)
+                playerNickName0.text = playerInfo.playerNickName;
+            else if (playerInfo.playerIndex == 1)
+                playerNickName1.text = playerInfo.playerNickName;
+        }
     }
 
     void RecvPlayerTurn(IPacket packet)
@@ -85,8 +104,11 @@ public class YatzyGameScene : MonoBehaviour
             ShowPlayerTurn(p.playerTurn);
             DisableAllScoreButton();
             UnlockAllDiceLocks();
+            InitAllDiceNumbers();
+            InitAllPreviewScores();
             EnableAllUnlockDices(false);
             EnableDiceButton(myServerIndex == p.playerTurn);
+            leftDiceCount.text = "³²Àº È½¼ö : 3";
         }
     }
 
@@ -99,19 +121,37 @@ public class YatzyGameScene : MonoBehaviour
         {
             List<int> dices = new List<int>();
 
+            leftDiceCount.text = $"³²Àº È½¼ö : {diceResult.leftDice}";
+            EnableDiceButton(diceResult.playerIndex == myServerIndex && diceResult.leftDice > 0);
+
             for (int i = 0; i < diceResult.diceResults.Count; i++)
             {
                 dices.Add(diceResult.diceResults[i].dice);
-                diceList[i].SetDice(diceResult.diceResults[i].dice);
+                diceToggleList[i].SetDice(diceResult.diceResults[i].dice);
             }
 
             if (diceResult.playerIndex == myServerIndex)
                 EnableScoreButton(diceResult.playerIndex);
             else
                 DisableAllScoreButton();
-        }
 
-        EnableAllUnlockDices(true);
+            for (int i = 0; i < 12; i++)
+            {
+                if (diceResult.playerIndex == 0)
+                {
+                    if (scoreListPlayer0[i].GetScore() == -1)
+                        scoreListPlayer0[i].SetPrivewScore(YatzyUtil.GetScore(dices, i));
+                }
+                else if (diceResult.playerIndex == 1)
+                {
+                    if (scoreListPlayer1[i].GetScore() == -1)
+                        scoreListPlayer1[i].SetPrivewScore(YatzyUtil.GetScore(dices, i));
+                }
+            }
+
+            if (diceResult.playerIndex == myServerIndex)
+                EnableAllUnlockDices(true);
+        }
     }
 
     void RecvWriteScore(IPacket packet)
@@ -126,6 +166,8 @@ public class YatzyGameScene : MonoBehaviour
             scoreListPlayer0[writeScore.jocboIndex].SetScore(writeScore.jocboScore);
         else if (writeScore.playerIndex == 1)
             scoreListPlayer1[writeScore.jocboIndex].SetScore(writeScore.jocboScore);
+
+        UpdateScoreBoard(writeScore.playerIndex);
     }
 
 
@@ -148,7 +190,7 @@ public class YatzyGameScene : MonoBehaviour
             foreach (var score in scoreListPlayer0)
                 score.SetToggleEnable(true);
         }
-        else if(index == 2)
+        else if(index == 1)
         {
             foreach (var score in scoreListPlayer1)
                 score.SetToggleEnable(true);
@@ -164,15 +206,71 @@ public class YatzyGameScene : MonoBehaviour
             score.SetToggleEnable(false);
     }
 
+    public void UpdateScoreBoard(int player)
+    {
+        int subTotal = 0;
+        int total = 0;
+
+        if (player == 0)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                if (scoreListPlayer0[i].GetScore() > 0) 
+                    subTotal += scoreListPlayer0[i].GetScore();
+            }
+                
+            for (int i = 0; i < 12; i++)
+            {
+                if (scoreListPlayer0[i].GetScore() > 0)
+                    total += scoreListPlayer0[i].GetScore();
+            }
+                
+            subTotalScore0.text = $"{subTotal} / 63";
+            totalScore0.text = total.ToString();
+        }
+        else if (player == 1)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                if (scoreListPlayer1[i].GetScore() > 0)
+                    subTotal += scoreListPlayer1[i].GetScore();
+            }
+            for (int i = 0; i < 12; i++)
+            {
+                if (scoreListPlayer1[i].GetScore() > 0)
+                    total += scoreListPlayer1[i].GetScore();
+            }
+                
+            subTotalScore1.text = $"{subTotal} / 63";
+            totalScore1.text = total.ToString();
+        }
+    }
+
     void UnlockAllDiceLocks()
     {
-        foreach (var diceLock in diceList)
+        foreach (var diceLock in diceToggleList)
             diceLock.UnSelectToggle();
+    }
+
+    void InitAllDiceNumbers()
+    {
+        foreach (var dice in diceToggleList)
+        {
+            dice.SetDice(6);
+        }
+    }
+
+    void InitAllPreviewScores()
+    {
+        foreach (var score in scoreListPlayer0)
+            if (score.GetScore() < 0) score.InitScore();
+        foreach (var score in scoreListPlayer1)
+            if (score.GetScore() < 0) score.InitScore();
     }
 
     void EnableAllUnlockDices(bool enable)
     {
-        foreach (var diceLock in diceList)
+        foreach (var diceLock in diceToggleList)
             diceLock.EnableToggle(enable);
     }
 
@@ -205,7 +303,7 @@ public class YatzyGameScene : MonoBehaviour
         ToS_RollDice packet = new ToS_RollDice();
         for (int i = 0; i < 5; i++)
         {
-            if (diceList[i].IsLocked()) packet.fixDices.Add(new ToS_RollDice.FixDice() { diceIndex = i });
+            if (diceToggleList[i].IsLocked()) packet.fixDices.Add(new ToS_RollDice.FixDice() { diceIndex = i });
             else unlockedCount++;
         }
 

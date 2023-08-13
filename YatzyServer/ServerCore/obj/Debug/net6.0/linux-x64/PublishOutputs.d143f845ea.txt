@@ -1,0 +1,3 @@
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\bin\Debug\net6.0\linux-x64\publish\ServerCore.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\bin\Debug\net6.0\linux-x64\publish\ServerCore.deps.json
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\ServerCore\bin\Debug\net6.0\linux-x64\publish\ServerCore.pdb

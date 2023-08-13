@@ -19,7 +19,6 @@ public class PacketManager
 		
 	public void Register()
 	{
-		/*
 		_makeFunc.Add((ushort)PacketID.ToC_ResLogin, MakePacket<ToC_ResLogin>);
 		_handler.Add((ushort)PacketID.ToC_ResLogin, PacketHandler.ToC_ResLoginHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_ResRoomList, MakePacket<ToC_ResRoomList>);
@@ -32,13 +31,15 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.ToC_ResLeaveRoom, PacketHandler.ToC_ResLeaveRoomHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_ResRoomInfo, MakePacket<ToC_ResRoomInfo>);
 		_handler.Add((ushort)PacketID.ToC_ResRoomInfo, PacketHandler.ToC_ResRoomInfoHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_PlayerEnterRoom, MakePacket<ToC_PlayerEnterRoom>);
+		_handler.Add((ushort)PacketID.ToC_PlayerEnterRoom, PacketHandler.ToC_PlayerEnterRoomHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_PlayerTurn, MakePacket<ToC_PlayerTurn>);
 		_handler.Add((ushort)PacketID.ToC_PlayerTurn, PacketHandler.ToC_PlayerTurnHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_DiceResult, MakePacket<ToC_DiceResult>);
 		_handler.Add((ushort)PacketID.ToC_DiceResult, PacketHandler.ToC_DiceResultHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_WriteScore, MakePacket<ToC_WriteScore>);
 		_handler.Add((ushort)PacketID.ToC_WriteScore, PacketHandler.ToC_WriteScoreHandler);
-		*/
+
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer, Action<PacketSession, IPacket> onRecvCallback = null)

@@ -42,6 +42,10 @@
     </list>
   </packet>
 
+  <packet name="ToC_PlayerEnterRoom">
+    <string name="playerNickName"/>
+    <int name="playerIndex"/>
+  </packet>
   <packet name="ToS_ReadyToStart">
   </packet>
   <packet name="ToC_PlayerTurn">
@@ -54,6 +58,7 @@
   </packet>
   <packet name="ToC_DiceResult">
     <int name="playerIndex"/>
+    <int name="leftDice"/>
     <list name="diceResult">
       <int name="dice"/>
     </list>

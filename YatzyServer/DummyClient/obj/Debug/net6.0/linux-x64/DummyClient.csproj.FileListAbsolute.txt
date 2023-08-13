@@ -1,0 +1,5 @@
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\DummyClient\obj\Debug\net6.0\linux-x64\DummyClient.csproj.AssemblyReference.cache
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\DummyClient\obj\Debug\net6.0\linux-x64\DummyClient.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\DummyClient\obj\Debug\net6.0\linux-x64\DummyClient.AssemblyInfoInputs.cache
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\DummyClient\obj\Debug\net6.0\linux-x64\DummyClient.AssemblyInfo.cs
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\DummyClient\obj\Debug\net6.0\linux-x64\DummyClient.csproj.CoreCompileInputs.cache

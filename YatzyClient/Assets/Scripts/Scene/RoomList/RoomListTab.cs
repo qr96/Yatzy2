@@ -11,6 +11,8 @@ public class RoomListTab : MonoBehaviour
 
     private void Start()
     {
+        ErrorManager.Instance.HideLoadingIndicator();
+
         PacketHandler.AddAction(PacketID.ToC_ResRoomList, OnRecvRoomList);
         PacketHandler.AddAction(PacketID.ToC_ResEnterRoom, OnRecvEnterRoom);
 
@@ -32,6 +34,8 @@ public class RoomListTab : MonoBehaviour
 
     void OnRecvRoomList(IPacket packet)
     {
+        ErrorManager.Instance.HideLoadingIndicator();
+
         Debug.Log("OnRecvRoomList() ");
         ToC_ResRoomList roomList = packet as ToC_ResRoomList;
 
@@ -61,5 +65,11 @@ public class RoomListTab : MonoBehaviour
     public void OnClickMakeRoom()
     {
         makeRoomPopup.Show();
+    }
+
+    public void OnClikRefreshRoomList()
+    {
+        ErrorManager.Instance.ShowLoadingIndicator();
+        SendReqRoomList();
     }
 }

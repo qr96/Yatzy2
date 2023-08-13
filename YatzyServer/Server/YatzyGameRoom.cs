@@ -137,7 +137,7 @@ namespace Server
             foreach (var value in _playerGameInfoDic.Values)
                 if (info.ready == true) readyCount++;
 
-            if (readyCount > 0)
+            if (readyCount >= 2)
                 StartGame();
         }
 
@@ -153,15 +153,16 @@ namespace Server
             if (_diceCount <= 0 || fixDices.Count >= 5)
                 return;
 
+            _diceCount--;
+
             diceResult.playerIndex = info.index;
+            diceResult.leftDice = _diceCount;
 
             for (int i = 0; i < 5; i++)
             {
                 if (!fixDices.Contains(i)) _dices[i] = random.Next(1, 7);
                 diceResult.diceResults.Add(new ToC_DiceResult.DiceResult() { dice = _dices[i] });
             }
-
-            _diceCount--;
 
             BroadCast(diceResult);
         }
@@ -177,8 +178,10 @@ namespace Server
             if (_diceCount > 2)
                 return;
 
-            if (info.scoreBoard[jocbo] == 0)
-                info.scoreBoard[jocbo] = YatzyUtil.GetScore(_dices, jocbo);
+            if (info == null || info.scoreBoard[jocbo] > 0)
+                return;
+             
+            info.scoreBoard[jocbo] = YatzyUtil.GetScore(_dices, jocbo);
 
             ToC_WriteScore writeScore = new ToC_WriteScore();
             writeScore.playerIndex = info.index;

@@ -18,13 +18,6 @@ public class NetworkManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
 
-    private void Start()
-    {
-        ConnectToServer();
-
-        //StartCoroutine(SendCo());
-    }
-
     private void Update()
     {
         IPacket packet = PacketQueue.Instance.Pop();
@@ -34,41 +27,21 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
-    public void ConnectToServer()
+    public void ConnectToServer(Action onConnectComplete)
     {
         string host = Dns.GetHostName();
+        //string host = "ec2-3-34-253-239.ap-northeast-2.compute.amazonaws.com";
         IPHostEntry ipHost = Dns.GetHostEntry(host);
         IPAddress ipAddr = ipHost.AddressList[0];
         IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
 
         Connector connector = new Connector();
 
-        connector.Connect(endPoint, () => { return _session; }, 1);
+        connector.Connect(endPoint, () => { return _session; }, onConnectComplete, 1);
     }
 
     public void Send(ArraySegment<byte> sendBuff)
     {
         _session.Send(sendBuff);
-    }
-
-    IEnumerator SendCo()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(5f);
-
-            ToS_ReqRoomList req = new ToS_ReqRoomList();
-            req.authToken = "1234";
-            ArraySegment<byte> seg = req.Write();
-            _session.Send(seg);
-
-            /*
-            C_Chat chat = new C_Chat();
-            chat.chat = "Hello Unity";
-            ArraySegment<byte> seg = chat.Write();
-
-            _session.Send(seg);
-            */
-        }
     }
 }

@@ -300,7 +300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68e44678d590eba4f9a37f570a21a5e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  score: {fileID: 2490559634331187681}
+  scoreText: {fileID: 2490559634331187681}
   toggle: {fileID: 4785127587305250471}
 --- !u!114 &4785127587305250471
 MonoBehaviour:
