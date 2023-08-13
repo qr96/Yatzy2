@@ -27,7 +27,7 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
-    public void ConnectToServer(Action onConnectComplete)
+    public void ConnectToServer()
     {
         string host = Dns.GetHostName();
         //string host = "ec2-3-34-253-239.ap-northeast-2.compute.amazonaws.com";
@@ -37,7 +37,7 @@ public class NetworkManager : MonoBehaviour
 
         Connector connector = new Connector();
 
-        connector.Connect(endPoint, () => { return _session; }, onConnectComplete, 1);
+        connector.Connect(endPoint, () => { return _session; }, 1);
     }
 
     public void Send(ArraySegment<byte> sendBuff)

@@ -25,7 +25,7 @@ public class LoginScene : MonoBehaviour
         ToS_ReqLogin req = new ToS_ReqLogin();
         req.nickName = nameInput.text;
 
-        NetworkManager.Instance.ConnectToServer(() => NetworkManager.Instance.Send(req.Write()));
+        NetworkManager.Instance.ConnectToServer();
         
         ErrorManager.Instance.ShowLoadingIndicator();
     }

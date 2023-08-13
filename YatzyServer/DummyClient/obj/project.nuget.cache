@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "NhOb7eU5CzMMZzXWHpuYrisSj5iBLMDvQfeDcfKoMy3NeAxNLahqExXi0rTgTb7iV8+nbKje0Z5Q18J/RogwKw==",
+  "dgSpecHash": "66B5cwYqgydw0/lUgHOU9rhjWmkEknNCoZJuR1cigQz5PQ06d2dj43BPxuVcBgX9sI3uWV8rWIGKfkOZe5NLBg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Lee\\source\\repos\\Yatzy2\\YatzyServer\\DummyClient\\DummyClient.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Lee\\.nuget\\packages\\microsoft.netcore.app.runtime.linux-x64\\6.0.20\\microsoft.netcore.app.runtime.linux-x64.6.0.20.nupkg.sha512",
+    "C:\\Users\\Lee\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.linux-x64\\6.0.20\\microsoft.aspnetcore.app.runtime.linux-x64.6.0.20.nupkg.sha512",
+    "C:\\Users\\Lee\\.nuget\\packages\\microsoft.netcore.app.host.linux-x64\\6.0.20\\microsoft.netcore.app.host.linux-x64.6.0.20.nupkg.sha512"
+  ],
   "logs": []
 }
