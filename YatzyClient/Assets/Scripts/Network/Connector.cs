@@ -47,9 +47,11 @@ namespace ServerCore
                 Session session = _sessionFactory.Invoke();
                 session.Start(args.ConnectSocket);
                 session.OnConnected(args.RemoteEndPoint);
+                NetworkManager.Instance._connected = true;
             }
             else
             {
+                NetworkManager.Instance._connected = false;
                 UnityEngine.Debug.Log($"OnConncetCompleted Fail : {args.SocketError}");
             }
         }

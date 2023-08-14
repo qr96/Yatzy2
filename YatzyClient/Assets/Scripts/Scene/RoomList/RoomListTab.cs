@@ -8,6 +8,7 @@ public class RoomListTab : MonoBehaviour
     public RoomItem roomItemPrefab;
     public GameObject content;
     public MakeRoomPopup makeRoomPopup;
+    public GameObject noRoomNoti;
 
     private void Start()
     {
@@ -38,6 +39,9 @@ public class RoomListTab : MonoBehaviour
 
         Debug.Log("OnRecvRoomList() ");
         ToC_ResRoomList roomList = packet as ToC_ResRoomList;
+
+        if (roomList.roomInfos.Count > 0) noRoomNoti.SetActive(false);
+        else noRoomNoti.SetActive(true);
 
         foreach (var info in roomList.roomInfos)
         {

@@ -9,6 +9,7 @@ using UnityEngine;
 public class NetworkManager : MonoBehaviour
 {
     public static NetworkManager Instance;
+    public bool _connected = false;
 
     ServerSession _session = new ServerSession();
 
@@ -36,7 +37,7 @@ public class NetworkManager : MonoBehaviour
         IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
 
         Connector connector = new Connector();
-
+        _connected = false;
         connector.Connect(endPoint, () => { return _session; }, 1);
     }
 

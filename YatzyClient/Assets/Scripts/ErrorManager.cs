@@ -50,7 +50,7 @@ public class ErrorManager : MonoBehaviour
         loadingIndicator.SetActive(false);
     }
 
-    public void ShowPopup(string title, string desc, Action onClick)
+    public void ShowPopup(string title, string desc, Action onClick = null)
     {
         errorPopupTitle.text = title;
         errorPopupDesc.text = desc;

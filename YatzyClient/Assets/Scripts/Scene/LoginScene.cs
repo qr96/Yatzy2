@@ -22,12 +22,10 @@ public class LoginScene : MonoBehaviour
             return;
         }
 
-        ToS_ReqLogin req = new ToS_ReqLogin();
-        req.nickName = nameInput.text;
-
         NetworkManager.Instance.ConnectToServer();
-        
         ErrorManager.Instance.ShowLoadingIndicator();
+
+        StartCoroutine(WaitForConnect());
     }
 
     void OnRecvLogin(IPacket packet)
@@ -37,5 +35,29 @@ public class LoginScene : MonoBehaviour
         ToC_ResLogin res = packet as ToC_ResLogin;
         if (res.loginSuccess)
             SceneManager.LoadScene(1);
+    }
+
+    void SendLogin()
+    {
+        ToS_ReqLogin req = new ToS_ReqLogin();
+        req.nickName = nameInput.text;
+        NetworkManager.Instance.Send(req.Write());
+    }
+
+    IEnumerator WaitForConnect()
+    {
+        float waitTime = 0f;
+        while (NetworkManager.Instance._connected == false)
+        {
+            yield return new WaitForSeconds(0.2f);
+            waitTime += 0.2f;
+            if (waitTime > 10f)
+            {
+                ErrorManager.Instance.HideLoadingIndicator();
+                ErrorManager.Instance.ShowPopup("안내", "서버와의 연결에 실패했습니다.");
+                yield break;
+            }
+        }
+        SendLogin();
     }
 }
