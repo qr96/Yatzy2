@@ -20,10 +20,12 @@ namespace Server
 
         static void Main(string[] args)
         {
-            string host = Dns.GetHostName();
-            IPHostEntry ipHost = Dns.GetHostEntry(host);
-            IPAddress ipAddr = ipHost.AddressList[0];
-            IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+            //string host = Dns.GetHostName();
+            //IPHostEntry ipHost = Dns.GetHostEntry(host);
+            //IPAddress ipAddr = ipHost.AddressList[0];
+            //IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+
+            IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 7777);
 
             _listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
             Console.WriteLine("Listening...");

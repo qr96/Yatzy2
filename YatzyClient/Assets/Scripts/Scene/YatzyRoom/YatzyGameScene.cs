@@ -46,6 +46,16 @@ public class YatzyGameScene : MonoBehaviour
         foreach (var item in scoreListPlayer1)
             item.SetListener(() => CheckAllScoreButton());
 
+        for (int i = 0; i < 5; i++)
+        {
+            int tmp = i;
+            diceToggleList[i].SetClickEvent(() =>
+            {
+                if (diceToggleList[tmp].IsLocked()) diceViewer.LockDice(tmp);
+                else diceViewer.UnLockDice(tmp);
+            });
+        }
+
         EnableDiceButton(false);
         EnableRecordScoreButton(false);
         DisableAllScoreButton();
@@ -154,46 +164,48 @@ public class YatzyGameScene : MonoBehaviour
         ToC_DiceResult diceResult = packet as ToC_DiceResult;
         if(diceResult != null)
         {
+            // 데이터 가공
             List<int> dices = new List<int>();
+            for (int i = 0; i < diceResult.diceResults.Count; i++)
+                dices.Add(diceResult.diceResults[i].dice);
 
             // 다이스 버튼 설정
             leftDiceCount.text = $"남은 횟수 : {diceResult.leftDice}";
-            EnableDiceButton(diceResult.playerIndex == myServerIndex && diceResult.leftDice > 0);
-
             for (int i = 0; i < diceResult.diceResults.Count; i++)
-            {
-                dices.Add(diceResult.diceResults[i].dice);
-                diceToggleList[i].SetDice(diceResult.diceResults[i].dice);
                 diceViewer.SetDice(i, diceResult.diceResults[i].dice);
-            }
-
-            diceViewer.PlayRollDice();
-
-            // 스코어 버튼 설정
-            DisableAllScoreButton();
-
-            for (int i = 0; i < 12; i++)
+            diceViewer.PlayRollDice(()=>
             {
-                if (diceResult.playerIndex == 0)
+                EnableDiceButton(diceResult.playerIndex == myServerIndex && diceResult.leftDice > 0);
+
+                for (int i = 0; i < diceResult.diceResults.Count; i++)
+                    diceToggleList[i].SetDice(diceResult.diceResults[i].dice);
+
+                // 스코어 버튼 설정
+                DisableAllScoreButton();
+
+                for (int i = 0; i < 12; i++)
                 {
-                    if (scoreListPlayer0[i].GetScore() == -1)
-                        scoreListPlayer0[i].SetPrivewScore(YatzyUtil.GetScore(dices, i));
+                    if (diceResult.playerIndex == 0)
+                    {
+                        if (scoreListPlayer0[i].GetScore() == -1)
+                            scoreListPlayer0[i].SetPrivewScore(YatzyUtil.GetScore(dices, i));
 
-                    if (diceResult.playerIndex == myServerIndex && scoreListPlayer0[i].GetScore() < 0)
-                        scoreListPlayer0[i].SetToggleEnable(true);
+                        if (diceResult.playerIndex == myServerIndex && scoreListPlayer0[i].GetScore() < 0)
+                            scoreListPlayer0[i].SetToggleEnable(true);
+                    }
+                    else if (diceResult.playerIndex == 1)
+                    {
+                        if (scoreListPlayer1[i].GetScore() == -1)
+                            scoreListPlayer1[i].SetPrivewScore(YatzyUtil.GetScore(dices, i));
+
+                        if (diceResult.playerIndex == myServerIndex && scoreListPlayer1[i].GetScore() < 0)
+                            scoreListPlayer1[i].SetToggleEnable(true);
+                    }
                 }
-                else if (diceResult.playerIndex == 1)
-                {
-                    if (scoreListPlayer1[i].GetScore() == -1)
-                        scoreListPlayer1[i].SetPrivewScore(YatzyUtil.GetScore(dices, i));
 
-                    if (diceResult.playerIndex == myServerIndex && scoreListPlayer1[i].GetScore() < 0)
-                        scoreListPlayer1[i].SetToggleEnable(true);
-                }
-            }
-
-            if (diceResult.playerIndex == myServerIndex)
-                EnableAllUnlockDices(true);
+                if (diceResult.playerIndex == myServerIndex)
+                    EnableAllUnlockDices(true);
+            });
         }
     }
 
@@ -277,6 +289,8 @@ public class YatzyGameScene : MonoBehaviour
     {
         foreach (var diceLock in diceToggleList)
             diceLock.UnSelectToggle();
+
+        diceViewer.UnLockAllDice();
     }
 
     void InitAllDiceNumbers()

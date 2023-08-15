@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,8 +10,15 @@ public class DiceToggle : MonoBehaviour
     public Button toggle;
     public TextMeshProUGUI diceNum;
     public GameObject selected;
+    public DiceViewer diceViewer;
 
+    Action onClick;
     bool isOn;
+
+    public void SetClickEvent(Action onClick)
+    {
+        this.onClick = onClick;
+    }
 
     public void SetDice(int diceNum)
     {
@@ -37,5 +45,6 @@ public class DiceToggle : MonoBehaviour
     {
         isOn = !isOn;
         selected.SetActive(isOn);
+        if (onClick != null) onClick();
     }
 }

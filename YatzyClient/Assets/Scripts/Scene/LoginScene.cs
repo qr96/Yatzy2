@@ -54,8 +54,8 @@ public class LoginScene : MonoBehaviour
         float waitTime = 0f;
         while (NetworkManager.Instance._connected == false)
         {
-            yield return new WaitForSeconds(0.2f);
-            waitTime += 0.2f;
+            yield return new WaitForSeconds(0.5f);
+            waitTime += 0.5f;
             if (waitTime > 10f)
             {
                 ErrorManager.Instance.HideLoadingIndicator();
