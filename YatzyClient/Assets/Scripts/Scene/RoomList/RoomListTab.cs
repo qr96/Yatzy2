@@ -23,6 +23,7 @@ public class RoomListTab : MonoBehaviour
     private void OnDestroy()
     {
         PacketHandler.RemoveAction(PacketID.ToC_ResRoomList);
+        PacketHandler.RemoveAction(PacketID.ToC_ResEnterRoom);
     }
 
     void SendReqRoomList()

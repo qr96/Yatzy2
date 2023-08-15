@@ -32,6 +32,13 @@ namespace Server
         public int index = -1;
         public bool ready = false;
         public List<int> scoreBoard = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+        public void RestartGame()
+        {
+            ready = false;
+            for (int i = 0; i < scoreBoard.Count; i++)
+                scoreBoard[i] = 0;
+        }
     }
 
     public class YatzyGameRoom
@@ -42,7 +49,6 @@ namespace Server
         List<ClientSession> _sessions = new List<ClientSession>();
         JobQueue _jobQueue = new JobQueue();
         List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
-        List<Tuple<ClientSession, ArraySegment<byte>>> _pendingListUni = new List<Tuple<ClientSession, ArraySegment<byte>>>();
         Dictionary<int, PlayerGameInfo> _playerGameInfoDic = new Dictionary<int, PlayerGameInfo>();
 
         Random random = new Random();
@@ -69,14 +75,8 @@ namespace Server
                 s.Send(_pendingList);
             }
 
-            foreach (var pending in _pendingListUni)
-            {
-                pending.Item1.Send(pending.Item2);
-            }
-
             //Console.WriteLine($"Flushed {_pendingList.Count}");
             _pendingList.Clear();
-            _pendingListUni.Clear();
         }
 
         public void BroadCast(IPacket packet)
@@ -90,7 +90,7 @@ namespace Server
         {
             ArraySegment<byte> segment = packet.Write();
 
-            _pendingListUni.Add(new Tuple<ClientSession, ArraySegment<byte>>(session, segment));
+            session.Send(segment);
         }
 
         public void Enter(ClientSession session)
@@ -102,8 +102,20 @@ namespace Server
 
         public void Leave(ClientSession session)
         {
+            Console.WriteLine("LeaveRoom");
+            PlayerGameInfo info = null;
+            _playerGameInfoDic.TryGetValue(session.SessionId, out info);
+            if (info == null) return;
+
+            ToC_ResLeaveRoom leaveRoom = new ToC_ResLeaveRoom();
+            leaveRoom.leavePlayerIndex = info.index;
+
             _sessions.Remove(session);
             _playerGameInfoDic.Remove(session.SessionId);
+
+            session.GameRoom = null;
+            session.Send(leaveRoom.Write());
+            BroadCast(leaveRoom);
 
             if (_sessions.Count == 0) GameRoomManager.Instance.RemoveRoom(this.roomID);
         }
@@ -200,6 +212,14 @@ namespace Server
             _diceCount = 3;
 
             BroadCast(packet);
+        }
+
+        void RestartGame()
+        {
+            foreach (var session in _sessions)
+            {
+                _playerGameInfoDic[session.SessionId].RestartGame();
+            }
         }
 
         bool isPlayerTurn(int index)

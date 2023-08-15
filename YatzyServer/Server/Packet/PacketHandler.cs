@@ -83,6 +83,9 @@ class PacketHandler
 
         if (clientSession.Lobby == null)
             return;
+
+        YatzyGameRoom room = clientSession.GameRoom;
+        room.Push(() => room.Leave(clientSession));
     }
 
 

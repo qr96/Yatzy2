@@ -31,7 +31,9 @@
   <packet name="ToS_ReqLeaveRoom">
   </packet>
   <packet name="ToC_ResLeaveRoom">
+    <int name="leavePlayerIndex"/>
   </packet>
+  
   <packet name="ToS_ReqRoomInfo">
   </packet>
   <packet name="ToC_ResRoomInfo">
@@ -41,7 +43,6 @@
       <string name="userName"/>
     </list>
   </packet>
-
   <packet name="ToC_PlayerEnterRoom">
     <string name="playerNickName"/>
     <int name="playerIndex"/>

@@ -14,6 +14,11 @@ public class LoginScene : MonoBehaviour
         PacketHandler.AddAction(PacketID.ToC_ResLogin, OnRecvLogin);
     }
 
+    private void OnDestroy()
+    {
+        PacketHandler.RemoveAction(PacketID.ToC_ResLogin);
+    }
+
     public void OnClickLogin()
     {
         if (nameInput.text.Length <= 2)

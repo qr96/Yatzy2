@@ -435,7 +435,7 @@ class ToS_ReqLeaveRoom : IPacket
 
 class ToC_ResLeaveRoom : IPacket
 {
-    
+    public int leavePlayerIndex;
 
     public ushort Protocol { get { return (ushort)PacketID.ToC_ResLeaveRoom; } }
 
@@ -447,7 +447,8 @@ class ToC_ResLeaveRoom : IPacket
 
         count += sizeof(ushort);
         count += sizeof(ushort);
-        
+        this.leavePlayerIndex = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
     }
 
     public ArraySegment<byte> Write()
@@ -461,7 +462,8 @@ class ToC_ResLeaveRoom : IPacket
         count += sizeof(ushort);
         success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_ResLeaveRoom);
         count += sizeof(ushort);
-        
+        Array.Copy(BitConverter.GetBytes(this.leavePlayerIndex), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
         success &= BitConverter.TryWriteBytes(s, count);
         if (success == false) 
             return null;

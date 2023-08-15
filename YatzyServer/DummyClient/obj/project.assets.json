@@ -4,7 +4,7 @@
     "net6.0": {
       "ServerCore/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v6.0",
+        "framework": "Unsupported,Version=v0.0",
         "compile": {
           "bin/placeholder/ServerCore.dll": {}
         },
@@ -79,13 +79,19 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "frameworkReferences": {
-          "Microsoft.NETCore.App": {
-            "privateAssets": "all"
-          }
-        },
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1201",
+      "level": "Error",
+      "message": "ServerCore 프로젝트가 net6.0(.NETCoreApp,Version=v6.0)과(와) 호환되지 않습니다. ServerCore 프로젝트는 다음을 지원합니다. net7.0(.NETCoreApp,Version=v7.0)",
+      "libraryId": "ServerCore",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
 }

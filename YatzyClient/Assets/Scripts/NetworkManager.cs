@@ -30,10 +30,12 @@ public class NetworkManager : MonoBehaviour
 
     public void ConnectToServer()
     {
-        string host = Dns.GetHostName();
+        //string host = Dns.GetHostName();
         //string host = "ec2-3-34-253-239.ap-northeast-2.compute.amazonaws.com";
-        IPHostEntry ipHost = Dns.GetHostEntry(host);
-        IPAddress ipAddr = ipHost.AddressList[0];
+        //IPHostEntry ipHost = Dns.GetHostEntry(host);
+        //IPAddress ipAddr = ipHost.AddressList[0];
+
+        IPAddress ipAddr = IPAddress.Parse("180.210.82.243");
         IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
 
         Connector connector = new Connector();

@@ -33,9 +33,9 @@ namespace Server
         {
             lock (_lock)
             {
-                int roomId = ++_roomId;
-
-                if (_rooms.ContainsKey(roomId)) return null;
+                int roomId = _roomId;
+                if (_rooms.ContainsKey(roomId + 1)) return null;
+                _roomId++;
 
                 YatzyGameRoom room = new YatzyGameRoom(roomId, name);
                 room.roomID = roomId;

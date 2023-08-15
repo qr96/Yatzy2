@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static ToC_DiceResult;
 
@@ -27,11 +28,14 @@ public class YatzyGameScene : MonoBehaviour
     public Button recordScore;
     public TextMeshProUGUI leftDiceCount;
 
+    public DiceViewer diceViewer;
+
     int myServerIndex = -1;
 
     void Start()
     {
         PacketHandler.AddAction(PacketID.ToC_ResRoomInfo, RecvRoomInfo);
+        PacketHandler.AddAction(PacketID.ToC_ResLeaveRoom, RecvLeaveRoom);
         PacketHandler.AddAction(PacketID.ToC_PlayerEnterRoom, RecvPlayerEnterRoom);
         PacketHandler.AddAction(PacketID.ToC_PlayerTurn, RecvPlayerTurn);
         PacketHandler.AddAction(PacketID.ToC_DiceResult, RecvDiceResult);
@@ -44,9 +48,19 @@ public class YatzyGameScene : MonoBehaviour
 
         EnableDiceButton(false);
         EnableRecordScoreButton(false);
-        //DisableAllScoreButton();
+        DisableAllScoreButton();
 
         ReqRoomInfo();
+    }
+
+    private void OnDestroy()
+    {
+        PacketHandler.RemoveAction(PacketID.ToC_ResRoomInfo);
+        PacketHandler.RemoveAction(PacketID.ToC_ResLeaveRoom);
+        PacketHandler.RemoveAction(PacketID.ToC_PlayerEnterRoom);
+        PacketHandler.RemoveAction(PacketID.ToC_PlayerTurn);
+        PacketHandler.RemoveAction(PacketID.ToC_DiceResult);
+        PacketHandler.RemoveAction(PacketID.ToC_WriteScore);
     }
 
     // Packets
@@ -81,6 +95,27 @@ public class YatzyGameScene : MonoBehaviour
 
         ReqReadyToStart();
     }
+
+    void RecvLeaveRoom(IPacket packet)
+    {
+        Debug.Log("RecvLeaveRoom");
+
+        ToC_ResLeaveRoom leaveRoom = packet as ToC_ResLeaveRoom;
+
+        if(leaveRoom != null)
+        {
+            if (leaveRoom.leavePlayerIndex == myServerIndex)
+            {
+                ErrorManager.Instance.HideLoadingIndicator();
+                SceneManager.LoadScene(1);
+            }
+            else
+            {
+
+            }
+        }
+    }
+
     void RecvPlayerEnterRoom(IPacket packet)
     {
         ToC_PlayerEnterRoom playerInfo = packet as ToC_PlayerEnterRoom;
@@ -121,6 +156,7 @@ public class YatzyGameScene : MonoBehaviour
         {
             List<int> dices = new List<int>();
 
+            // 다이스 버튼 설정
             leftDiceCount.text = $"남은 횟수 : {diceResult.leftDice}";
             EnableDiceButton(diceResult.playerIndex == myServerIndex && diceResult.leftDice > 0);
 
@@ -128,12 +164,13 @@ public class YatzyGameScene : MonoBehaviour
             {
                 dices.Add(diceResult.diceResults[i].dice);
                 diceToggleList[i].SetDice(diceResult.diceResults[i].dice);
+                diceViewer.SetDice(i, diceResult.diceResults[i].dice);
             }
 
-            if (diceResult.playerIndex == myServerIndex)
-                EnableScoreButton(diceResult.playerIndex);
-            else
-                DisableAllScoreButton();
+            diceViewer.PlayRollDice();
+
+            // 스코어 버튼 설정
+            DisableAllScoreButton();
 
             for (int i = 0; i < 12; i++)
             {
@@ -141,11 +178,17 @@ public class YatzyGameScene : MonoBehaviour
                 {
                     if (scoreListPlayer0[i].GetScore() == -1)
                         scoreListPlayer0[i].SetPrivewScore(YatzyUtil.GetScore(dices, i));
+
+                    if (diceResult.playerIndex == myServerIndex && scoreListPlayer0[i].GetScore() < 0)
+                        scoreListPlayer0[i].SetToggleEnable(true);
                 }
                 else if (diceResult.playerIndex == 1)
                 {
                     if (scoreListPlayer1[i].GetScore() == -1)
                         scoreListPlayer1[i].SetPrivewScore(YatzyUtil.GetScore(dices, i));
+
+                    if (diceResult.playerIndex == myServerIndex && scoreListPlayer1[i].GetScore() < 0)
+                        scoreListPlayer1[i].SetToggleEnable(true);
                 }
             }
 
@@ -180,22 +223,6 @@ public class YatzyGameScene : MonoBehaviour
     void EnableRecordScoreButton(bool enable)
     {
         recordScore.interactable = enable;
-    }
-
-    void EnableScoreButton(int index)
-    {
-        DisableAllScoreButton();
-        if (index == 0)
-        {
-            foreach (var score in scoreListPlayer0)
-                score.SetToggleEnable(true);
-        }
-        else if(index == 1)
-        {
-            foreach (var score in scoreListPlayer1)
-                score.SetToggleEnable(true);
-        }
-            
     }
 
     void DisableAllScoreButton()
@@ -295,6 +322,13 @@ public class YatzyGameScene : MonoBehaviour
     }
 
     // Events
+
+    public void OnClickLeaveRoom()
+    {
+        ToS_ReqLeaveRoom packet = new ToS_ReqLeaveRoom();
+
+        NetworkManager.Instance.Send(packet.Write());
+    }
 
     public void OnClickRollDice()
     {
