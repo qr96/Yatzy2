@@ -76,4 +76,19 @@
     <int name="winner"/>
     <bool name="drawGame"/>
   </packet>
+  <packet name="ToS_LockDice">
+    <int name="diceIndex"/>
+    <bool name="isLocked"/>
+  </packet>
+  <packet name="ToC_LockDice">
+    <int name="diceIndex"/>
+    <bool name="isLocked"/>
+  </packet>
+  <packet name="ToS_SelectScore">
+    <int name="jocboIndex"/>
+  </packet>
+  <packet name="ToC_SelectScore">
+    <int name="playerIndex"/>
+    <int name="jocboIndex"/>
+  </packet>
 </PDL>

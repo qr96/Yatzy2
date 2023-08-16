@@ -8,10 +8,11 @@ using UnityEngine.UI;
 public class ScoreItem : MonoBehaviour
 {
     public TextMeshProUGUI scoreText;
-    public Toggle toggle;
+    public Button button;
+    public GameObject selected;
 
     bool isOn = false;
-    Action onChange;
+    Action onClick;
     int score = -1;
 
     public void SetScore(int score)
@@ -38,19 +39,20 @@ public class ScoreItem : MonoBehaviour
         return score;
     }
 
-    public void SetListener(Action onChange)
+    public void SetListener(Action onClick)
     {
-        this.onChange = onChange;
+        this.onClick = onClick;
     }
 
     public void SetToggleEnable(bool enable)
     {
-        toggle.interactable = enable;
+        button.interactable = enable;
     }
 
-    public void SetToggleOff()
+    public void SetToggleOn(bool isOn)
     {
-        toggle.SetIsOnWithoutNotify(false);
+        this.isOn = isOn;
+        selected.SetActive(isOn);
     }
 
     public bool IsOn()
@@ -58,9 +60,8 @@ public class ScoreItem : MonoBehaviour
         return isOn;
     }
 
-    public void OnToggle()
+    public void OnClick()
     {
-        isOn = toggle.isOn;
-        if (onChange != null) onChange();
+        if (onClick != null) onClick();
     }
 }

@@ -167,4 +167,35 @@ class PacketHandler
 
         gameRoom.Push(() => { gameRoom.WriteScore(clientSession, writeScore.jocboIndex); });
     }
+
+    public static void ToS_LockDiceHandler(PacketSession session, IPacket packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        ToS_LockDice lockDice = packet as ToS_LockDice;
+        if (clientSession.GameRoom == null) 
+            return;
+        if (lockDice == null)
+            return;
+
+        ToC_LockDice toCLockDice = new ToC_LockDice();
+        toCLockDice.diceIndex = lockDice.diceIndex;
+        toCLockDice.isLocked = lockDice.isLocked;
+
+        YatzyGameRoom gameRoom = clientSession.GameRoom;
+        gameRoom.Push(() => gameRoom.BroadCast(toCLockDice));
+    }
+
+    public static void ToS_SelectScoreHandler(PacketSession session, IPacket packet)
+    {
+        Console.WriteLine("ToS_SelectScoreHandler");
+        ClientSession clientSession = session as ClientSession;
+        ToS_SelectScore selectScore = packet as ToS_SelectScore;
+        if (clientSession.GameRoom == null)
+            return;
+        if (selectScore == null)
+            return;
+
+        YatzyGameRoom gameRoom = clientSession.GameRoom;
+        gameRoom.Push(() => gameRoom.SendSelectScore(clientSession, selectScore.jocboIndex));
+    }
 }

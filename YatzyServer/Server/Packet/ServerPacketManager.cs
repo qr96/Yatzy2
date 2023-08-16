@@ -37,6 +37,10 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.ToS_RollDice, PacketHandler.ToS_RollDiceHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_WriteScore, MakePacket<ToS_WriteScore>);
 		_handler.Add((ushort)PacketID.ToS_WriteScore, PacketHandler.ToS_WriteScoreHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_LockDice, MakePacket<ToS_LockDice>);
+		_handler.Add((ushort)PacketID.ToS_LockDice, PacketHandler.ToS_LockDiceHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_SelectScore, MakePacket<ToS_SelectScore>);
+		_handler.Add((ushort)PacketID.ToS_SelectScore, PacketHandler.ToS_SelectScoreHandler);
 
 	}
 

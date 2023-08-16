@@ -151,7 +151,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &9189983103061347548
 RectTransform:
   m_ObjectHideFlags: 0
@@ -221,7 +221,7 @@ GameObject:
   - component: {fileID: 5274088345537905292}
   - component: {fileID: 7631755185847955946}
   - component: {fileID: 7368667135662831684}
-  - component: {fileID: 4785127587305250471}
+  - component: {fileID: 6352818400478055329}
   m_Layer: 5
   m_Name: ScoreItem
   m_TagString: Untagged
@@ -301,8 +301,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreText: {fileID: 2490559634331187681}
-  toggle: {fileID: 4785127587305250471}
---- !u!114 &4785127587305250471
+  button: {fileID: 6352818400478055329}
+  selected: {fileID: 4196793812574593213}
+--- !u!114 &6352818400478055329
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -311,7 +312,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4232550361855886613}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -343,15 +344,12 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 7631755185847955946}
-  toggleTransition: 1
-  graphic: {fileID: 6821793658226008213}
-  m_Group: {fileID: 0}
-  onValueChanged:
+  m_OnClick:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7368667135662831684}
         m_TargetAssemblyTypeName: ScoreItem, Assembly-CSharp
-        m_MethodName: OnToggle
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -361,4 +359,3 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_IsOn: 0

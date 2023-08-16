@@ -110,4 +110,20 @@ class PacketHandler
         if (actionDic[(PacketID)packet.Protocol] != null)
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
+
+    public static void ToC_LockDiceHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_LockDiceHandler");
+
+        if (actionDic[(PacketID)packet.Protocol] != null)
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
+
+    public static void ToC_SelectScoreHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_SelectScoreHandler");
+
+        if (actionDic[(PacketID)packet.Protocol] != null)
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
 }

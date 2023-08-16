@@ -219,6 +219,20 @@ namespace Server
             else Push(() => ChangeTurn());
         }
 
+        public void SendSelectScore(ClientSession session, int scoreIndex)
+        {
+            PlayerGameInfo info = null;
+            _playerGameInfoDic.TryGetValue(session.SessionId, out info);
+
+            if (info == null) return;
+
+            ToC_SelectScore scoreSelect = new ToC_SelectScore();
+            scoreSelect.playerIndex = info.index;
+            scoreSelect.jocboIndex = scoreIndex;
+
+            BroadCast(scoreSelect);
+        }
+
         void StartGame()
         {
             ToC_PlayerTurn packet = new ToC_PlayerTurn();

@@ -14,9 +14,8 @@ public class YatzyGameScene : MonoBehaviour
     public GameObject playerTurn0;
     public GameObject playerTurn1;
 
-    public ToggleGroup scoreGroup;
-    public List<ScoreItem> scoreListPlayer0;
-    public List<ScoreItem> scoreListPlayer1;
+    public ScoreBoard scoreBoard0;
+    public ScoreBoard scoreBoard1;
     public TextMeshProUGUI subTotalScore0;
     public TextMeshProUGUI subTotalScore1;
     public TextMeshProUGUI totalScore0;
@@ -42,11 +41,11 @@ public class YatzyGameScene : MonoBehaviour
         PacketHandler.AddAction(PacketID.ToC_DiceResult, RecvDiceResult);
         PacketHandler.AddAction(PacketID.ToC_WriteScore, RecvWriteScore);
         PacketHandler.AddAction(PacketID.ToC_EndGame, RecvGameEnd);
+        PacketHandler.AddAction(PacketID.ToC_LockDice, RecvLockDice);
+        PacketHandler.AddAction(PacketID.ToC_SelectScore, RecvSelectScore);
 
-        foreach (var item in scoreListPlayer0)
-            item.SetListener(() => CheckAllScoreButton());
-        foreach (var item in scoreListPlayer1)
-            item.SetListener(() => CheckAllScoreButton());
+        scoreBoard0.SetListener(() => CheckAllScoreButton());
+        scoreBoard1.SetListener(() => CheckAllScoreButton());
 
         for (int i = 0; i < 5; i++)
         {
@@ -55,6 +54,11 @@ public class YatzyGameScene : MonoBehaviour
             {
                 if (diceToggleList[tmp].IsLocked()) diceViewer.LockDice(tmp);
                 else diceViewer.UnLockDice(tmp);
+
+                ToS_LockDice lockDicePacket = new ToS_LockDice();
+                lockDicePacket.diceIndex = tmp;
+                lockDicePacket.isLocked = diceToggleList[tmp].IsLocked();
+                NetworkManager.Instance.Send(lockDicePacket.Write());
             });
         }
 
@@ -189,19 +193,17 @@ public class YatzyGameScene : MonoBehaviour
                 {
                     if (diceResult.playerIndex == 0)
                     {
-                        if (scoreListPlayer0[i].GetScore() == -1)
-                            scoreListPlayer0[i].SetPrivewScore(YatzyUtil.GetScore(dices, i));
+                        scoreBoard0.SetPreviewScore(i, YatzyUtil.GetScore(dices, i));
 
-                        if (diceResult.playerIndex == myServerIndex && scoreListPlayer0[i].GetScore() < 0)
-                            scoreListPlayer0[i].SetToggleEnable(true);
+                        if (diceResult.playerIndex == myServerIndex && scoreBoard0.GetScore(i) < 0)
+                            scoreBoard0.SetEnableScore(i);
                     }
                     else if (diceResult.playerIndex == 1)
                     {
-                        if (scoreListPlayer1[i].GetScore() == -1)
-                            scoreListPlayer1[i].SetPrivewScore(YatzyUtil.GetScore(dices, i));
+                        scoreBoard1.SetPreviewScore(i, YatzyUtil.GetScore(dices, i));
 
-                        if (diceResult.playerIndex == myServerIndex && scoreListPlayer1[i].GetScore() < 0)
-                            scoreListPlayer1[i].SetToggleEnable(true);
+                        if (diceResult.playerIndex == myServerIndex && scoreBoard1.GetScore(i) < 0)
+                            scoreBoard1.SetEnableScore(i);
                     }
                 }
 
@@ -219,10 +221,12 @@ public class YatzyGameScene : MonoBehaviour
 
         if (writeScore == null) return;
 
+        AllScoreToggleOff();
+
         if (writeScore.playerIndex == 0)
-            scoreListPlayer0[writeScore.jocboIndex].SetScore(writeScore.jocboScore);
+            scoreBoard0.SetScore(writeScore.jocboIndex, writeScore.jocboScore);
         else if (writeScore.playerIndex == 1)
-            scoreListPlayer1[writeScore.jocboIndex].SetScore(writeScore.jocboScore);
+            scoreBoard1.SetScore(writeScore.jocboIndex, writeScore.jocboScore);
 
         UpdateScoreBoard(writeScore.playerIndex);
     }
@@ -240,7 +244,34 @@ public class YatzyGameScene : MonoBehaviour
             gameResult.ShowResult(false, endGame.winner == myServerIndex);
     }
 
+    void RecvLockDice(IPacket packet)
+    {
+        Debug.Log("RecvLockDice");
 
+        ToC_LockDice lockDice = packet as ToC_LockDice;
+        if (lockDice == null) return;
+
+        diceToggleList[lockDice.diceIndex].ToggleOn(lockDice.isLocked);
+
+        if (lockDice.isLocked) diceViewer.LockDice(lockDice.diceIndex);
+        else diceViewer.UnLockDice(lockDice.diceIndex);
+    }
+
+    void RecvSelectScore(IPacket packet)
+    {
+        Debug.Log("RecvSelectScore");
+
+        ToC_SelectScore toC_SelectScore = packet as ToC_SelectScore;
+        if (toC_SelectScore == null) return;
+        if (toC_SelectScore.playerIndex == myServerIndex) return;
+
+        AllScoreToggleOff();
+
+        if (toC_SelectScore.playerIndex == 0)
+            scoreBoard0.SelectScore(toC_SelectScore.jocboIndex);
+        else if (toC_SelectScore.playerIndex == 1)
+            scoreBoard1.SelectScore(toC_SelectScore.jocboIndex);
+    }
 
     // Game UI
     void EnableDiceButton(bool enable)
@@ -255,10 +286,8 @@ public class YatzyGameScene : MonoBehaviour
 
     void DisableAllScoreButton()
     {
-        foreach (var score in scoreListPlayer0)
-            score.SetToggleEnable(false);
-        foreach (var score in scoreListPlayer1)
-            score.SetToggleEnable(false);
+        scoreBoard0.DisableAll();
+        scoreBoard1.DisableAll();
     }
 
     public void UpdateScoreBoard(int player)
@@ -268,34 +297,17 @@ public class YatzyGameScene : MonoBehaviour
 
         if (player == 0)
         {
-            for (int i = 0; i < 6; i++)
-            {
-                if (scoreListPlayer0[i].GetScore() > 0) 
-                    subTotal += scoreListPlayer0[i].GetScore();
-            }
-                
-            for (int i = 0; i < 12; i++)
-            {
-                if (scoreListPlayer0[i].GetScore() > 0)
-                    total += scoreListPlayer0[i].GetScore();
-            }
-                
+            subTotal = scoreBoard0.GetSubTotalScore();
+            total = scoreBoard0.GetTotalScore();
+
             subTotalScore0.text = $"{subTotal} / 63";
             totalScore0.text = total.ToString();
         }
         else if (player == 1)
         {
-            for (int i = 0; i < 6; i++)
-            {
-                if (scoreListPlayer1[i].GetScore() > 0)
-                    subTotal += scoreListPlayer1[i].GetScore();
-            }
-            for (int i = 0; i < 12; i++)
-            {
-                if (scoreListPlayer1[i].GetScore() > 0)
-                    total += scoreListPlayer1[i].GetScore();
-            }
-                
+            subTotal = scoreBoard1.GetSubTotalScore();
+            total = scoreBoard1.GetTotalScore();
+
             subTotalScore1.text = $"{subTotal} / 63";
             totalScore1.text = total.ToString();
         }
@@ -304,7 +316,7 @@ public class YatzyGameScene : MonoBehaviour
     void UnlockAllDiceLocks()
     {
         foreach (var diceLock in diceToggleList)
-            diceLock.UnSelectToggle();
+            diceLock.ToggleOn(false);
 
         diceViewer.UnLockAllDice();
     }
@@ -319,10 +331,8 @@ public class YatzyGameScene : MonoBehaviour
 
     void InitAllPreviewScores()
     {
-        foreach (var score in scoreListPlayer0)
-            if (score.GetScore() < 0) score.InitScore();
-        foreach (var score in scoreListPlayer1)
-            if (score.GetScore() < 0) score.InitScore();
+        scoreBoard0.InitAllPreviewScore();
+        scoreBoard1.InitAllPreviewScore();
     }
 
     void EnableAllUnlockDices(bool enable)
@@ -342,13 +352,23 @@ public class YatzyGameScene : MonoBehaviour
 
     void CheckAllScoreButton()
     {
-        bool hasOn = false;
-        foreach (var item in scoreListPlayer0)
-            if (item.IsOn()) hasOn = true;
-        foreach (var item in scoreListPlayer1)
-            if (item.IsOn()) hasOn = true;
+        int selected = -1;
 
-        EnableRecordScoreButton(hasOn);
+        if (myServerIndex == 0) selected = scoreBoard0.SelectedIndex();
+        else if (myServerIndex == 1) selected = scoreBoard1.SelectedIndex();
+
+        EnableRecordScoreButton(selected >= 0);
+        if (selected == -1) return;
+
+        ToS_SelectScore toS_SelectScore = new ToS_SelectScore();
+        toS_SelectScore.jocboIndex = selected;
+        NetworkManager.Instance.Send(toS_SelectScore.Write());
+    }
+
+    void AllScoreToggleOff()
+    {
+        scoreBoard0.UnSelectAll();
+        scoreBoard1.UnSelectAll();
     }
 
     // Events
@@ -383,21 +403,13 @@ public class YatzyGameScene : MonoBehaviour
         int selected = -1;
 
         if (myServerIndex == 0)
-        {
-            for (int i = 0; i < scoreListPlayer0.Count; i++)
-            {
-                if (scoreListPlayer0[i].IsOn()) selected = i;
-            }
-        }
-        else if(myServerIndex == 1)
-        {
-            for (int i = 0; i < scoreListPlayer1.Count; i++)
-            {
-                if (scoreListPlayer1[i].IsOn()) selected = i;
-            }
-        }
+            selected = scoreBoard0.SelectedIndex();
+        else if (myServerIndex == 1)
+            selected = scoreBoard1.SelectedIndex();
 
-        scoreGroup.SetAllTogglesOff();
+        if (selected < 0) return;
+
+        AllScoreToggleOff();
         EnableDiceButton(false);
         EnableRecordScoreButton(false);
         DisableAllScoreButton();

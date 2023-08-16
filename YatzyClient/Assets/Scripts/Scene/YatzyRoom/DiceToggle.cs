@@ -25,10 +25,10 @@ public class DiceToggle : MonoBehaviour
         this.diceNum.text = diceNum.ToString();
     }
 
-    public void UnSelectToggle()
+    public void ToggleOn(bool isOn)
     {
-        isOn = false;
-        selected.SetActive(false);
+        this.isOn = isOn;
+        selected.SetActive(isOn);
     }
 
     public void EnableToggle(bool enable)
