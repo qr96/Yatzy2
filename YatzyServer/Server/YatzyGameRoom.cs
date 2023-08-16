@@ -39,6 +39,20 @@ namespace Server
             for (int i = 0; i < scoreBoard.Count; i++)
                 scoreBoard[i] = 0;
         }
+
+        public int GetScoreSum()
+        {
+            int sum = 0;
+            for (int i = 0; i < 6; i++) 
+                sum += scoreBoard[i];
+
+            if (sum >= 63) sum += 35;
+
+            for (int i = 6; i < 12; i++)
+                sum += scoreBoard[i];
+
+            return sum;
+        }
     }
 
     public class YatzyGameRoom
@@ -159,7 +173,7 @@ namespace Server
             PlayerGameInfo info = null;
             _playerGameInfoDic.TryGetValue(session.SessionId, out info);
 
-            if (isPlayerTurn(info.index) == false)
+            if (IsPlayerTurn(info.index) == false)
                 return;
 
             if (_diceCount <= 0 || fixDices.Count >= 5)
@@ -184,7 +198,7 @@ namespace Server
             PlayerGameInfo info = null;
             _playerGameInfoDic.TryGetValue(session.SessionId, out info);
 
-            if (isPlayerTurn(info.index) == false)
+            if (IsPlayerTurn(info.index) == false)
                 return;
 
             if (_diceCount > 2)
@@ -201,7 +215,8 @@ namespace Server
             writeScore.jocboScore = info.scoreBoard[jocbo];
 
             BroadCast(writeScore);
-            Push(() => ChangeTurn());
+            if (gameTurn >= 12 * 2 - 1) Push(() => EndGame());
+            else Push(() => ChangeTurn());
         }
 
         void StartGame()
@@ -217,12 +232,14 @@ namespace Server
         void RestartGame()
         {
             foreach (var session in _sessions)
-            {
                 _playerGameInfoDic[session.SessionId].RestartGame();
-            }
+            gameTurn = 0;
+            _diceCount = 0;
+
+            Push(() => StartGame());
         }
 
-        bool isPlayerTurn(int index)
+        bool IsPlayerTurn(int index)
         {
             return index == gameTurn % _sessions.Count;
         }
@@ -236,6 +253,36 @@ namespace Server
             playerTurn.playerTurn = gameTurn % _sessions.Count;
 
             Push(() => BroadCast(playerTurn));
+        }
+
+        void EndGame()
+        {
+            int max = 0;
+            int winner = -1;
+            bool drawGame = false;
+
+            foreach (var info in _playerGameInfoDic)
+            {
+                var score = info.Value.GetScoreSum();
+                if (score > max)
+                {
+                    max = score;
+                    winner = info.Value.index;
+                }
+                else if (score == max)
+                {
+                    drawGame = true;
+                    winner = -1;
+                    break;
+                }
+            }
+            
+            ToC_EndGame endGame = new ToC_EndGame();
+            endGame.winner = winner;
+            endGame.drawGame = drawGame;
+
+            BroadCast(endGame);
+            Push(() => RestartGame());
         }
     }
 }

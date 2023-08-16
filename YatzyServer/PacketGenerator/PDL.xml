@@ -72,4 +72,8 @@
     <int name="jocboIndex"/>
     <int name="jocboScore"/>
   </packet>
+  <packet name="ToC_EndGame">
+    <int name="winner"/>
+    <bool name="drawGame"/>
+  </packet>
 </PDL>

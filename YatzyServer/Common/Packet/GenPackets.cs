@@ -25,6 +25,7 @@ public enum PacketID
 	ToC_DiceResult = 17,
 	ToS_WriteScore = 18,
 	ToC_WriteScore = 19,
+	ToC_EndGame = 20,
 	
 }
 
@@ -930,6 +931,49 @@ class ToC_WriteScore : IPacket
 		count += sizeof(int);
 		Array.Copy(BitConverter.GetBytes(this.jocboScore), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToC_EndGame : IPacket
+{
+    public int winner;
+	public bool drawGame;
+
+    public ushort Protocol { get { return (ushort)PacketID.ToC_EndGame; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        this.winner = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+		this.drawGame = BitConverter.ToBoolean(segment.Array, segment.Offset + count);
+		count += sizeof(bool);
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_EndGame);
+        count += sizeof(ushort);
+        Array.Copy(BitConverter.GetBytes(this.winner), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+		Array.Copy(BitConverter.GetBytes(this.drawGame), 0, segment.Array, segment.Offset + count, sizeof(bool));
+		count += sizeof(bool);
         success &= BitConverter.TryWriteBytes(s, count);
         if (success == false) 
             return null;

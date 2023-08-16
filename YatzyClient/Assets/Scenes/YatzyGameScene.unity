@@ -7676,6 +7676,7 @@ MonoBehaviour:
   recordScore: {fileID: 857265272}
   leftDiceCount: {fileID: 1242886858}
   diceViewer: {fileID: 1257687408}
+  gameResult: {fileID: 2072323538}
 --- !u!1 &1428192467
 GameObject:
   m_ObjectHideFlags: 0

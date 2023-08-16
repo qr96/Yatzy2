@@ -102,4 +102,12 @@ class PacketHandler
         if (actionDic[(PacketID)packet.Protocol] != null)
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
+
+    public static void ToC_EndGameHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_EndGameHandler");
+
+        if (actionDic[(PacketID)packet.Protocol] != null)
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
 }

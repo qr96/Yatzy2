@@ -5,7 +5,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static ToC_DiceResult;
 
 public class YatzyGameScene : MonoBehaviour
 {
@@ -30,6 +29,8 @@ public class YatzyGameScene : MonoBehaviour
 
     public DiceViewer diceViewer;
 
+    public GameResultPopup gameResult;
+
     int myServerIndex = -1;
 
     void Start()
@@ -40,6 +41,7 @@ public class YatzyGameScene : MonoBehaviour
         PacketHandler.AddAction(PacketID.ToC_PlayerTurn, RecvPlayerTurn);
         PacketHandler.AddAction(PacketID.ToC_DiceResult, RecvDiceResult);
         PacketHandler.AddAction(PacketID.ToC_WriteScore, RecvWriteScore);
+        PacketHandler.AddAction(PacketID.ToC_EndGame, RecvGameEnd);
 
         foreach (var item in scoreListPlayer0)
             item.SetListener(() => CheckAllScoreButton());
@@ -225,6 +227,20 @@ public class YatzyGameScene : MonoBehaviour
         UpdateScoreBoard(writeScore.playerIndex);
     }
 
+    void RecvGameEnd(IPacket packet)
+    {
+        Debug.Log("RecvGameEnd");
+
+        ToC_EndGame endGame = packet as ToC_EndGame;
+        if (endGame == null) return;
+
+        if (endGame.drawGame)
+            gameResult.ShowResult(true, false);
+        else
+            gameResult.ShowResult(false, endGame.winner == myServerIndex);
+    }
+
+
 
     // Game UI
     void EnableDiceButton(bool enable)
@@ -339,8 +355,9 @@ public class YatzyGameScene : MonoBehaviour
 
     public void OnClickLeaveRoom()
     {
-        ToS_ReqLeaveRoom packet = new ToS_ReqLeaveRoom();
+        ErrorManager.Instance.ShowLoadingIndicator();
 
+        ToS_ReqLeaveRoom packet = new ToS_ReqLeaveRoom();
         NetworkManager.Instance.Send(packet.Write());
     }
 
@@ -355,8 +372,9 @@ public class YatzyGameScene : MonoBehaviour
             else unlockedCount++;
         }
 
-        if (unlockedCount == 0) return;
+        if (unlockedCount <= 0) return;
 
+        EnableDiceButton(false);
         NetworkManager.Instance.Send(packet.Write());
     }
 

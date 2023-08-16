@@ -7,19 +7,28 @@ public class GameResultPopup : MonoBehaviour
 {
     public TextMeshProUGUI resultText;
 
-    public void ShowResult(bool win)
+    public void ShowResult(bool draw, bool win)
     {
-        if (win) resultText.text = "铰府";
+        if (draw) resultText.text = "公铰何";
+        else if (win) resultText.text = "铰府";
         else resultText.text = "菩硅";
+
+        gameObject.SetActive(true);
     }
 
     public void OnClickRestart()
     {
+        ToS_ReadyToStart req = new ToS_ReadyToStart();
+        NetworkManager.Instance.Send(req.Write());
 
+        gameObject.SetActive(false);
     }
 
     public void OnClickLeave()
     {
+        ErrorManager.Instance.ShowLoadingIndicator();
 
+        ToS_ReqLeaveRoom packet = new ToS_ReqLeaveRoom();
+        NetworkManager.Instance.Send(packet.Write());
     }
 }
