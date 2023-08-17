@@ -27,9 +27,6 @@ public class LoginScene : MonoBehaviour
             return;
         }
 
-        NetworkManager.Instance.ConnectToServer();
-        ErrorManager.Instance.ShowLoadingIndicator();
-
         StartCoroutine(WaitForConnect());
     }
 
@@ -52,6 +49,10 @@ public class LoginScene : MonoBehaviour
     IEnumerator WaitForConnect()
     {
         float waitTime = 0f;
+
+        NetworkManager.Instance.ConnectToServer();
+        ErrorManager.Instance.ShowLoadingIndicator();
+
         while (NetworkManager.Instance._connected == false)
         {
             yield return new WaitForSeconds(0.5f);

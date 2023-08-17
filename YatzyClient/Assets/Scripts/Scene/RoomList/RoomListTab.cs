@@ -10,6 +10,8 @@ public class RoomListTab : MonoBehaviour
     public MakeRoomPopup makeRoomPopup;
     public GameObject noRoomNoti;
 
+    List<RoomItem> roomItemPool = new List<RoomItem>();
+
     private void Start()
     {
         ErrorManager.Instance.HideLoadingIndicator();
@@ -44,18 +46,36 @@ public class RoomListTab : MonoBehaviour
         if (roomList.roomInfos.Count > 0) noRoomNoti.SetActive(false);
         else noRoomNoti.SetActive(true);
 
-        foreach (var info in roomList.roomInfos)
+        for (int i = 0; i < roomList.roomInfos.Count; i++)
         {
-            RoomItem prefab = Instantiate(roomItemPrefab, content.transform);
-            int roomId = info.roomId;
-            prefab.SetInfo(info.roomName);
-            prefab.SetClickEvent(() =>
+            RoomItem roomItemTmp;
+
+            if (i < roomItemPool.Count)
+            {
+                roomItemTmp = roomItemPool[i];
+            }
+            else
+            {
+                roomItemTmp = Instantiate(roomItemPrefab, content.transform);
+                roomItemPool.Add(roomItemTmp);
+            }
+                
+
+            int roomId = roomList.roomInfos[i].roomId;
+            roomItemTmp.SetInfo(roomList.roomInfos[i].roomName);
+            roomItemTmp.SetClickEvent(() =>
             {
                 ToS_ReqEnterRoom req = new ToS_ReqEnterRoom();
                 req.roomId = roomId;
                 NetworkManager.Instance.Send(req.Write());
+                ErrorManager.Instance.ShowLoadingIndicator();
             });
-            prefab.gameObject.SetActive(true);
+            roomItemTmp.gameObject.SetActive(true);
+        }
+
+        for (int i = roomList.roomInfos.Count; i < roomItemPool.Count; i++)
+        {
+            roomItemPool[i].gameObject.SetActive(false);
         }
     }
 
@@ -63,8 +83,16 @@ public class RoomListTab : MonoBehaviour
     {
         Debug.Log("OnRecvEnterRoom() ");
         ToC_ResEnterRoom req = packet as ToC_ResEnterRoom;
+        if (req == null) return;
 
-        SceneManager.LoadScene(2);
+        if (req.success)
+            SceneManager.LoadScene(2);
+        else
+        {
+            ErrorManager.Instance.HideLoadingIndicator();
+            ErrorManager.Instance.ShowPopup("안내", "방입장에 실패했습니다");
+        }
+            
     }
 
     public void OnClickMakeRoom()

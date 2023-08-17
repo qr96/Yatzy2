@@ -18,6 +18,8 @@ public class YatzyGameScene : MonoBehaviour
     public ScoreBoard scoreBoard1;
     public TextMeshProUGUI subTotalScore0;
     public TextMeshProUGUI subTotalScore1;
+    public TextMeshProUGUI bonusScore0;
+    public TextMeshProUGUI bonusScore1;
     public TextMeshProUGUI totalScore0;
     public TextMeshProUGUI totalScore1;
 
@@ -62,6 +64,8 @@ public class YatzyGameScene : MonoBehaviour
             });
         }
 
+        gameResult.SetRestartBtnListener(() => InitGame());
+
         EnableDiceButton(false);
         EnableRecordScoreButton(false);
         DisableAllScoreButton();
@@ -77,6 +81,9 @@ public class YatzyGameScene : MonoBehaviour
         PacketHandler.RemoveAction(PacketID.ToC_PlayerTurn);
         PacketHandler.RemoveAction(PacketID.ToC_DiceResult);
         PacketHandler.RemoveAction(PacketID.ToC_WriteScore);
+        PacketHandler.RemoveAction(PacketID.ToC_EndGame);
+        PacketHandler.RemoveAction(PacketID.ToC_LockDice);
+        PacketHandler.RemoveAction(PacketID.ToC_SelectScore);
     }
 
     // Packets
@@ -127,7 +134,8 @@ public class YatzyGameScene : MonoBehaviour
             }
             else
             {
-
+                if (leaveRoom.leavePlayerIndex == 0) playerNickName0.text = "-";
+                else if (leaveRoom.leavePlayerIndex == 1) playerNickName1.text = "-";
             }
         }
     }
@@ -274,6 +282,23 @@ public class YatzyGameScene : MonoBehaviour
     }
 
     // Game UI
+    void InitGame()
+    {
+        subTotalScore0.text = "0 / 63";
+        subTotalScore1.text = "0 / 63";
+        totalScore0.text = "0";
+        totalScore1.text = "0";
+        scoreBoard0.InitScoreBoard();
+        scoreBoard1.InitScoreBoard();
+        DisableAllScoreButton();
+        UnlockAllDiceLocks();
+        InitAllDiceNumbers();
+        EnableDiceButton(false);
+        EnableRecordScoreButton(false);
+        playerTurn0.SetActive(false);
+        playerTurn1.SetActive(false);
+    }
+
     void EnableDiceButton(bool enable)
     {
         rollDice.interactable = enable;
@@ -301,6 +326,11 @@ public class YatzyGameScene : MonoBehaviour
             total = scoreBoard0.GetTotalScore();
 
             subTotalScore0.text = $"{subTotal} / 63";
+            if (subTotal >= 63)
+            {
+                total += 35;
+                bonusScore0.text = "35";
+            }
             totalScore0.text = total.ToString();
         }
         else if (player == 1)
@@ -309,6 +339,11 @@ public class YatzyGameScene : MonoBehaviour
             total = scoreBoard1.GetTotalScore();
 
             subTotalScore1.text = $"{subTotal} / 63";
+            if (subTotal >= 63)
+            {
+                total += 35;
+                bonusScore1.text = "35";
+            }
             totalScore1.text = total.ToString();
         }
     }

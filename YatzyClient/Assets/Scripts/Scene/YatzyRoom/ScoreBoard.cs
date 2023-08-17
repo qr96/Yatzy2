@@ -9,6 +9,14 @@ public class ScoreBoard : MonoBehaviour
 
     int selectedIndex = -1;
 
+    public void InitScoreBoard()
+    {
+        selectedIndex = -1;
+        foreach (var scoreItem in scoreList)
+            scoreItem.InitScore();
+        UnSelectAll();
+    }
+
     public int SelectedIndex()
     {
         return selectedIndex;

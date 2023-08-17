@@ -26,6 +26,7 @@ public class ErrorManager : MonoBehaviour
 
     IEnumerator LoadingIndicatorCo()
     {
+        float waitTime = 0f;
         int i = 3;
         while(true)
         {
@@ -35,6 +36,10 @@ public class ErrorManager : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
             i--;
             if (i <= 0) i = 3;
+
+            waitTime += 0.1f;
+            if (waitTime >= 10f)
+                ShowPopup("안내", "에러가 발생했습니다.\n다시 시도해주세요");
         }
     }
 

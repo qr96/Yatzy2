@@ -68,8 +68,11 @@ class PacketHandler
         if (clientSession.Lobby == null)
             return;
 
-        YatzyGameRoom room = GameRoomManager.Instance.EnterRoom(clientSession, packet.roomId);
+        GameRoomManager.Instance.EnterRoom(clientSession, packet.roomId);
         GameRoom lobby = clientSession.Lobby;
+        YatzyGameRoom room = clientSession.GameRoom;
+
+        if (lobby == null) return;
 
         if (room != null)
             lobby.Push(() => clientSession.Lobby.UniCast(clientSession, new ToC_ResEnterRoom() { success = true }));

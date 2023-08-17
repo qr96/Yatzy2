@@ -66,7 +66,7 @@ namespace Server
             }
         }
 
-        public YatzyGameRoom EnterRoom(ClientSession session, int roomId)
+        public void EnterRoom(ClientSession session, int roomId)
         {
             lock(_lock)
             {
@@ -75,9 +75,7 @@ namespace Server
                 if (room != null)
                 {
                     room.Enter(session);
-                    return room;
                 }
-                return null;
             }
         }
 

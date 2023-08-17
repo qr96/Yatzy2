@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
 
 // ToS readyGame
 
@@ -70,6 +72,9 @@ namespace Server
         int gameTurn;
         int _diceCount;
         int[] _dices = new int[5];
+        bool _gameStarted = false;
+
+        static int MAX_PLAYER = 2;
 
         public YatzyGameRoom(int roomID, string name)
         {
@@ -109,6 +114,7 @@ namespace Server
 
         public void Enter(ClientSession session)
         {
+            if (_sessions.Count >= MAX_PLAYER) return;
             _sessions.Add(session);
             _playerGameInfoDic.Add(session.SessionId, new PlayerGameInfo() { index = _sessions.Count - 1 });
             session.GameRoom = this;
@@ -129,9 +135,13 @@ namespace Server
 
             session.GameRoom = null;
             session.Send(leaveRoom.Write());
-            BroadCast(leaveRoom);
 
             if (_sessions.Count == 0) GameRoomManager.Instance.RemoveRoom(this.roomID);
+            else
+            {
+                BroadCast(leaveRoom);
+                if (_gameStarted) Push(() => RetireWinEnd());
+            }
         }
 
         public List<string> GetUserInfos()
@@ -239,18 +249,18 @@ namespace Server
             packet.playerTurn = gameTurn % _sessions.Count;
 
             _diceCount = 3;
+            _gameStarted = true;
 
             BroadCast(packet);
         }
 
-        void RestartGame()
+        void InitGame()
         {
             foreach (var session in _sessions)
                 _playerGameInfoDic[session.SessionId].RestartGame();
             gameTurn = 0;
             _diceCount = 0;
-
-            Push(() => StartGame());
+            _gameStarted = false;
         }
 
         bool IsPlayerTurn(int index)
@@ -295,8 +305,26 @@ namespace Server
             endGame.winner = winner;
             endGame.drawGame = drawGame;
 
+            _gameStarted = false;
+
             BroadCast(endGame);
-            Push(() => RestartGame());
+            Push(() => InitGame());
+        }
+
+        void RetireWinEnd()
+        {
+            PlayerGameInfo info = null;
+            _playerGameInfoDic.TryGetValue(_sessions[0].SessionId, out info);
+            if (info == null) return;
+
+            ToC_EndGame endGame = new ToC_EndGame();
+            endGame.winner = info.index;
+            endGame.drawGame = false;
+
+            _gameStarted = false;
+
+            BroadCast(endGame);
+            Push(() => InitGame());
         }
     }
 }

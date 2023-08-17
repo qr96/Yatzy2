@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,6 +7,12 @@ using UnityEngine;
 public class GameResultPopup : MonoBehaviour
 {
     public TextMeshProUGUI resultText;
+    Action onClickRestart;
+
+    public void SetRestartBtnListener(Action onClick)
+    {
+        onClickRestart = onClick;
+    }
 
     public void ShowResult(bool draw, bool win)
     {
@@ -20,6 +27,8 @@ public class GameResultPopup : MonoBehaviour
     {
         ToS_ReadyToStart req = new ToS_ReadyToStart();
         NetworkManager.Instance.Send(req.Write());
+
+        if (onClickRestart != null) onClickRestart();
 
         gameObject.SetActive(false);
     }
