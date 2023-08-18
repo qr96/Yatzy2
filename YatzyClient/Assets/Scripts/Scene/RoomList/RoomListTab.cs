@@ -62,7 +62,7 @@ public class RoomListTab : MonoBehaviour
                 
 
             int roomId = roomList.roomInfos[i].roomId;
-            roomItemTmp.SetInfo(roomList.roomInfos[i].roomName);
+            roomItemTmp.SetInfo(roomList.roomInfos[i].roomName, roomList.roomInfos[i].playerCount);
             roomItemTmp.SetClickEvent(() =>
             {
                 ToS_ReqEnterRoom req = new ToS_ReqEnterRoom();

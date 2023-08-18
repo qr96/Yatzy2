@@ -1,0 +1,1 @@
+dotnet publish C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server -r linux-x64

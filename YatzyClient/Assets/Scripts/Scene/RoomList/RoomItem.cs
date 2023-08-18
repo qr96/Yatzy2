@@ -7,12 +7,14 @@ using UnityEngine;
 public class RoomItem : MonoBehaviour
 {
     public TextMeshProUGUI roomName;
+    public TextMeshProUGUI userCount;
 
     Action onClick;
 
-    public void SetInfo(string name)
+    public void SetInfo(string name, int userCount)
     {
-        this.roomName.text = name;
+        roomName.text = name;
+        this.userCount.text = $"{userCount}/2";
     }
 
     public void SetClickEvent(Action onClick)

@@ -169,6 +169,7 @@ class ToC_ResRoomList : IPacket
 	{
 		public int roomId;
 		public string roomName;
+		public int playerCount;
 		public bool privateRoom;
 	
 		public void Read(ArraySegment<byte> segment, ref ushort count)
@@ -179,6 +180,8 @@ class ToC_ResRoomList : IPacket
 			count += sizeof(ushort);
 			this.roomName = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, roomNameLen);
 			count += roomNameLen;
+			this.playerCount = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+			count += sizeof(int);
 			this.privateRoom = BitConverter.ToBoolean(segment.Array, segment.Offset + count);
 			count += sizeof(bool);
 		}
@@ -192,6 +195,8 @@ class ToC_ResRoomList : IPacket
 			Array.Copy(BitConverter.GetBytes(roomNameLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 			count += sizeof(ushort);
 			count += roomNameLen;
+			Array.Copy(BitConverter.GetBytes(this.playerCount), 0, segment.Array, segment.Offset + count, sizeof(int));
+			count += sizeof(int);
 			Array.Copy(BitConverter.GetBytes(this.privateRoom), 0, segment.Array, segment.Offset + count, sizeof(bool));
 			count += sizeof(bool);
 			return success;

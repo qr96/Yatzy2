@@ -1,3 +1,1 @@
-
-ECHO ../../Server dotnet publish -r linux-x64
-rem ECHO scp -i "C:\Users\Lee\Desktop\Keys\Yatzy\NHN Cloud Key/yatzyKey.pem" -r publish centos@180.210.82.243:~/test
+scp -i "C:\Users\Lee\Desktop\Keys\Yatzy\NHN Cloud Key/yatzyKey.pem" -r "C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\publish" centos@180.210.82.243:~/test

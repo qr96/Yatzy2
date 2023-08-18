@@ -13,6 +13,7 @@
     <list name="roomInfo">
       <int name="roomId"/>
       <string name="roomName"/>
+      <int name="playerCount"/>
       <bool name="privateRoom"/>
     </list>
   </packet>

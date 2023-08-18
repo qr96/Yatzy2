@@ -36,7 +36,9 @@ class PacketHandler
         List<YatzyGameRoom> roomList = GameRoomManager.Instance.GetRoomList();
 
         foreach (var roomInfo in roomList)
-            roomListPacket.roomInfos.Add(new ToC_ResRoomList.RoomInfo() { roomId = roomInfo.roomID, roomName = roomInfo.roomName });
+            roomListPacket.roomInfos.Add(new ToC_ResRoomList.RoomInfo() { 
+                roomId = roomInfo.roomID, roomName = roomInfo.roomName, playerCount = roomInfo.GetUserCount() 
+            });
 
         GameRoom gameRoom = clientSession.Lobby;
         gameRoom.Push(() => gameRoom.UniCast(clientSession, roomListPacket));

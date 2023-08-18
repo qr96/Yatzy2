@@ -82,6 +82,11 @@ namespace Server
             this.roomName = name;
         }
 
+        public int GetUserCount()
+        {
+            return _sessions.Count;
+        }
+
         public void Push(Action job)
         {
             _jobQueue.Push(job);
