@@ -24,6 +24,15 @@ public class ErrorManager : MonoBehaviour
         Instance = this;
     }
 
+    private void Start()
+    {
+#if UNITY_IOS || UNITY_ANDROID
+        Application.targetFrameRate = 60;
+#else
+        Application.targetFrameRate = 120;
+#endif
+    }
+
     IEnumerator LoadingIndicatorCo()
     {
         float waitTime = 0f;
@@ -39,7 +48,11 @@ public class ErrorManager : MonoBehaviour
 
             waitTime += 0.1f;
             if (waitTime >= 10f)
-                ShowPopup("안내", "에러가 발생했습니다.\n다시 시도해주세요");
+                ShowPopup("안내", "에러가 발생했습니다.\n다시 시도해주세요", ()=>
+                {
+                    waitTime = 0f;
+                    HidePopup();
+                });
         }
     }
 

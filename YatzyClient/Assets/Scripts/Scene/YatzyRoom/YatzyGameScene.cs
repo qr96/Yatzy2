@@ -11,9 +11,6 @@ public class YatzyGameScene : MonoBehaviour
     public TextMeshProUGUI playerNickName0;
     public TextMeshProUGUI playerNickName1;
 
-    public GameObject playerTurn0;
-    public GameObject playerTurn1;
-
     public ScoreBoard scoreBoard0;
     public ScoreBoard scoreBoard1;
     public TextMeshProUGUI subTotalScore0;
@@ -69,7 +66,7 @@ public class YatzyGameScene : MonoBehaviour
         EnableDiceButton(false);
         EnableRecordScoreButton(false);
         DisableAllScoreButton();
-
+        
         ReqRoomInfo();
     }
 
@@ -160,14 +157,14 @@ public class YatzyGameScene : MonoBehaviour
 
         if (p != null)
         {
-            ShowPlayerTurn(p.playerTurn);
+            ShowPlayerTurnLight(p.playerTurn);
             DisableAllScoreButton();
             UnlockAllDiceLocks();
             InitAllDiceNumbers();
             InitAllPreviewScores();
             EnableAllUnlockDices(false);
             EnableDiceButton(myServerIndex == p.playerTurn);
-            leftDiceCount.text = "남은 횟수 : 3";
+            leftDiceCount.text = "Roll(3)";
         }
     }
 
@@ -184,7 +181,7 @@ public class YatzyGameScene : MonoBehaviour
                 dices.Add(diceResult.diceResults[i].dice);
 
             // 다이스 버튼 설정
-            leftDiceCount.text = $"남은 횟수 : {diceResult.leftDice}";
+            leftDiceCount.text = $"Roll({diceResult.leftDice})";
             for (int i = 0; i < diceResult.diceResults.Count; i++)
                 diceViewer.SetDice(i, diceResult.diceResults[i].dice);
             diceViewer.PlayRollDice(()=>
@@ -284,8 +281,8 @@ public class YatzyGameScene : MonoBehaviour
     // Game UI
     void InitGame()
     {
-        subTotalScore0.text = "0 / 63";
-        subTotalScore1.text = "0 / 63";
+        subTotalScore0.text = "0/63";
+        subTotalScore1.text = "0/63";
         totalScore0.text = "0";
         totalScore1.text = "0";
         scoreBoard0.InitScoreBoard();
@@ -295,8 +292,7 @@ public class YatzyGameScene : MonoBehaviour
         InitAllDiceNumbers();
         EnableDiceButton(false);
         EnableRecordScoreButton(false);
-        playerTurn0.SetActive(false);
-        playerTurn1.SetActive(false);
+        InitPlayerTurnLight();
     }
 
     void EnableDiceButton(bool enable)
@@ -325,11 +321,11 @@ public class YatzyGameScene : MonoBehaviour
             subTotal = scoreBoard0.GetSubTotalScore();
             total = scoreBoard0.GetTotalScore();
 
-            subTotalScore0.text = $"{subTotal} / 63";
+            subTotalScore0.text = $"{subTotal}/63";
             if (subTotal >= 63)
             {
                 total += 35;
-                bonusScore0.text = "35";
+                bonusScore0.text = "+35";
             }
             totalScore0.text = total.ToString();
         }
@@ -338,11 +334,11 @@ public class YatzyGameScene : MonoBehaviour
             subTotal = scoreBoard1.GetSubTotalScore();
             total = scoreBoard1.GetTotalScore();
 
-            subTotalScore1.text = $"{subTotal} / 63";
+            subTotalScore1.text = $"{subTotal}/63";
             if (subTotal >= 63)
             {
                 total += 35;
-                bonusScore1.text = "35";
+                bonusScore1.text = "+35";
             }
             totalScore1.text = total.ToString();
         }
@@ -360,7 +356,7 @@ public class YatzyGameScene : MonoBehaviour
     {
         foreach (var dice in diceToggleList)
         {
-            dice.SetDice(6);
+            dice.SetDice(1);
         }
     }
 
@@ -376,13 +372,16 @@ public class YatzyGameScene : MonoBehaviour
             diceLock.EnableToggle(enable);
     }
 
-    void ShowPlayerTurn(int index)
+    void ShowPlayerTurnLight(int index)
     {
-        playerTurn0.SetActive(false);
-        playerTurn1.SetActive(false);
+        scoreBoard0.SetTurnLight(index == 0);
+        scoreBoard1.SetTurnLight(index == 1);
+    }
 
-        if (index == 0) playerTurn0.SetActive(true);
-        else if (index == 1) playerTurn1.SetActive(true);
+    void InitPlayerTurnLight()
+    {
+        scoreBoard0.SetTurnLight(false);
+        scoreBoard1.SetTurnLight(false);
     }
 
     void CheckAllScoreButton()

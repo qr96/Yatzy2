@@ -8,9 +8,9 @@ using UnityEngine.UI;
 public class DiceToggle : MonoBehaviour
 {
     public Button toggle;
-    public TextMeshProUGUI diceNum;
+    public Image diceNumImg;
     public GameObject selected;
-    public DiceViewer diceViewer;
+    public List<Sprite> diceNumbers;
 
     Action onClick;
     bool isOn;
@@ -22,7 +22,7 @@ public class DiceToggle : MonoBehaviour
 
     public void SetDice(int diceNum)
     {
-        this.diceNum.text = diceNum.ToString();
+        diceNumImg.sprite = diceNumbers[diceNum - 1];
     }
 
     public void ToggleOn(bool isOn)

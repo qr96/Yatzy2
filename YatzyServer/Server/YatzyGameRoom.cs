@@ -120,6 +120,7 @@ namespace Server
         public void Enter(ClientSession session)
         {
             if (_sessions.Count >= MAX_PLAYER) return;
+            if (_sessions.Contains(session) || _playerGameInfoDic.ContainsKey(session.SessionId)) return;
             _sessions.Add(session);
             _playerGameInfoDic.Add(session.SessionId, new PlayerGameInfo() { index = _sessions.Count - 1 });
             session.GameRoom = this;

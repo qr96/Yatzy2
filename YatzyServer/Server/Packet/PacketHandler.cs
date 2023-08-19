@@ -76,7 +76,7 @@ class PacketHandler
 
         if (lobby == null) return;
 
-        if (room != null)
+        if (room != null && room.GetUserCount() > 0)
             lobby.Push(() => clientSession.Lobby.UniCast(clientSession, new ToC_ResEnterRoom() { success = true }));
         else
             lobby.Push(() => clientSession.Lobby.UniCast(clientSession, new ToC_ResEnterRoom() { success = false }));

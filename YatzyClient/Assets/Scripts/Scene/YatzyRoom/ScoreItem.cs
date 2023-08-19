@@ -10,6 +10,7 @@ public class ScoreItem : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public Button button;
     public GameObject selected;
+    public GameObject turn;
 
     bool isOn = false;
     Action onClick;
@@ -53,6 +54,11 @@ public class ScoreItem : MonoBehaviour
     {
         this.isOn = isOn;
         selected.SetActive(isOn);
+    }
+
+    public void SetTurnLight(bool isActive)
+    {
+        turn.SetActive(isActive);
     }
 
     public bool IsOn()

@@ -40,6 +40,12 @@ public class ScoreBoard : MonoBehaviour
         scoreList[scoreIndex].SetScore(score);
     }
 
+    public void SetTurnLight(bool isTurn)
+    {
+        foreach (var scoreItem in scoreList)
+            scoreItem.SetTurnLight(isTurn);
+    }
+
     public void SelectScore(int scoreIndex)
     {
         selectedIndex = scoreIndex;
