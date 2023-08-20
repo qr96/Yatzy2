@@ -1,4 +1,5 @@
 using Server;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,6 +11,8 @@ public class YatzyGameScene : MonoBehaviour
 {
     public TextMeshProUGUI playerNickName0;
     public TextMeshProUGUI playerNickName1;
+    public GameObject turnLight0;
+    public GameObject turnLight1;
 
     public ScoreBoard scoreBoard0;
     public ScoreBoard scoreBoard1;
@@ -374,12 +377,16 @@ public class YatzyGameScene : MonoBehaviour
 
     void ShowPlayerTurnLight(int index)
     {
+        turnLight0.SetActive(index == 0);
+        turnLight1.SetActive(index == 1);
         scoreBoard0.SetTurnLight(index == 0);
         scoreBoard1.SetTurnLight(index == 1);
     }
 
     void InitPlayerTurnLight()
     {
+        turnLight0.SetActive(false);
+        turnLight1.SetActive(false);
         scoreBoard0.SetTurnLight(false);
         scoreBoard1.SetTurnLight(false);
     }
