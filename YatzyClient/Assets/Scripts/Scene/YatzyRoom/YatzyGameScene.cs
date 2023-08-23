@@ -9,10 +9,13 @@ using UnityEngine.UI;
 
 public class YatzyGameScene : MonoBehaviour
 {
+    public TextMeshProUGUI nowTurnInfo;
     public TextMeshProUGUI playerNickName0;
     public TextMeshProUGUI playerNickName1;
     public GameObject turnLight0;
     public GameObject turnLight1;
+
+    public GameObject gameSheet;
 
     public ScoreBoard scoreBoard0;
     public ScoreBoard scoreBoard1;
@@ -33,7 +36,8 @@ public class YatzyGameScene : MonoBehaviour
     public GameResultPopup gameResult;
 
     int myServerIndex = -1;
-
+    int nowTurn = 0;
+    
     void Start()
     {
         PacketHandler.AddAction(PacketID.ToC_ResRoomInfo, RecvRoomInfo);
@@ -69,7 +73,11 @@ public class YatzyGameScene : MonoBehaviour
         EnableDiceButton(false);
         EnableRecordScoreButton(false);
         DisableAllScoreButton();
-        
+
+        playerNickName0.text = "-";
+        playerNickName1.text = "-";
+        SetNowTurn(0);
+
         ReqRoomInfo();
     }
 
@@ -115,6 +123,8 @@ public class YatzyGameScene : MonoBehaviour
             else if (roomInfo.userInfos.Count > 1)
                 playerNickName1.text = roomInfo.userInfos[1].userName;
         }
+
+        SetNowTurn(0);
 
         ReqReadyToStart();
     }
@@ -168,6 +178,7 @@ public class YatzyGameScene : MonoBehaviour
             EnableAllUnlockDices(false);
             EnableDiceButton(myServerIndex == p.playerTurn);
             leftDiceCount.text = "Roll(3)";
+            SetNowTurn(++nowTurn);
         }
     }
 
@@ -410,6 +421,12 @@ public class YatzyGameScene : MonoBehaviour
     {
         scoreBoard0.UnSelectAll();
         scoreBoard1.UnSelectAll();
+    }
+
+    void SetNowTurn(int turn)
+    {
+        nowTurn = turn;
+        nowTurnInfo.text = $"{nowTurn}/24";
     }
 
     // Events

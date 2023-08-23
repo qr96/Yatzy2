@@ -28,15 +28,10 @@ public class Tweener : MonoBehaviour
 
     TweenerCore<Vector2, Vector2, VectorOptions> tween;
 
-    void OnEnable()
+    void Start()
     {
         if (tweenType == TweenType.Size) DoSizeTween();
         else if (tweenType == TweenType.Color) DoColorTween();
-    }
-
-    private void OnDisable()
-    {
-        tween.Kill();
     }
 
     void DoSizeTween()
