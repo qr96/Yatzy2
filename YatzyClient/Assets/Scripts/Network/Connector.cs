@@ -51,7 +51,6 @@ namespace ServerCore
             }
             else
             {
-                NetworkManager.Instance._connected = false;
                 UnityEngine.Debug.Log($"OnConncetCompleted Fail : {args.SocketError}");
             }
         }

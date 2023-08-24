@@ -62,10 +62,12 @@ namespace Server
         public int roomID;
         public string roomName;
 
-        List<ClientSession> _sessions = new List<ClientSession>();
+        ClientSession[] _sessions = new ClientSession[2];
         JobQueue _jobQueue = new JobQueue();
         List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
         Dictionary<int, PlayerGameInfo> _playerGameInfoDic = new Dictionary<int, PlayerGameInfo>();
+
+        int _playerCount = 0;
 
         Random random = new Random();
 
@@ -84,7 +86,7 @@ namespace Server
 
         public int GetUserCount()
         {
-            return _sessions.Count;
+            return _playerCount;
         }
 
         public void Push(Action job)
@@ -96,7 +98,8 @@ namespace Server
         {
             foreach (ClientSession s in _sessions)
             {
-                s.Send(_pendingList);
+                if (s != null)
+                    s.Send(_pendingList);
             }
 
             //Console.WriteLine($"Flushed {_pendingList.Count}");
@@ -119,11 +122,12 @@ namespace Server
 
         public void Enter(ClientSession session)
         {
-            if (_sessions.Count >= MAX_PLAYER) return;
+            if (_playerCount >= MAX_PLAYER) return;
             if (_sessions.Contains(session) || _playerGameInfoDic.ContainsKey(session.SessionId)) return;
-            _sessions.Add(session);
-            _playerGameInfoDic.Add(session.SessionId, new PlayerGameInfo() { index = _sessions.Count - 1 });
+            _sessions[_playerCount] = session;
+            _playerGameInfoDic.Add(session.SessionId, new PlayerGameInfo() { index = _playerCount });
             session.GameRoom = this;
+            _playerCount++;
         }
 
         public void Leave(ClientSession session)
@@ -136,13 +140,14 @@ namespace Server
             ToC_ResLeaveRoom leaveRoom = new ToC_ResLeaveRoom();
             leaveRoom.leavePlayerIndex = info.index;
 
-            _sessions.Remove(session);
+            _sessions[info.index] = null;
             _playerGameInfoDic.Remove(session.SessionId);
+            _playerCount--;
 
             session.GameRoom = null;
             session.Send(leaveRoom.Write());
 
-            if (_sessions.Count == 0) GameRoomManager.Instance.RemoveRoom(this.roomID);
+            if (_playerCount <= 0) GameRoomManager.Instance.RemoveRoom(this.roomID);
             else
             {
                 BroadCast(leaveRoom);
@@ -154,7 +159,11 @@ namespace Server
         {
             List<string> userInfos = new List<string>();
             foreach (var session in _sessions)
-                userInfos.Add(session.nickName);
+            {
+                if (session != null)
+                    userInfos.Add(session.nickName);
+            }
+                
 
             return userInfos;
         }
@@ -252,7 +261,7 @@ namespace Server
         void StartGame()
         {
             ToC_PlayerTurn packet = new ToC_PlayerTurn();
-            packet.playerTurn = gameTurn % _sessions.Count;
+            packet.playerTurn = gameTurn % _playerCount;
 
             _diceCount = 3;
             _gameStarted = true;
@@ -263,7 +272,11 @@ namespace Server
         void InitGame()
         {
             foreach (var session in _sessions)
-                _playerGameInfoDic[session.SessionId].RestartGame();
+            {
+                if (session != null)
+                    _playerGameInfoDic[session.SessionId].RestartGame();
+            }
+            
             gameTurn = 0;
             _diceCount = 0;
             _gameStarted = false;
@@ -271,7 +284,7 @@ namespace Server
 
         bool IsPlayerTurn(int index)
         {
-            return index == gameTurn % _sessions.Count;
+            return index == gameTurn % _playerCount;
         }
 
         void ChangeTurn()
@@ -280,7 +293,7 @@ namespace Server
             _diceCount = 3;
 
             ToC_PlayerTurn playerTurn = new ToC_PlayerTurn();
-            playerTurn.playerTurn = gameTurn % _sessions.Count;
+            playerTurn.playerTurn = gameTurn % _playerCount;
 
             Push(() => BroadCast(playerTurn));
         }
@@ -320,7 +333,13 @@ namespace Server
         void RetireWinEnd()
         {
             PlayerGameInfo info = null;
-            _playerGameInfoDic.TryGetValue(_sessions[0].SessionId, out info);
+            if (_sessions[0] != null)
+                _playerGameInfoDic.TryGetValue(_sessions[0].SessionId, out info);
+            else if (_sessions[1] != null)
+                _playerGameInfoDic.TryGetValue(_sessions[1].SessionId, out info);
+            else
+                return;
+
             if (info == null) return;
 
             ToC_EndGame endGame = new ToC_EndGame();

@@ -23,6 +23,7 @@ namespace DummyClient
         {
             //Console.WriteLine($"OnDisconnected : {endPoint}");
             Debug.Log($"OnDisconnected : {endPoint}");
+            NetworkManager.Instance.OnDisconnected();
         }
 
         public override void OnRecvPacket(ArraySegment<byte> buffer)

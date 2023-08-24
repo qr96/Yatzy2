@@ -12,6 +12,7 @@ public class LoginScene : MonoBehaviour
     private void Start()
     {
         PacketHandler.AddAction(PacketID.ToC_ResLogin, OnRecvLogin);
+        ErrorManager.Instance.HideLoadingIndicator();
     }
 
     private void OnDestroy()
@@ -41,6 +42,8 @@ public class LoginScene : MonoBehaviour
 
     void SendLogin()
     {
+        Debug.Log("SendLogin() ");
+
         ToS_ReqLogin req = new ToS_ReqLogin();
         req.nickName = nameInput.text;
         NetworkManager.Instance.Send(req.Write());

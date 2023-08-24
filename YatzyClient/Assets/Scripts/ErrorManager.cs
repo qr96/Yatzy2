@@ -17,6 +17,12 @@ public class ErrorManager : MonoBehaviour
     public TextMeshProUGUI errorPopupDesc;
     public Button errorPopupOk;
 
+    // 질문 팝업
+    public GameObject questionPopup;
+    public TextMeshProUGUI questionPopupTitle;
+    public TextMeshProUGUI questionPopupDesc;
+    public Button questionPopupOk;
+
     Coroutine loadingIndicatorCo;
 
     private void Awake()
@@ -48,17 +54,23 @@ public class ErrorManager : MonoBehaviour
 
             waitTime += 0.1f;
             if (waitTime >= 10f)
-                ShowPopup("안내", "에러가 발생했습니다.\n다시 시도해주세요", ()=>
+            {
+                Debug.Log("Error");
+                ShowPopup("안내", "에러가 발생했습니다.\n다시 시도해주세요", () =>
                 {
-                    waitTime = 0f;
                     HidePopup();
+                    HideLoadingIndicator();
                 });
+                yield break;
+            }
+                
         }
     }
 
     public void ShowLoadingIndicator()
     {
         loadingIndicator.SetActive(true);
+        if (loadingIndicatorCo != null) StopCoroutine(loadingIndicatorCo);
         loadingIndicatorCo = StartCoroutine(LoadingIndicatorCo());
     }
 
@@ -80,8 +92,25 @@ public class ErrorManager : MonoBehaviour
         errorPopup.SetActive(true);
     }
 
+    public void ShowQuestionPopup(string title, string desc, Action onClickOk)
+    {
+        questionPopupTitle.text = title;
+        questionPopupDesc.text = desc;
+
+        if (onClickOk != null)
+            questionPopupOk.onClick.AddListener(() => onClickOk());
+        questionPopupOk.onClick.AddListener(() => HideQuestionPopup());
+
+        questionPopup.SetActive(true);
+    }
+
     public void HidePopup()
     {
         errorPopup.SetActive(false);
+    }
+
+    public void HideQuestionPopup()
+    {
+        questionPopup.SetActive(false);
     }
 }

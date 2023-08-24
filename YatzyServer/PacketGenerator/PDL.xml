@@ -6,6 +6,13 @@
   <packet name="ToC_ResLogin">
     <bool name="loginSuccess"/>
   </packet>
+  <packet name="ToS_ReqMyInfo">
+  </packet>
+  <packet name="ToC_ResMyInfo">
+    <string name="nickName"/>
+    <long name="money"/>
+    <long name="ruby"/>
+  </packet>
   <packet name="ToS_ReqRoomList">
     <string name="authToken"/>
   </packet>
@@ -34,7 +41,7 @@
   <packet name="ToC_ResLeaveRoom">
     <int name="leavePlayerIndex"/>
   </packet>
-  
+
   <packet name="ToS_ReqRoomInfo">
   </packet>
   <packet name="ToC_ResRoomInfo">
