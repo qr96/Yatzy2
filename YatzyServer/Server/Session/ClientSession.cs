@@ -14,6 +14,7 @@ namespace Server
         public int SessionId {  get; set; }
         public GameRoom Lobby { get; set; }
         public YatzyGameRoom GameRoom { get; set; }
+        public YatzySingleGame YatzySingleGame { get; set; }
 
         public string nickName = "None";
 

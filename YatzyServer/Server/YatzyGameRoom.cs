@@ -29,34 +29,6 @@ using static System.Collections.Specialized.BitVector32;
 
 namespace Server
 {
-    class PlayerGameInfo
-    {
-        public int index = -1;
-        public bool ready = false;
-        public List<int> scoreBoard = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-        public void RestartGame()
-        {
-            ready = false;
-            for (int i = 0; i < scoreBoard.Count; i++)
-                scoreBoard[i] = 0;
-        }
-
-        public int GetScoreSum()
-        {
-            int sum = 0;
-            for (int i = 0; i < 6; i++) 
-                sum += scoreBoard[i];
-
-            if (sum >= 63) sum += 35;
-
-            for (int i = 6; i < 12; i++)
-                sum += scoreBoard[i];
-
-            return sum;
-        }
-    }
-
     public class YatzyGameRoom
     {
         public int roomID;
@@ -69,7 +41,7 @@ namespace Server
 
         int _playerCount = 0;
 
-        Random random = new Random();
+        Random random = new Random((int)DateTime.Now.Ticks);
 
         int gameTurn;
         int _diceCount;
@@ -229,7 +201,7 @@ namespace Server
             if (_diceCount > 2)
                 return;
 
-            if (info == null || info.scoreBoard[jocbo] > 0)
+            if (info == null || info.scoreBoard[jocbo] >= 0)
                 return;
              
             info.scoreBoard[jocbo] = YatzyUtil.GetScore(_dices, jocbo);
