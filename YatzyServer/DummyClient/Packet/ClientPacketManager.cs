@@ -21,6 +21,8 @@ public class PacketManager
 	{
 		_makeFunc.Add((ushort)PacketID.ToC_ResLogin, MakePacket<ToC_ResLogin>);
 		_handler.Add((ushort)PacketID.ToC_ResLogin, PacketHandler.ToC_ResLoginHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_ResMyInfo, MakePacket<ToC_ResMyInfo>);
+		_handler.Add((ushort)PacketID.ToC_ResMyInfo, PacketHandler.ToC_ResMyInfoHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_ResRoomList, MakePacket<ToC_ResRoomList>);
 		_handler.Add((ushort)PacketID.ToC_ResRoomList, PacketHandler.ToC_ResRoomListHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_ResMakeRoom, MakePacket<ToC_ResMakeRoom>);
@@ -29,6 +31,10 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.ToC_ResEnterRoom, PacketHandler.ToC_ResEnterRoomHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_ResLeaveRoom, MakePacket<ToC_ResLeaveRoom>);
 		_handler.Add((ushort)PacketID.ToC_ResLeaveRoom, PacketHandler.ToC_ResLeaveRoomHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_ResEnterSingleRoom, MakePacket<ToC_ResEnterSingleRoom>);
+		_handler.Add((ushort)PacketID.ToC_ResEnterSingleRoom, PacketHandler.ToC_ResEnterSingleRoomHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_ResLeaveSingleRoom, MakePacket<ToC_ResLeaveSingleRoom>);
+		_handler.Add((ushort)PacketID.ToC_ResLeaveSingleRoom, PacketHandler.ToC_ResLeaveSingleRoomHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_ResRoomInfo, MakePacket<ToC_ResRoomInfo>);
 		_handler.Add((ushort)PacketID.ToC_ResRoomInfo, PacketHandler.ToC_ResRoomInfoHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_PlayerEnterRoom, MakePacket<ToC_PlayerEnterRoom>);
@@ -45,6 +51,14 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.ToC_LockDice, PacketHandler.ToC_LockDiceHandler);
 		_makeFunc.Add((ushort)PacketID.ToC_SelectScore, MakePacket<ToC_SelectScore>);
 		_handler.Add((ushort)PacketID.ToC_SelectScore, PacketHandler.ToC_SelectScoreHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_ResSingleRoomInfo, MakePacket<ToC_ResSingleRoomInfo>);
+		_handler.Add((ushort)PacketID.ToC_ResSingleRoomInfo, PacketHandler.ToC_ResSingleRoomInfoHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_SingleStartGame, MakePacket<ToC_SingleStartGame>);
+		_handler.Add((ushort)PacketID.ToC_SingleStartGame, PacketHandler.ToC_SingleStartGameHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_SingleDiceResult, MakePacket<ToC_SingleDiceResult>);
+		_handler.Add((ushort)PacketID.ToC_SingleDiceResult, PacketHandler.ToC_SingleDiceResultHandler);
+		_makeFunc.Add((ushort)PacketID.ToC_SingleMobPlayResult, MakePacket<ToC_SingleMobPlayResult>);
+		_handler.Add((ushort)PacketID.ToC_SingleMobPlayResult, PacketHandler.ToC_SingleMobPlayResultHandler);
 
 	}
 

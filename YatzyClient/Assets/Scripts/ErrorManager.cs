@@ -53,7 +53,7 @@ public class ErrorManager : MonoBehaviour
             if (i <= 0) i = 3;
 
             waitTime += 0.1f;
-            if (waitTime >= 10f)
+            if (waitTime >= 15f)
             {
                 Debug.Log("Error");
                 ShowPopup("안내", "에러가 발생했습니다.\n다시 시도해주세요", () =>

@@ -24,6 +24,18 @@ class PacketHandler
         lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResLogin() { loginSuccess = true }));
     }
 
+    public static void ToS_ReqMyInfoHandler(PacketSession session, IPacket packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        ToS_ReqMyInfo myInfo = packet as ToS_ReqMyInfo;
+
+        if (clientSession.Lobby == null)
+            return;
+
+        GameRoom lobby = clientSession.Lobby;
+        lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResMyInfo() { nickName = "방구", money = 0, ruby = 0 }));
+    }
+
     public static void ToS_ReqRoomListHandler(PacketSession session, IPacket packet)
     {
         Console.WriteLine("ToS_ReqRoomListHandler");
@@ -95,6 +107,29 @@ class PacketHandler
             return;
 
         room.Push(() => room.Leave(clientSession));
+    }
+
+    public static void ToS_ReqEnterSingleRoomHandler(PacketSession session, IPacket packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession.Lobby == null) return;
+
+        GameRoom lobby = clientSession.Lobby;
+        clientSession.YatzySingleGame = new YatzySingleGame(clientSession);
+        lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResEnterSingleRoom()));
+    }
+
+    public static void ToS_ReqLeaveSingleRoomHandler(PacketSession session, IPacket packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession.YatzySingleGame == null) return;
+        if (clientSession.Lobby == null) return;
+
+        GameRoom lobby = clientSession.Lobby;
+        clientSession.YatzySingleGame = null;
+        lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResLeaveSingleRoom()));
     }
 
 
@@ -202,5 +237,63 @@ class PacketHandler
 
         YatzyGameRoom gameRoom = clientSession.GameRoom;
         gameRoom.Push(() => gameRoom.SendSelectScore(clientSession, selectScore.jocboIndex));
+    }
+
+
+    // single games
+    public static void ToS_ReqSingleRoomInfoHandler(PacketSession session, IPacket packet)
+    {
+        Console.WriteLine("ToS_ReqSingleRoomInfoHandler");
+        ClientSession clientSession = session as ClientSession;
+        ToS_ReqSingleRoomInfo roomInfo = packet as ToS_ReqSingleRoomInfo;
+
+        if (clientSession.YatzySingleGame == null) return;
+        if (roomInfo == null) return;
+
+        YatzySingleGame game = clientSession.YatzySingleGame;
+        game.UniCast(new ToC_ResSingleRoomInfo() { mobName = "마몬" });
+    }
+
+    public static void ToS_SingleReadyToStartHandler(PacketSession session, IPacket packet)
+    {
+        Console.WriteLine("ToS_SingleReadyToStartHandler");
+        ClientSession clientSession = session as ClientSession;
+        ToS_SingleReadyToStart ready = packet as ToS_SingleReadyToStart;
+
+        if (clientSession.YatzySingleGame == null) return;
+        if (ready == null) return;
+
+        YatzySingleGame game = clientSession.YatzySingleGame;
+        game.Push(() => game.StartGame(clientSession));
+    }
+
+    public static void ToS_SingleRollDiceHandler(PacketSession session, IPacket packet)
+    {
+        Console.WriteLine("ToS_SingleRollDiceHandler");
+        ClientSession clientSession = session as ClientSession;
+        ToS_SingleRollDice diceInfo = packet as ToS_SingleRollDice;
+
+        if (clientSession.YatzySingleGame == null) return;
+        if (diceInfo == null) return;
+
+        List<int> fixDices = new List<int>();
+        foreach (var fix in diceInfo.fixDices)
+            fixDices.Add(fix.diceIndex);
+
+        YatzySingleGame game = clientSession.YatzySingleGame;
+        game.Push(() => game.RollDice(clientSession, fixDices));
+    }
+
+    public static void ToS_SingleWriteScoreHandler(PacketSession session, IPacket packet)
+    {
+        Console.WriteLine("ToS_SingleWriteScoreHandler");
+        ClientSession clientSession = session as ClientSession;
+        ToS_SingleWriteScore scoreInfo = packet as ToS_SingleWriteScore;
+
+        if (clientSession.YatzySingleGame == null) return;
+        if (scoreInfo == null) return;
+
+        YatzySingleGame game = clientSession.YatzySingleGame;
+        game.Push(() => game.WriteScore(clientSession, scoreInfo.jocboIndex));
     }
 }

@@ -94,36 +94,13 @@ namespace Server
         {
             bool[] locks = new bool[5];
             int[] diceNums = new int[6];
+            int remainScores = 0;
 
             foreach (var diceNum in dices)
                 diceNums[diceNum - 1]++;
 
-            // 스트레이트 미정인 경우 - 2,3,4,5 중에 3개 이상 있으면 하나씩만 잠금
-            if (scoreBoard[9] < 0 || scoreBoard[10] < 0)
-            {
-                int needNumCount = 0;
-                for (int i = 0; i < 5; i++)
-                {
-                    if (dices[i] == 2 || dices[i] == 3 || dices[i] == 4 || dices[i] == 5)
-                        needNumCount++;
-                }
-                if (needNumCount >= 3)
-                {
-                    bool[] lockNums = new bool[6];
-                    for (int i = 0; i < 5; i++)
-                    {
-                        if (dices[i] == 2 || dices[i] == 3 || dices[i] == 4 || dices[i] == 5)
-                        {
-                            if (lockNums[dices[i] - 1] == false)
-                            {
-                                locks[i] = true;
-                                lockNums[dices[i] - 1] = true;
-                            }
-                        }
-                    }
-                    return locks;
-                }
-            }
+            foreach (var score in scoreBoard)
+                if (score < 0) remainScores++;
 
             // 3개 이상인 주사위 잠금 (해당하는 마이너 족보 미기입 or 야추 미기입 or 4이상이면서 초이스 및 포카드 미기입 or 풀하우스 미기입)
             for (int i = 0; i < 6; i++)
@@ -140,6 +117,33 @@ namespace Server
                         }
                         return locks;
                     }
+                }
+            }
+
+            // 스트레이트 미정인 경우 - 2,3,4,5 중에 3개 이상 있으면 하나씩만 잠금
+            if (scoreBoard[9] < 0 || scoreBoard[10] < 0)
+            {
+                int needNumCount = 0;
+                for (int i = 1; i <= 4; i++)
+                {
+                    if (diceNums[i] > 0)
+                        needNumCount++;
+                }
+                if (needNumCount >= 3)
+                {
+                    bool[] lockNums = new bool[6]; // 해당 숫자 이미 잠궜는지 체크
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (dices[i] == 2 || dices[i] == 3 || dices[i] == 4 || dices[i] == 5)
+                        {
+                            if (lockNums[dices[i] - 1] == false)
+                            {
+                                locks[i] = true;
+                                lockNums[dices[i] - 1] = true;
+                            }
+                        }
+                    }
+                    return locks;
                 }
             }
 
@@ -168,9 +172,41 @@ namespace Server
             }
 
             // 2개 이상인 주사위 잠금, 해당 수 or 초이스, 4카인드, 풀하우스, 야추 미달성 시 해당 수 잠금
-            for (int i = 0; i < 6; i++)
+            for (int i = 5; i >= 0; i--)
             {
                 if (diceNums[i] >= 2)
+                {
+                    if (scoreBoard[i] < 0 || scoreBoard[11] < 0 ||
+                        (i + 1 >= 4 && (scoreBoard[6] < 0 || scoreBoard[7] < 0 || scoreBoard[8] < 0)))
+                    {
+                        for (int j = 0; j < 5; j++)
+                        {
+                            if (dices[j] == i + 1)
+                                locks[j] = true;
+                        }
+                        return locks;
+                    }
+                }
+            }
+
+            // 숫자가 1개만 남은 상황이면 무조건 그거만 잠금
+            if (remainScores == 1)
+            {
+                int notScored = 0;
+                for (int i = 0; i < scoreBoard.Length; i++)
+                {
+                    if (scoreBoard[i] < 0) notScored = i;
+                }
+
+                for (int i = 0; i < 5; i++)
+                    if (dices[i] == notScored) 
+                        locks[i] = true;
+            }
+
+            // 해당 수나 야추 미등록 혹은 눈이 4 이상인데 초이스, 포카인드, 풀하우스 미등록이면 그거 잠금
+            for (int i = 5; i >= 0; i--)
+            {
+                if (diceNums[i] >= 1)
                 {
                     if (scoreBoard[i] < 0 || scoreBoard[11] < 0 ||
                         (i + 1 >= 4 && (scoreBoard[6] < 0 || scoreBoard[7] < 0 || scoreBoard[8] < 0)))

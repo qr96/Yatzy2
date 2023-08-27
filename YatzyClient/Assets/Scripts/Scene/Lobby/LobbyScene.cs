@@ -6,6 +6,8 @@ using UnityEngine;
 public class LobbyScene : MonoBehaviour
 {
     public RoomListTab roomListTab;
+    public SelectGameTab selectGameTab;
+
     public TextMeshProUGUI moneyText;
     public TextMeshProUGUI rubyText;
 
@@ -33,5 +35,10 @@ public class LobbyScene : MonoBehaviour
     public void OnClickNormalGame()
     {
         roomListTab.Show();
+    }
+
+    public void OnClickSingleGame()
+    {
+        selectGameTab.gameObject.SetActive(true);
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static ToC_SingleMobPlayResult;
 
 namespace Server
 {
@@ -43,26 +44,32 @@ namespace Server
             _session.Send(segment);
         }
 
+        public void StartGame(ClientSession session)
+        {
+            _diceCount = 3;
+            gameTurn = 0;
+
+            UniCast(new ToC_SingleStartGame());
+        }
+
         public void RollDice(ClientSession session, List<int> fixDices)
         {
-            ToC_DiceResult diceResult = new ToC_DiceResult();
-            PlayerGameInfo info = _playerGameInfoDic[0];
-
-            if (IsPlayerTurn(info.index) == false)
-                return;
+            ToC_SingleDiceResult diceResult = new ToC_SingleDiceResult();
 
             if (_diceCount <= 0 || fixDices.Count >= 5)
                 return;
 
+            if (_diceCount >= 3 && fixDices.Count > 0)
+                return;
+
             _diceCount--;
 
-            diceResult.playerIndex = info.index;
             diceResult.leftDice = _diceCount;
 
             for (int i = 0; i < 5; i++)
             {
                 if (!fixDices.Contains(i)) _dices[i] = random.Next(1, 7);
-                diceResult.diceResults.Add(new ToC_DiceResult.DiceResult() { dice = _dices[i] });
+                diceResult.diceResults.Add(new ToC_SingleDiceResult.DiceResult() { dice = _dices[i] });
             }
 
             UniCast(diceResult);
@@ -72,9 +79,6 @@ namespace Server
         {
             PlayerGameInfo info = _playerGameInfoDic[0];
 
-            if (IsPlayerTurn(info.index) == false)
-                return;
-
             if (_diceCount > 2)
                 return;
 
@@ -83,93 +87,69 @@ namespace Server
 
             info.scoreBoard[jocbo] = YatzyUtil.GetScore(_dices, jocbo);
 
-            ToC_WriteScore writeScore = new ToC_WriteScore();
-            writeScore.playerIndex = info.index;
-            writeScore.jocboIndex = jocbo;
-            writeScore.jocboScore = info.scoreBoard[jocbo];
-
-            UniCast(writeScore);
-            if (gameTurn >= 12 * 2 - 1) Push(() => EndGame());
-            else Push(() => ChangeTurn());
+            Push(() => NpcPlay());
         }
 
-        public void SendSelectScore(ClientSession session, int scoreIndex)
+        void NpcPlay()
         {
-            PlayerGameInfo info = null;
-            //_playerGameInfoDic.TryGetValue(session.SessionId, out info);
-
-            if (info == null) return;
-
-            ToC_SelectScore scoreSelect = new ToC_SelectScore();
-            scoreSelect.playerIndex = info.index;
-            scoreSelect.jocboIndex = scoreIndex;
-
-            UniCast(scoreSelect);
-        }
-
-        void StartGame()
-        {
-            ToC_PlayerTurn packet = new ToC_PlayerTurn();
-            packet.playerTurn = gameTurn % _playerCount;
-
+            gameTurn += 2;
             _diceCount = 3;
 
-            UniCast(packet);
-        }
+            ToC_SingleMobPlayResult playResult = new ToC_SingleMobPlayResult();
+            
+            // NPC 플레이
+            int writeScore = -1;
+            bool[] lockDices = new bool[5] { false, false, false, false, false };
 
-        void InitGame()
-        {
-            foreach (var info in _playerGameInfoDic)
-                info.RestartGame();
+            for (int i = 2; i >= 0; i--)
+            {
+                DiceResultList diceResult = new DiceResultList();
+                DiceLockList diceLockList = new DiceLockList();
 
-            gameTurn = 0;
-            _diceCount = 0;
-        }
+                // 주사위 던짐
+                for (int j = 0; j < 5; j++)
+                {
+                    if (!lockDices[j])
+                        _dices[j] = random.Next(1, 7);
 
-        bool IsPlayerTurn(int index)
-        {
-            return index == gameTurn % _playerCount;
-        }
+                    diceResult.diceResults.Add(new DiceResultList.DiceResult() { diceNum = _dices[j] });
+                }
+                playResult.diceResultLists.Add(diceResult);
 
-        void ChangeTurn()
-        {
-            gameTurn++;
-            _diceCount = 3;
+                writeScore = YatzyUtil.GetBotWantWriteScore(_dices, _playerGameInfoDic[1].scoreBoard, i);
+                if (writeScore >= 0) break;
 
-            ToC_PlayerTurn playerTurn = new ToC_PlayerTurn();
-            playerTurn.playerTurn = gameTurn % _playerCount;
+                lockDices = YatzyUtil.GetBotWantLockDice(_dices, _playerGameInfoDic[1].scoreBoard, i);
+                for (int j = 0; j < 5; j++)
+                {
+                    if (lockDices[j])
+                        diceLockList.diceLocks.Add(new DiceLockList.DiceLock() { diceIndex = j });
+                }
+                playResult.diceLockLists.Add(diceLockList);
+            }
 
-            Push(() => UniCast(playerTurn));
+            _playerGameInfoDic[1].scoreBoard[writeScore] = YatzyUtil.GetScore(_dices, writeScore);
+            
+            playResult.jocboIndex = writeScore;
+            playResult.jocboScore = _playerGameInfoDic[1].scoreBoard[writeScore];
+
+            Push(() => UniCast(playResult));
+
+            if (gameTurn >= 24)
+                Push(() => EndGame());
         }
 
         void EndGame()
         {
-            int max = 0;
             int winner = -1;
             bool drawGame = false;
 
-            foreach (var info in _playerGameInfoDic)
-            {
-                var score = info.GetScoreSum();
-                if (score > max)
-                {
-                    max = score;
-                    winner = info.index;
-                }
-                else if (score == max)
-                {
-                    drawGame = true;
-                    winner = -1;
-                    break;
-                }
-            }
-
-            ToC_EndGame endGame = new ToC_EndGame();
-            endGame.winner = winner;
-            endGame.drawGame = drawGame;
-
-            UniCast(endGame);
-            Push(() => InitGame());
+            if (_playerGameInfoDic[0].GetScoreSum() > _playerGameInfoDic[1].GetScoreSum())
+                winner = 0;
+            else if (_playerGameInfoDic[0].GetScoreSum() == _playerGameInfoDic[1].GetScoreSum())
+                drawGame = true;
+            else
+                winner = 1;
         }
     }
 }

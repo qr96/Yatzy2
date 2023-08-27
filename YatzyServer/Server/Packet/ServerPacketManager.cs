@@ -21,6 +21,8 @@ public class PacketManager
 	{
 		_makeFunc.Add((ushort)PacketID.ToS_ReqLogin, MakePacket<ToS_ReqLogin>);
 		_handler.Add((ushort)PacketID.ToS_ReqLogin, PacketHandler.ToS_ReqLoginHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_ReqMyInfo, MakePacket<ToS_ReqMyInfo>);
+		_handler.Add((ushort)PacketID.ToS_ReqMyInfo, PacketHandler.ToS_ReqMyInfoHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReqRoomList, MakePacket<ToS_ReqRoomList>);
 		_handler.Add((ushort)PacketID.ToS_ReqRoomList, PacketHandler.ToS_ReqRoomListHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReqMakeRoom, MakePacket<ToS_ReqMakeRoom>);
@@ -29,6 +31,10 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.ToS_ReqEnterRoom, PacketHandler.ToS_ReqEnterRoomHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReqLeaveRoom, MakePacket<ToS_ReqLeaveRoom>);
 		_handler.Add((ushort)PacketID.ToS_ReqLeaveRoom, PacketHandler.ToS_ReqLeaveRoomHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_ReqEnterSingleRoom, MakePacket<ToS_ReqEnterSingleRoom>);
+		_handler.Add((ushort)PacketID.ToS_ReqEnterSingleRoom, PacketHandler.ToS_ReqEnterSingleRoomHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_ReqLeaveSingleRoom, MakePacket<ToS_ReqLeaveSingleRoom>);
+		_handler.Add((ushort)PacketID.ToS_ReqLeaveSingleRoom, PacketHandler.ToS_ReqLeaveSingleRoomHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReqRoomInfo, MakePacket<ToS_ReqRoomInfo>);
 		_handler.Add((ushort)PacketID.ToS_ReqRoomInfo, PacketHandler.ToS_ReqRoomInfoHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReadyToStart, MakePacket<ToS_ReadyToStart>);
@@ -41,6 +47,14 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.ToS_LockDice, PacketHandler.ToS_LockDiceHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_SelectScore, MakePacket<ToS_SelectScore>);
 		_handler.Add((ushort)PacketID.ToS_SelectScore, PacketHandler.ToS_SelectScoreHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_ReqSingleRoomInfo, MakePacket<ToS_ReqSingleRoomInfo>);
+		_handler.Add((ushort)PacketID.ToS_ReqSingleRoomInfo, PacketHandler.ToS_ReqSingleRoomInfoHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_SingleReadyToStart, MakePacket<ToS_SingleReadyToStart>);
+		_handler.Add((ushort)PacketID.ToS_SingleReadyToStart, PacketHandler.ToS_SingleReadyToStartHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_SingleRollDice, MakePacket<ToS_SingleRollDice>);
+		_handler.Add((ushort)PacketID.ToS_SingleRollDice, PacketHandler.ToS_SingleRollDiceHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_SingleWriteScore, MakePacket<ToS_SingleWriteScore>);
+		_handler.Add((ushort)PacketID.ToS_SingleWriteScore, PacketHandler.ToS_SingleWriteScoreHandler);
 
 	}
 

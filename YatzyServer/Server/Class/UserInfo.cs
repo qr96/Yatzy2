@@ -11,5 +11,6 @@ namespace Server
         public string nickName;
         public long money;
         public long ruby;
+        public int devilCastleLevel;
     }
 }

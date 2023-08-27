@@ -43,6 +43,12 @@
   </packet>
   <packet name="ToS_ReqEnterSingleRoom">
   </packet>
+  <packet name="ToC_ResEnterSingleRoom">
+  </packet>
+  <packet name="ToS_ReqLeaveSingleRoom">
+  </packet>
+  <packet name="ToC_ResLeaveSingleRoom">
+  </packet>
   
   <!-- 게임 룸 -->
   <packet name="ToS_ReqRoomInfo">
@@ -104,8 +110,12 @@
   </packet>
   
   <!-- 싱글 게임룸 -->
-  <packet name="ToS_SingleStartGame">
+  <packet name="ToS_ReqSingleRoomInfo">
+  </packet>
+  <packet name="ToC_ResSingleRoomInfo">
     <string name="mobName"/>
+  </packet>
+  <packet name="ToS_SingleReadyToStart">
   </packet>
   <packet name="ToC_SingleStartGame">
   </packet>
@@ -122,23 +132,19 @@
   </packet>
   <packet name="ToS_SingleWriteScore">
     <int name="jocboIndex"/>
-    <int name="jocboScore"/>
   </packet>
-  <packet name="ToC_MobPlayResult">
+  <packet name="ToC_SingleMobPlayResult">
     <list name="diceResultList">
       <list name="diceResult">
         <int name="diceNum"/>
       </list>
     </list>
-    <list name="fixeDicesList">
-      <list name="fixDices">
+    <list name="diceLockList">
+      <list name="diceLock">
         <int name="diceIndex"/>
       </list>
     </list>
     <int name="jocboIndex"/>
     <int name="jocboScore"/>
-  </packet>
-  <packet name="ToC_SingleGameResult">
-    <bool name="isWin"/>
   </packet>
 </PDL>

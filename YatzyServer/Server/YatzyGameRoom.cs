@@ -176,6 +176,9 @@ namespace Server
             if (_diceCount <= 0 || fixDices.Count >= 5)
                 return;
 
+            if (_diceCount >= 3 && fixDices.Count > 0)
+                return;
+
             _diceCount--;
 
             diceResult.playerIndex = info.index;

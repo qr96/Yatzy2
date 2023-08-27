@@ -16,13 +16,21 @@ class PacketHandler
 
     public static void RemoveAction(PacketID protocol)
     {
-        if (actionDic[protocol] != null)
+        if (actionDic.ContainsKey(protocol) && actionDic[protocol] != null)
             actionDic.Remove(protocol);
     }
 
     public static void ToC_ResLoginHandler(PacketSession session, IPacket packet)
     {
         Debug.Log("Recv ToC_ResRoomListHandler");
+
+        if (actionDic[(PacketID)packet.Protocol] != null)
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
+
+    public static void ToC_ResMyInfoHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_ResMyInfoHandler");
 
         if (actionDic[(PacketID)packet.Protocol] != null)
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
@@ -55,6 +63,22 @@ class PacketHandler
     public static void ToC_ResLeaveRoomHandler(PacketSession session, IPacket packet)
     {
         Debug.Log("Recv ToC_ResLeaveRoomHandler");
+
+        if (actionDic[(PacketID)packet.Protocol] != null)
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
+
+    public static void ToC_ResEnterSingleRoomHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_ResEnterSingleRoomHandler");
+
+        if (actionDic[(PacketID)packet.Protocol] != null)
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
+
+    public static void ToC_ResLeaveSingleRoomHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_ResEnterSingleRoomHandler");
 
         if (actionDic[(PacketID)packet.Protocol] != null)
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
@@ -122,6 +146,41 @@ class PacketHandler
     public static void ToC_SelectScoreHandler(PacketSession session, IPacket packet)
     {
         Debug.Log("Recv ToC_SelectScoreHandler");
+
+        if (actionDic[(PacketID)packet.Protocol] != null)
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
+
+
+
+    // Single
+    public static void ToC_ResSingleRoomInfoHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_ResSingleRoomInfoHandler");
+
+        if (actionDic[(PacketID)packet.Protocol] != null)
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
+
+    public static void ToC_SingleStartGameHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_SingleStartGameHandler");
+
+        if (actionDic[(PacketID)packet.Protocol] != null)
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
+
+    public static void ToC_SingleDiceResultHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_SingleDiceResultHandler");
+
+        if (actionDic[(PacketID)packet.Protocol] != null)
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
+
+    public static void ToC_SingleMobPlayResultHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_SingleMobPlayResultHandler");
 
         if (actionDic[(PacketID)packet.Protocol] != null)
             actionDic[(PacketID)packet.Protocol].Invoke(packet);

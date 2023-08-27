@@ -56,9 +56,17 @@ public class LoginScene : MonoBehaviour
         NetworkManager.Instance.ConnectToServer();
         ErrorManager.Instance.ShowLoadingIndicator();
 
-        while (NetworkManager.Instance._connected == false)
+        while (true)
         {
             yield return new WaitForSeconds(0.5f);
+
+            if (NetworkManager.Instance._connected)
+            {
+                SendLogin();
+                yield break;
+            }
+                
+
             waitTime += 0.5f;
             if (waitTime > 10f)
             {
@@ -67,6 +75,5 @@ public class LoginScene : MonoBehaviour
                 yield break;
             }
         }
-        SendLogin();
     }
 }
