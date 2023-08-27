@@ -121,7 +121,7 @@ namespace Server
             }
 
             // 스트레이트 미정인 경우 - 2,3,4,5 중에 3개 이상 있으면 하나씩만 잠금
-            if (scoreBoard[9] < 0 || scoreBoard[10] < 0)
+            if (scoreBoard[9] < 0)
             {
                 int needNumCount = 0;
                 for (int i = 1; i <= 4; i++)

@@ -58,6 +58,7 @@ public class YatzySingleGame : MonoBehaviour
         }
 
         gameResult.SetRestartBtnListener(() => InitGame());
+        gameResult.SetLeaveBtnListener(() => OnClickLeaveRoom());
 
         EnableDiceButton(false);
         EnableRecordScoreButton(false);
@@ -68,6 +69,14 @@ public class YatzySingleGame : MonoBehaviour
         SetNowTurn(0);
 
         ReqSingleRoomInfo();
+    }
+
+    private void OnDestroy()
+    {
+        PacketHandler.RemoveAction(PacketID.ToC_ResSingleRoomInfo);
+        PacketHandler.RemoveAction(PacketID.ToC_SingleStartGame);
+        PacketHandler.RemoveAction(PacketID.ToC_SingleDiceResult);
+        PacketHandler.RemoveAction(PacketID.ToC_SingleMobPlayResult);
     }
 
     // Packets
@@ -174,6 +183,12 @@ public class YatzySingleGame : MonoBehaviour
         }
 
         StartCoroutine(NpcPlayCo(diceResultList, diceLockList, res.jocboIndex, res.jocboScore));
+    }
+
+    void ReqLeaveRoom()
+    {
+        ToS_ReqLeaveSingleRoom req = new ToS_ReqLeaveSingleRoom();
+        NetworkManager.Instance.Send(req.Write());
     }
 
 
@@ -350,7 +365,7 @@ public class YatzySingleGame : MonoBehaviour
         for (int i = 0; i < diceResultList.Count; i++)
         {
             yield return new WaitForSeconds(1f);
-            RollDice(diceResultList[i], 2, 1);
+            RollDice(diceResultList[i], 2 - i, 1);
             yield return new WaitForSeconds(2f);
 
             if (diceLockList.Count > i)
@@ -410,7 +425,7 @@ public class YatzySingleGame : MonoBehaviour
     public void OnClickLeaveRoom()
     {
         ErrorManager.Instance.ShowLoadingIndicator();
-
+        ReqLeaveRoom();
     }
 
     public void OnClickRollDice()

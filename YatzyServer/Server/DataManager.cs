@@ -11,8 +11,8 @@ namespace Server
     public class DataManager
     {
         #region Singleton
-        static GameRoomManager _instance = new GameRoomManager();
-        public static GameRoomManager Instance { get { return _instance; } }
+        static DataManager _instance = new DataManager();
+        public static DataManager Instance { get { return _instance; } }
         #endregion
 
         public Dictionary<string, UserInfo> _userInfoDic = new Dictionary<string, UserInfo>();
@@ -37,14 +37,33 @@ namespace Server
             UserInfo info;
             _userInfoDic.TryGetValue(nickName, out info);
 
-            if (info == null) return null;
+            return info;
+        }
 
-            UserInfo deepCopy = new UserInfo() {
-                nickName = info.nickName,
-                money = info.money,
-                ruby = info.ruby,
-                devilCastleLevel = info.devilCastleLevel };
-            return deepCopy;
+        public DevilCastleInfo GetUserDevilCastleInfo(string nickName)
+        {
+            UserInfo info;
+            _userInfoDic.TryGetValue(nickName, out info);
+
+            return info.devilCastleInfo;
+        }
+
+        public bool OpenDevilCastle(string nickName)
+        {
+            lock(_userInfoDic)
+            {
+                UserInfo info;
+                _userInfoDic.TryGetValue(nickName, out info);
+
+                if (info == null) return false;
+
+                if (info.money < 1000) return false;
+
+                info.money -= 1000;
+                info.devilCastleInfo.opened = true;
+
+                return true;
+            }
         }
 
         public void DevilCastleLevelUp(string nickName)
@@ -56,7 +75,7 @@ namespace Server
 
                 if (info == null) return;
 
-                info.devilCastleLevel++;
+                info.devilCastleInfo.level++;
             }
         }
 
@@ -69,7 +88,8 @@ namespace Server
 
                 if (info == null) return;
 
-                info.devilCastleLevel = 0;
+                info.devilCastleInfo.level = 0;
+                info.devilCastleInfo.opened = false;
             }
         }
     }

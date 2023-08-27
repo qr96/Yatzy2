@@ -17,8 +17,13 @@ class PacketHandler
         if (clientSession.Lobby == null)
             return;
 
-        if (loginPacket != null)
-            clientSession.SetInfo(loginPacket.nickName);
+        if (loginPacket == null) return;
+
+        clientSession.SetInfo(loginPacket.nickName);
+
+        // 닉네임 없으면 만듬
+        if (!DataManager.Instance.ExistNickName(loginPacket.nickName))
+            DataManager.Instance.AddUser(new UserInfo() { nickName = loginPacket.nickName, money = 3000, ruby = 0 });
 
         GameRoom lobby = clientSession.Lobby;
         lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResLogin() { loginSuccess = true }));
@@ -32,8 +37,11 @@ class PacketHandler
         if (clientSession.Lobby == null)
             return;
 
+        var userInfo = DataManager.Instance.GetUserInfo(clientSession.nickName);
+        if (userInfo == null) return;
+
         GameRoom lobby = clientSession.Lobby;
-        lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResMyInfo() { nickName = "방구", money = 0, ruby = 0 }));
+        lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResMyInfo() { nickName = userInfo.nickName, money = userInfo.money, ruby = userInfo.ruby }));
     }
 
     public static void ToS_ReqRoomListHandler(PacketSession session, IPacket packet)
@@ -125,11 +133,39 @@ class PacketHandler
         ClientSession clientSession = session as ClientSession;
 
         if (clientSession.YatzySingleGame == null) return;
-        if (clientSession.Lobby == null) return;
+        clientSession.YatzySingleGame = null;
 
         GameRoom lobby = clientSession.Lobby;
-        clientSession.YatzySingleGame = null;
+        if (clientSession.Lobby == null) return;
+
         lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResLeaveSingleRoom()));
+    }
+
+    public static void ToS_ReqDevilCastleInfoHandler(PacketSession session, IPacket packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        if (clientSession.Lobby == null) return;
+
+        DevilCastleInfo info = DataManager.Instance.GetUserDevilCastleInfo(clientSession.nickName);
+        if (info == null) return;
+
+        GameRoom lobby = clientSession.Lobby;
+        if (clientSession.Lobby == null) return;
+
+        lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResDevilCastleInfo() { isOpened = info.opened, level = info.level, reward = info.level * 1000 }));
+    }
+
+    public static void ToS_ReqOpenDevilCastleHandler(PacketSession session, IPacket packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        if (clientSession.Lobby == null) return;
+
+        bool result = DataManager.Instance.OpenDevilCastle(clientSession.nickName);
+
+        GameRoom lobby = clientSession.Lobby;
+        if (clientSession.Lobby == null) return;
+
+        lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResOpenDevilCastle() { success = result }));
     }
 
 

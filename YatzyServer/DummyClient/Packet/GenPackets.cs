@@ -22,28 +22,32 @@ public enum PacketID
 	ToC_ResEnterSingleRoom = 14,
 	ToS_ReqLeaveSingleRoom = 15,
 	ToC_ResLeaveSingleRoom = 16,
-	ToS_ReqRoomInfo = 17,
-	ToC_ResRoomInfo = 18,
-	ToC_PlayerEnterRoom = 19,
-	ToS_ReadyToStart = 20,
-	ToC_PlayerTurn = 21,
-	ToS_RollDice = 22,
-	ToC_DiceResult = 23,
-	ToS_WriteScore = 24,
-	ToC_WriteScore = 25,
-	ToC_EndGame = 26,
-	ToS_LockDice = 27,
-	ToC_LockDice = 28,
-	ToS_SelectScore = 29,
-	ToC_SelectScore = 30,
-	ToS_ReqSingleRoomInfo = 31,
-	ToC_ResSingleRoomInfo = 32,
-	ToS_SingleReadyToStart = 33,
-	ToC_SingleStartGame = 34,
-	ToS_SingleRollDice = 35,
-	ToC_SingleDiceResult = 36,
-	ToS_SingleWriteScore = 37,
-	ToC_SingleMobPlayResult = 38,
+	ToS_ReqDevilCastleInfo = 17,
+	ToC_ResDevilCastleInfo = 18,
+	ToS_ReqOpenDevilCastle = 19,
+	ToC_ResOpenDevilCastle = 20,
+	ToS_ReqRoomInfo = 21,
+	ToC_ResRoomInfo = 22,
+	ToC_PlayerEnterRoom = 23,
+	ToS_ReadyToStart = 24,
+	ToC_PlayerTurn = 25,
+	ToS_RollDice = 26,
+	ToC_DiceResult = 27,
+	ToS_WriteScore = 28,
+	ToC_WriteScore = 29,
+	ToC_EndGame = 30,
+	ToS_LockDice = 31,
+	ToC_LockDice = 32,
+	ToS_SelectScore = 33,
+	ToC_SelectScore = 34,
+	ToS_ReqSingleRoomInfo = 35,
+	ToC_ResSingleRoomInfo = 36,
+	ToS_SingleReadyToStart = 37,
+	ToC_SingleStartGame = 38,
+	ToS_SingleRollDice = 39,
+	ToC_SingleDiceResult = 40,
+	ToS_SingleWriteScore = 41,
+	ToC_SingleMobPlayResult = 42,
 	
 }
 
@@ -720,6 +724,164 @@ class ToC_ResLeaveSingleRoom : IPacket
         success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_ResLeaveSingleRoom);
         count += sizeof(ushort);
         
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToS_ReqDevilCastleInfo : IPacket
+{
+    
+
+    public ushort Protocol { get { return (ushort)PacketID.ToS_ReqDevilCastleInfo; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToS_ReqDevilCastleInfo);
+        count += sizeof(ushort);
+        
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToC_ResDevilCastleInfo : IPacket
+{
+    public bool isOpened;
+	public int level;
+	public int reward;
+
+    public ushort Protocol { get { return (ushort)PacketID.ToC_ResDevilCastleInfo; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        this.isOpened = BitConverter.ToBoolean(segment.Array, segment.Offset + count);
+		count += sizeof(bool);
+		this.level = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+		this.reward = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_ResDevilCastleInfo);
+        count += sizeof(ushort);
+        Array.Copy(BitConverter.GetBytes(this.isOpened), 0, segment.Array, segment.Offset + count, sizeof(bool));
+		count += sizeof(bool);
+		Array.Copy(BitConverter.GetBytes(this.level), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+		Array.Copy(BitConverter.GetBytes(this.reward), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToS_ReqOpenDevilCastle : IPacket
+{
+    
+
+    public ushort Protocol { get { return (ushort)PacketID.ToS_ReqOpenDevilCastle; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToS_ReqOpenDevilCastle);
+        count += sizeof(ushort);
+        
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToC_ResOpenDevilCastle : IPacket
+{
+    public bool success;
+
+    public ushort Protocol { get { return (ushort)PacketID.ToC_ResOpenDevilCastle; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        this.success = BitConverter.ToBoolean(segment.Array, segment.Offset + count);
+		count += sizeof(bool);
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_ResOpenDevilCastle);
+        count += sizeof(ushort);
+        Array.Copy(BitConverter.GetBytes(this.success), 0, segment.Array, segment.Offset + count, sizeof(bool));
+		count += sizeof(bool);
         success &= BitConverter.TryWriteBytes(s, count);
         if (success == false) 
             return null;

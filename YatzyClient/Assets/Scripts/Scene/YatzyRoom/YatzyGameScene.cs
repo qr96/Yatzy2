@@ -69,6 +69,7 @@ public class YatzyGameScene : MonoBehaviour
         }
 
         gameResult.SetRestartBtnListener(() => InitGame());
+        gameResult.SetLeaveBtnListener(() => OnClickLeaveRoom());
 
         EnableDiceButton(false);
         EnableRecordScoreButton(false);

@@ -35,6 +35,10 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.ToS_ReqEnterSingleRoom, PacketHandler.ToS_ReqEnterSingleRoomHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReqLeaveSingleRoom, MakePacket<ToS_ReqLeaveSingleRoom>);
 		_handler.Add((ushort)PacketID.ToS_ReqLeaveSingleRoom, PacketHandler.ToS_ReqLeaveSingleRoomHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_ReqDevilCastleInfo, MakePacket<ToS_ReqDevilCastleInfo>);
+		_handler.Add((ushort)PacketID.ToS_ReqDevilCastleInfo, PacketHandler.ToS_ReqDevilCastleInfoHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_ReqOpenDevilCastle, MakePacket<ToS_ReqOpenDevilCastle>);
+		_handler.Add((ushort)PacketID.ToS_ReqOpenDevilCastle, PacketHandler.ToS_ReqOpenDevilCastleHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReqRoomInfo, MakePacket<ToS_ReqRoomInfo>);
 		_handler.Add((ushort)PacketID.ToS_ReqRoomInfo, PacketHandler.ToS_ReqRoomInfoHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReadyToStart, MakePacket<ToS_ReadyToStart>);

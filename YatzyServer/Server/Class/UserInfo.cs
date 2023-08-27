@@ -11,6 +11,13 @@ namespace Server
         public string nickName;
         public long money;
         public long ruby;
-        public int devilCastleLevel;
+
+        public DevilCastleInfo devilCastleInfo = new DevilCastleInfo();
+    }
+
+    public class DevilCastleInfo
+    {
+        public bool opened;
+        public int level;
     }
 }

@@ -8,10 +8,16 @@ public class GameResultPopup : MonoBehaviour
 {
     public TextMeshProUGUI resultText;
     Action onClickRestart;
+    Action onClickLeave;
 
     public void SetRestartBtnListener(Action onClick)
     {
         onClickRestart = onClick;
+    }
+
+    public void SetLeaveBtnListener(Action onClick)
+    {
+        onClickLeave = onClick;
     }
 
     public void ShowResult(bool draw, bool win)
@@ -36,8 +42,6 @@ public class GameResultPopup : MonoBehaviour
     public void OnClickLeave()
     {
         ErrorManager.Instance.ShowLoadingIndicator();
-
-        ToS_ReqLeaveRoom packet = new ToS_ReqLeaveRoom();
-        NetworkManager.Instance.Send(packet.Write());
+        if (onClickLeave != null) onClickLeave();
     }
 }

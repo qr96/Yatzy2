@@ -84,6 +84,22 @@ class PacketHandler
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
+    public static void ToC_ResDevilCastleInfoHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_ResDevilCastleInfoHandler");
+
+        if (actionDic[(PacketID)packet.Protocol] != null)
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
+
+    public static void ToC_ResOpenDevilCastleHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_ResOpenDevilCastleHandler");
+
+        if (actionDic[(PacketID)packet.Protocol] != null)
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
+
 
     // ROOM
 

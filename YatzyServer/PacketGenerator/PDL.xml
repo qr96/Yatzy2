@@ -49,6 +49,19 @@
   </packet>
   <packet name="ToC_ResLeaveSingleRoom">
   </packet>
+  <packet name="ToS_ReqDevilCastleInfo">
+  </packet>
+  <packet name="ToC_ResDevilCastleInfo">
+    <bool name="isOpened"/>
+    <int name="level"/>
+    <int name="reward"/>
+  </packet>
+  <packet name="ToS_ReqOpenDevilCastle">
+  </packet>
+  <packet name="ToC_ResOpenDevilCastle">
+    <bool name="success"/>
+  </packet>
+  
   
   <!-- 게임 룸 -->
   <packet name="ToS_ReqRoomInfo">
