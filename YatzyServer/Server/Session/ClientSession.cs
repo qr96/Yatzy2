@@ -52,6 +52,13 @@ namespace Server
                 GameRoom = null;
             }
 
+            if(YatzySingleGame != null)
+            {
+                if (YatzySingleGame.gameEnd == false)
+                    DataManager.Instance.DevilCastleLevelReset(nickName);
+                YatzySingleGame = null;
+            }
+
             Console.WriteLine($"OnDisconnected : {endPoint}");
         }
 

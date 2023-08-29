@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static ToC_ResRoomInfo;
 
 namespace Server
 {
@@ -62,6 +61,24 @@ namespace Server
                 info.money -= 1000;
                 info.devilCastleInfo.opened = true;
 
+                return true;
+            }
+        }
+
+        public bool GetDevilCastleReward(string nickName)
+        {
+            lock (_userInfoDic)
+            {
+                UserInfo info;
+                _userInfoDic.TryGetValue(nickName, out info);
+
+                if (info == null) return false;
+
+                if (info.devilCastleInfo.level <= 0) return false;
+
+                info.money += 1000 * (long)Math.Pow(2, info.devilCastleInfo.level);
+                info.devilCastleInfo.level = 0;
+                info.devilCastleInfo.opened = false;
                 return true;
             }
         }

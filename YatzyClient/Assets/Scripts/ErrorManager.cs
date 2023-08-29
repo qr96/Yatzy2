@@ -85,6 +85,7 @@ public class ErrorManager : MonoBehaviour
         errorPopupTitle.text = title;
         errorPopupDesc.text = desc;
 
+        errorPopupOk.onClick.RemoveAllListeners();
         if (onClick != null)
             errorPopupOk.onClick.AddListener(() => onClick());
         errorPopupOk.onClick.AddListener(() => HidePopup());
@@ -97,6 +98,7 @@ public class ErrorManager : MonoBehaviour
         questionPopupTitle.text = title;
         questionPopupDesc.text = desc;
 
+        questionPopupOk.onClick.RemoveAllListeners();
         if (onClickOk != null)
             questionPopupOk.onClick.AddListener(() => onClickOk());
         questionPopupOk.onClick.AddListener(() => HideQuestionPopup());

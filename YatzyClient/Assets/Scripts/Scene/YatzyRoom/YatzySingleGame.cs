@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class YatzySingleGame : MonoBehaviour
@@ -43,6 +44,7 @@ public class YatzySingleGame : MonoBehaviour
         PacketHandler.AddAction(PacketID.ToC_SingleStartGame, RecvStartGame);
         PacketHandler.AddAction(PacketID.ToC_SingleDiceResult, RecvDiceResult);
         PacketHandler.AddAction(PacketID.ToC_SingleMobPlayResult, RecvNpcPlayResult);
+        PacketHandler.AddAction(PacketID.ToC_ResLeaveSingleRoom, RecvLeaveSingleRoom);
 
         scoreBoard0.SetListener(() => CheckAllScoreButton());
         scoreBoard1.SetListener(() => CheckAllScoreButton());
@@ -58,7 +60,11 @@ public class YatzySingleGame : MonoBehaviour
         }
 
         gameResult.SetRestartBtnListener(() => InitGame());
-        gameResult.SetLeaveBtnListener(() => OnClickLeaveRoom());
+        gameResult.SetLeaveBtnListener(() =>
+        {
+            ErrorManager.Instance.ShowLoadingIndicator();
+            ReqLeaveRoom();
+        });
 
         EnableDiceButton(false);
         EnableRecordScoreButton(false);
@@ -77,6 +83,7 @@ public class YatzySingleGame : MonoBehaviour
         PacketHandler.RemoveAction(PacketID.ToC_SingleStartGame);
         PacketHandler.RemoveAction(PacketID.ToC_SingleDiceResult);
         PacketHandler.RemoveAction(PacketID.ToC_SingleMobPlayResult);
+        PacketHandler.RemoveAction(PacketID.ToC_ResLeaveSingleRoom);
     }
 
     // Packets
@@ -89,6 +96,8 @@ public class YatzySingleGame : MonoBehaviour
     void RecvSingleRoomInfo(IPacket packet)
     {
         ToC_ResSingleRoomInfo res = packet as ToC_ResSingleRoomInfo;
+        SetUserNicknames(res.userName, res.mobName);
+
         ReqReadyToStart();
 
         ErrorManager.Instance.HideLoadingIndicator();
@@ -191,6 +200,13 @@ public class YatzySingleGame : MonoBehaviour
         NetworkManager.Instance.Send(req.Write());
     }
 
+    void RecvLeaveSingleRoom(IPacket packet)
+    {
+        ToC_ResLeaveSingleRoom res = packet as ToC_ResLeaveSingleRoom;
+        ErrorManager.Instance.ShowLoadingIndicator();
+        SceneManager.LoadScene(1);
+    }
+
 
     // Scene Setting
     void InitGame()
@@ -207,6 +223,12 @@ public class YatzySingleGame : MonoBehaviour
         EnableDiceButton(false);
         EnableRecordScoreButton(false);
         InitPlayerTurnLight();
+    }
+
+    void SetUserNicknames(string user0, string user1)
+    {
+        playerNickName0.text = user0;
+        playerNickName1.text = user1;
     }
 
     void EnableDiceButton(bool enable)
@@ -424,8 +446,11 @@ public class YatzySingleGame : MonoBehaviour
 
     public void OnClickLeaveRoom()
     {
-        ErrorManager.Instance.ShowLoadingIndicator();
-        ReqLeaveRoom();
+        ErrorManager.Instance.ShowQuestionPopup("안내", "정말로 기권하고 나가시겠습니까? 게임이 패배처리 됩니다.", () =>
+        {
+            ErrorManager.Instance.ShowLoadingIndicator();
+            ReqLeaveRoom();
+        });
     }
 
     public void OnClickRollDice()

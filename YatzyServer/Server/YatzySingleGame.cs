@@ -12,6 +12,7 @@ namespace Server
     {
         public int roomID;
         public string roomName;
+        public bool gameEnd;
 
         ClientSession _session;
         JobQueue _jobQueue = new JobQueue();
@@ -21,15 +22,18 @@ namespace Server
 
         int _playerCount = 2;
 
-        int gameTurn;
+        int _gameTurn;
         int _diceCount;
         int[] _dices = new int[5];
 
-        public YatzySingleGame(ClientSession session)
+        Action<int> onEndGame;
+
+        public YatzySingleGame(ClientSession session, Action<int> onEndGame)
         {
             this._session = session;
             _playerGameInfoDic[0] = new PlayerGameInfo();
             _playerGameInfoDic[1] = new PlayerGameInfo();
+            this.onEndGame = onEndGame;
         }
 
         public void Push(Action job)
@@ -47,7 +51,8 @@ namespace Server
         public void StartGame(ClientSession session)
         {
             _diceCount = 3;
-            gameTurn = 0;
+            _gameTurn = 0;
+            gameEnd = false;
 
             UniCast(new ToC_SingleStartGame());
         }
@@ -92,7 +97,7 @@ namespace Server
 
         void NpcPlay()
         {
-            gameTurn += 2;
+            _gameTurn += 2;
             _diceCount = 3;
 
             ToC_SingleMobPlayResult playResult = new ToC_SingleMobPlayResult();
@@ -135,21 +140,25 @@ namespace Server
 
             Push(() => UniCast(playResult));
 
-            if (gameTurn >= 24)
+            if (_gameTurn == 24)
                 Push(() => EndGame());
         }
 
         void EndGame()
         {
-            int winner = -1;
-            bool drawGame = false;
+            int result = 1; // 0 승리, 1 패배, 2 무승부
 
             if (_playerGameInfoDic[0].GetScoreSum() > _playerGameInfoDic[1].GetScoreSum())
-                winner = 0;
+                result = 0;
             else if (_playerGameInfoDic[0].GetScoreSum() == _playerGameInfoDic[1].GetScoreSum())
-                drawGame = true;
+                result = 2;
             else
-                winner = 1;
+                result = 1;
+
+            if (onEndGame != null)
+                onEndGame(result);
+
+            gameEnd = true;
         }
     }
 }

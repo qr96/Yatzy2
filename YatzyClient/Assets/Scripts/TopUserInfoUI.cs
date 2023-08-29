@@ -21,7 +21,7 @@ public class TopUserInfoUI : MonoBehaviour
         PacketHandler.RemoveAction(PacketID.ToS_ReqMyInfo);
     }
 
-    void ReqUserInfo()
+    public void ReqUserInfo()
     {
         ToS_ReqMyInfo req = new ToS_ReqMyInfo();
         NetworkManager.Instance.Send(req.Write());

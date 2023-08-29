@@ -26,28 +26,30 @@ public enum PacketID
 	ToC_ResDevilCastleInfo = 18,
 	ToS_ReqOpenDevilCastle = 19,
 	ToC_ResOpenDevilCastle = 20,
-	ToS_ReqRoomInfo = 21,
-	ToC_ResRoomInfo = 22,
-	ToC_PlayerEnterRoom = 23,
-	ToS_ReadyToStart = 24,
-	ToC_PlayerTurn = 25,
-	ToS_RollDice = 26,
-	ToC_DiceResult = 27,
-	ToS_WriteScore = 28,
-	ToC_WriteScore = 29,
-	ToC_EndGame = 30,
-	ToS_LockDice = 31,
-	ToC_LockDice = 32,
-	ToS_SelectScore = 33,
-	ToC_SelectScore = 34,
-	ToS_ReqSingleRoomInfo = 35,
-	ToC_ResSingleRoomInfo = 36,
-	ToS_SingleReadyToStart = 37,
-	ToC_SingleStartGame = 38,
-	ToS_SingleRollDice = 39,
-	ToC_SingleDiceResult = 40,
-	ToS_SingleWriteScore = 41,
-	ToC_SingleMobPlayResult = 42,
+	ToS_ReqGetDevilCastleReward = 21,
+	ToC_ResGetDevilCastleReward = 22,
+	ToS_ReqRoomInfo = 23,
+	ToC_ResRoomInfo = 24,
+	ToC_PlayerEnterRoom = 25,
+	ToS_ReadyToStart = 26,
+	ToC_PlayerTurn = 27,
+	ToS_RollDice = 28,
+	ToC_DiceResult = 29,
+	ToS_WriteScore = 30,
+	ToC_WriteScore = 31,
+	ToC_EndGame = 32,
+	ToS_LockDice = 33,
+	ToC_LockDice = 34,
+	ToS_SelectScore = 35,
+	ToC_SelectScore = 36,
+	ToS_ReqSingleRoomInfo = 37,
+	ToC_ResSingleRoomInfo = 38,
+	ToS_SingleReadyToStart = 39,
+	ToC_SingleStartGame = 40,
+	ToS_SingleRollDice = 41,
+	ToC_SingleDiceResult = 42,
+	ToS_SingleWriteScore = 43,
+	ToC_SingleMobPlayResult = 44,
 	
 }
 
@@ -889,6 +891,80 @@ class ToC_ResOpenDevilCastle : IPacket
     }
 }
 
+class ToS_ReqGetDevilCastleReward : IPacket
+{
+    
+
+    public ushort Protocol { get { return (ushort)PacketID.ToS_ReqGetDevilCastleReward; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToS_ReqGetDevilCastleReward);
+        count += sizeof(ushort);
+        
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToC_ResGetDevilCastleReward : IPacket
+{
+    public bool success;
+
+    public ushort Protocol { get { return (ushort)PacketID.ToC_ResGetDevilCastleReward; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        this.success = BitConverter.ToBoolean(segment.Array, segment.Offset + count);
+		count += sizeof(bool);
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_ResGetDevilCastleReward);
+        count += sizeof(ushort);
+        Array.Copy(BitConverter.GetBytes(this.success), 0, segment.Array, segment.Offset + count, sizeof(bool));
+		count += sizeof(bool);
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
 class ToS_ReqRoomInfo : IPacket
 {
     
@@ -1603,7 +1679,8 @@ class ToS_ReqSingleRoomInfo : IPacket
 
 class ToC_ResSingleRoomInfo : IPacket
 {
-    public string mobName;
+    public string userName;
+	public string mobName;
 
     public ushort Protocol { get { return (ushort)PacketID.ToC_ResSingleRoomInfo; } }
 
@@ -1615,7 +1692,11 @@ class ToC_ResSingleRoomInfo : IPacket
 
         count += sizeof(ushort);
         count += sizeof(ushort);
-        ushort mobNameLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+        ushort userNameLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+		count += sizeof(ushort);
+		this.userName = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, userNameLen);
+		count += userNameLen;
+		ushort mobNameLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
 		count += sizeof(ushort);
 		this.mobName = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, mobNameLen);
 		count += mobNameLen;
@@ -1632,7 +1713,11 @@ class ToC_ResSingleRoomInfo : IPacket
         count += sizeof(ushort);
         success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_ResSingleRoomInfo);
         count += sizeof(ushort);
-        ushort mobNameLen = (ushort)Encoding.Unicode.GetBytes(this.mobName, 0, this.mobName.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+        ushort userNameLen = (ushort)Encoding.Unicode.GetBytes(this.userName, 0, this.userName.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes(userNameLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		count += userNameLen;
+		ushort mobNameLen = (ushort)Encoding.Unicode.GetBytes(this.mobName, 0, this.mobName.Length, segment.Array, segment.Offset + count + sizeof(ushort));
 		Array.Copy(BitConverter.GetBytes(mobNameLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
 		count += mobNameLen;

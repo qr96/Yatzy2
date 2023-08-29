@@ -11,7 +11,8 @@ class PacketHandler
 
     public static void AddAction(PacketID protocol, Action<IPacket> action)
     {
-        actionDic.Add(protocol, action);
+        if (!actionDic.ContainsKey(protocol))
+            actionDic.Add(protocol, action);
     }
 
     public static void RemoveAction(PacketID protocol)
@@ -24,7 +25,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ResRoomListHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -32,7 +33,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ResMyInfoHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -40,7 +41,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ResRoomListHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -48,7 +49,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ResMakeRoomHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -56,7 +57,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ResEnterRoomHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -64,7 +65,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ResLeaveRoomHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -72,7 +73,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ResEnterSingleRoomHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -80,7 +81,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ResEnterSingleRoomHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -88,7 +89,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ResDevilCastleInfoHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -96,7 +97,16 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ResOpenDevilCastleHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
+
+
+    public static void ToC_ResGetDevilCastleRewardHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_ResGetDevilCastleRewardHandler");
+
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -107,7 +117,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ResRoomInfoHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -115,7 +125,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_PlayerEnterRoomHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -123,7 +133,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ResRoomInfoHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -131,7 +141,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_DiceResultHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -139,7 +149,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ScoreUpdateHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -147,7 +157,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_EndGameHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -155,7 +165,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_LockDiceHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -163,7 +173,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_SelectScoreHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -174,7 +184,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_ResSingleRoomInfoHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -182,7 +192,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_SingleStartGameHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -190,7 +200,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_SingleDiceResultHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
@@ -198,7 +208,7 @@ class PacketHandler
     {
         Debug.Log("Recv ToC_SingleMobPlayResultHandler");
 
-        if (actionDic[(PacketID)packet.Protocol] != null)
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 }

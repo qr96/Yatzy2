@@ -61,6 +61,11 @@
   <packet name="ToC_ResOpenDevilCastle">
     <bool name="success"/>
   </packet>
+  <packet name="ToS_ReqGetDevilCastleReward">
+  </packet>
+  <packet name="ToC_ResGetDevilCastleReward">
+    <bool name="success"/>
+  </packet>
   
   
   <!-- 게임 룸 -->
@@ -126,6 +131,7 @@
   <packet name="ToS_ReqSingleRoomInfo">
   </packet>
   <packet name="ToC_ResSingleRoomInfo">
+    <string name="userName"/>
     <string name="mobName"/>
   </packet>
   <packet name="ToS_SingleReadyToStart">

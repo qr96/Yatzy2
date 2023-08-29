@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 560683159}
-  m_IndirectSpecularColor: {r: 0.031470526, g: 0.5766332, b: 0.59187996, a: 1}
+  m_IndirectSpecularColor: {r: 0.031284105, g: 0.5766206, b: 0.591888, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5363,18 +5363,18 @@ PrefabInstance:
     - target: {fileID: 8437687089521000824, guid: 1aea01dd323c20b4dbf909c009f7b63b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1331413135}
+      objectReference: {fileID: 1331413137}
     - target: {fileID: 8437687089521000824, guid: 1aea01dd323c20b4dbf909c009f7b63b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8437687089521000824, guid: 1aea01dd323c20b4dbf909c009f7b63b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: 
+      value: OnClickGetReward
       objectReference: {fileID: 0}
     - target: {fileID: 8437687089521000824, guid: 1aea01dd323c20b4dbf909c009f7b63b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SelectGameTab, Assembly-CSharp
+      value: DevilCastleItem, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8437687089521000824, guid: 1aea01dd323c20b4dbf909c009f7b63b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -7544,6 +7544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 377893208a9f53e4baeb2825ab2f0cd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  topUI: {fileID: 1682861404}
   desc: {fileID: 1572747388}
   openBtn: {fileID: 756535936}
   challegeBtn: {fileID: 1229145921}

@@ -9,6 +9,8 @@ public class LoginScene : MonoBehaviour
 {
     public TextMeshProUGUI nameInput;
 
+    Coroutine loginCo;
+
     private void Start()
     {
         PacketHandler.AddAction(PacketID.ToC_ResLogin, OnRecvLogin);
@@ -28,7 +30,8 @@ public class LoginScene : MonoBehaviour
             return;
         }
 
-        StartCoroutine(WaitForConnect());
+        if (loginCo != null) StopCoroutine(loginCo);
+        loginCo = StartCoroutine(WaitForConnect());
     }
 
     void OnRecvLogin(IPacket packet)
@@ -53,7 +56,9 @@ public class LoginScene : MonoBehaviour
     {
         float waitTime = 0f;
 
-        NetworkManager.Instance.ConnectToServer();
+        if (NetworkManager.Instance._connected == false)
+            NetworkManager.Instance.ConnectToServer();
+
         ErrorManager.Instance.ShowLoadingIndicator();
 
         while (true)
@@ -65,8 +70,7 @@ public class LoginScene : MonoBehaviour
                 SendLogin();
                 yield break;
             }
-                
-
+            
             waitTime += 0.5f;
             if (waitTime > 10f)
             {

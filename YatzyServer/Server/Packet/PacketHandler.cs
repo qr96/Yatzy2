@@ -23,7 +23,7 @@ class PacketHandler
 
         // 닉네임 없으면 만듬
         if (!DataManager.Instance.ExistNickName(loginPacket.nickName))
-            DataManager.Instance.AddUser(new UserInfo() { nickName = loginPacket.nickName, money = 3000, ruby = 0 });
+            DataManager.Instance.AddUser(new UserInfo() { nickName = loginPacket.nickName, money = 10000, ruby = 0 });
 
         GameRoom lobby = clientSession.Lobby;
         lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResLogin() { loginSuccess = true }));
@@ -46,7 +46,6 @@ class PacketHandler
 
     public static void ToS_ReqRoomListHandler(PacketSession session, IPacket packet)
     {
-        Console.WriteLine("ToS_ReqRoomListHandler");
         ClientSession clientSession = session as ClientSession;
 
         if (clientSession.Lobby == null)
@@ -66,7 +65,6 @@ class PacketHandler
 
     public static void ToS_ReqMakeRoomHandler(PacketSession session, IPacket packet)
     {
-        Console.WriteLine("ToS_ReqRoomListHandler");
         ClientSession clientSession = session as ClientSession;
         ToS_ReqMakeRoom newRoom = packet as ToS_ReqMakeRoom;
 
@@ -124,7 +122,11 @@ class PacketHandler
         if (clientSession.Lobby == null) return;
 
         GameRoom lobby = clientSession.Lobby;
-        clientSession.YatzySingleGame = new YatzySingleGame(clientSession);
+        clientSession.YatzySingleGame = new YatzySingleGame(clientSession, (result) =>
+        {
+            if (result == 0) DataManager.Instance.DevilCastleLevelUp(clientSession.nickName);
+            else if (result == 1) DataManager.Instance.DevilCastleLevelReset(clientSession.nickName);
+        });
         lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResEnterSingleRoom()));
     }
 
@@ -132,7 +134,12 @@ class PacketHandler
     {
         ClientSession clientSession = session as ClientSession;
 
-        if (clientSession.YatzySingleGame == null) return;
+        YatzySingleGame singleGame = clientSession.YatzySingleGame;
+        if (singleGame == null) return;
+
+        if (singleGame.gameEnd == false)
+            DataManager.Instance.DevilCastleLevelReset(clientSession.nickName);
+
         clientSession.YatzySingleGame = null;
 
         GameRoom lobby = clientSession.Lobby;
@@ -151,8 +158,9 @@ class PacketHandler
 
         GameRoom lobby = clientSession.Lobby;
         if (clientSession.Lobby == null) return;
-
-        lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResDevilCastleInfo() { isOpened = info.opened, level = info.level, reward = info.level * 1000 }));
+        int reward = (int)Math.Pow(2, info.level) * 1000;
+        if (info.level <= 0) reward = 0;
+        lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResDevilCastleInfo() { isOpened = info.opened, level = info.level, reward = reward }));
     }
 
     public static void ToS_ReqOpenDevilCastleHandler(PacketSession session, IPacket packet)
@@ -167,6 +175,20 @@ class PacketHandler
 
         lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResOpenDevilCastle() { success = result }));
     }
+
+    public static void ToS_ReqGetDevilCastleRewardHandler(PacketSession session, IPacket packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        if (clientSession.Lobby == null) return;
+
+        bool result = DataManager.Instance.GetDevilCastleReward(clientSession.nickName);
+
+        GameRoom lobby = clientSession.Lobby;
+        if (clientSession.Lobby == null) return;
+
+        lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResGetDevilCastleReward() { success = result }));
+    }
+
 
 
     // ROOM
@@ -263,7 +285,6 @@ class PacketHandler
 
     public static void ToS_SelectScoreHandler(PacketSession session, IPacket packet)
     {
-        Console.WriteLine("ToS_SelectScoreHandler");
         ClientSession clientSession = session as ClientSession;
         ToS_SelectScore selectScore = packet as ToS_SelectScore;
         if (clientSession.GameRoom == null)
@@ -279,7 +300,6 @@ class PacketHandler
     // single games
     public static void ToS_ReqSingleRoomInfoHandler(PacketSession session, IPacket packet)
     {
-        Console.WriteLine("ToS_ReqSingleRoomInfoHandler");
         ClientSession clientSession = session as ClientSession;
         ToS_ReqSingleRoomInfo roomInfo = packet as ToS_ReqSingleRoomInfo;
 
@@ -287,12 +307,11 @@ class PacketHandler
         if (roomInfo == null) return;
 
         YatzySingleGame game = clientSession.YatzySingleGame;
-        game.UniCast(new ToC_ResSingleRoomInfo() { mobName = "마몬" });
+        game.UniCast(new ToC_ResSingleRoomInfo() { userName = clientSession.nickName, mobName = "마몬" });
     }
 
     public static void ToS_SingleReadyToStartHandler(PacketSession session, IPacket packet)
     {
-        Console.WriteLine("ToS_SingleReadyToStartHandler");
         ClientSession clientSession = session as ClientSession;
         ToS_SingleReadyToStart ready = packet as ToS_SingleReadyToStart;
 
@@ -305,7 +324,6 @@ class PacketHandler
 
     public static void ToS_SingleRollDiceHandler(PacketSession session, IPacket packet)
     {
-        Console.WriteLine("ToS_SingleRollDiceHandler");
         ClientSession clientSession = session as ClientSession;
         ToS_SingleRollDice diceInfo = packet as ToS_SingleRollDice;
 
@@ -322,7 +340,6 @@ class PacketHandler
 
     public static void ToS_SingleWriteScoreHandler(PacketSession session, IPacket packet)
     {
-        Console.WriteLine("ToS_SingleWriteScoreHandler");
         ClientSession clientSession = session as ClientSession;
         ToS_SingleWriteScore scoreInfo = packet as ToS_SingleWriteScore;
 
