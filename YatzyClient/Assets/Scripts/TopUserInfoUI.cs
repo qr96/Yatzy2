@@ -13,25 +13,30 @@ public class TopUserInfoUI : MonoBehaviour
     {
         PacketHandler.AddAction(PacketID.ToC_ResMyInfo, RecvUserInfo);
 
+        Debug.Log(this.gameObject.name);
         ReqUserInfo();
     }
 
     private void OnDestroy()
     {
-        PacketHandler.RemoveAction(PacketID.ToS_ReqMyInfo);
+        PacketHandler.RemoveAction(PacketID.ToC_ResMyInfo);
+        Debug.Log("Destroyed");
     }
 
     public void ReqUserInfo()
     {
+        Debug.Log("ReqUserInfo");
         ToS_ReqMyInfo req = new ToS_ReqMyInfo();
         NetworkManager.Instance.Send(req.Write());
     }
 
     void RecvUserInfo(IPacket packet)
     {
+        Debug.Log("RecvUserInfo");
         ToC_ResMyInfo res = packet as ToC_ResMyInfo;
         if (res == null) return;
 
+        Debug.Log(nickName.name);
         nickName.text = res.nickName;
         money.text = res.money.ToString();
         ruby.text = res.ruby.ToString();

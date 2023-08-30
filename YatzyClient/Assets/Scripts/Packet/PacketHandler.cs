@@ -13,6 +13,8 @@ class PacketHandler
     {
         if (!actionDic.ContainsKey(protocol))
             actionDic.Add(protocol, action);
+        else
+            Debug.LogError("Already have callback " + protocol.ToString());
     }
 
     public static void RemoveAction(PacketID protocol)

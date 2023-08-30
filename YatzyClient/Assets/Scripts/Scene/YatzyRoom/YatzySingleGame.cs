@@ -386,9 +386,9 @@ public class YatzySingleGame : MonoBehaviour
     {
         for (int i = 0; i < diceResultList.Count; i++)
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
             RollDice(diceResultList[i], 2 - i, 1);
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
 
             if (diceLockList.Count > i)
             {
@@ -406,7 +406,7 @@ public class YatzySingleGame : MonoBehaviour
                         diceToggleList[j].ToggleOn(false);
                         diceViewer.UnLockDice(j);
                     }
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSeconds(0.3f);
                 }
                 Debug.Log(locks);
             }

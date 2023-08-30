@@ -31,6 +31,8 @@ class PacketHandler
 
     public static void ToS_ReqMyInfoHandler(PacketSession session, IPacket packet)
     {
+        Console.Write("ToS_ReqMyInfoHandler");
+
         ClientSession clientSession = session as ClientSession;
         ToS_ReqMyInfo myInfo = packet as ToS_ReqMyInfo;
 

@@ -23,6 +23,9 @@ public class ErrorManager : MonoBehaviour
     public TextMeshProUGUI questionPopupDesc;
     public Button questionPopupOk;
 
+    // ´ëÈ­ ÆË¾÷
+    public ConversationPopup conversationPopup;
+
     Coroutine loadingIndicatorCo;
 
     private void Awake()
@@ -114,5 +117,10 @@ public class ErrorManager : MonoBehaviour
     public void HideQuestionPopup()
     {
         questionPopup.SetActive(false);
+    }
+
+    public void Conversation(string talkerName, List<string> conversation, Action onEnd)
+    {
+        conversationPopup.ShowConversation(talkerName, conversation, onEnd);
     }
 }

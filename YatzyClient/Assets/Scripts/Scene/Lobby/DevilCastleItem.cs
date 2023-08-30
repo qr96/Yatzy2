@@ -127,10 +127,36 @@ public class DevilCastleItem : MonoBehaviour
     // Events
     public void OnClickOpenBtn()
     {
-        ErrorManager.Instance.ShowQuestionPopup("안내", "악마성 컨텐츠를 시작하면 1,000골드가 소모됩니다.\n시작하시겠습니까?", ()=>
+        if (PlayerPrefs.GetInt("FirstDevilCastle", 0) == 0)
         {
-            ReqOpenDevilCastle();
-        });
+            ErrorManager.Instance.Conversation("마몬", new List<string>() {
+                "안녕하신가~\n악마성에 온걸 환영하네~",
+                "나는 마몬이라고 하네",
+                "악마성은 처음인거 같으니 간단하게 설명 해주겠네",
+                "1000골드를 내면 내게 도전을 할 수 있어",
+                "내게 이기면 지불한 골드의 두배로 돌려주겠네",
+                "물론, 이거뿐이라면 자네는 흥미를 느끼지 못할것 같구만",
+                "자네가 내게 이길때마다 보상을 두배로 늘려주겠네",
+                "내게 한 번 이긴다면 2000골드, 두 번 이긴다면 4000골드, 세 번 이기면 8000골드일세",
+                "열 번만 승리한다면 무려 1024000 골드지",
+                "하지만 명심하게. 한 번이라도 패배한다면 자네에게 줄 골드는 없어",
+                "행운을 빌겠네."},
+                () =>
+                {
+                    PlayerPrefs.SetInt("FirstDevilCastle", 1);
+                    ErrorManager.Instance.ShowQuestionPopup("안내", "악마성 컨텐츠를 시작하면 1,000골드가 소모됩니다.\n시작하시겠습니까?", () =>
+                    {
+                        ReqOpenDevilCastle();
+                    });
+                });
+        }
+        else
+        {
+            ErrorManager.Instance.ShowQuestionPopup("안내", "악마성 컨텐츠를 시작하면 1,000골드가 소모됩니다.\n시작하시겠습니까?", () =>
+            {
+                ReqOpenDevilCastle();
+            });
+        }
     }
 
     public void OnClickChallengeBtn()

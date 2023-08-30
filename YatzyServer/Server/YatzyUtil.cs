@@ -261,7 +261,6 @@ namespace Server
                 {
                     if (previewScore[i] > 0) return i;
                 }
-                if (previewScore[6] >= 20) return 6;
 
                 // 마이너 체크. 3개 이상인 경우 등록
                 for (int i = 0; i <= 5; i++)
