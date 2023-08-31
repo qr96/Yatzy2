@@ -40,7 +40,7 @@ public class LoginScene : MonoBehaviour
 
         ToC_ResLogin res = packet as ToC_ResLogin;
         if (res.loginSuccess)
-            SceneManager.LoadScene(1);
+            SceneManager.Instance.MoveScene(1);
     }
 
     void SendLogin()

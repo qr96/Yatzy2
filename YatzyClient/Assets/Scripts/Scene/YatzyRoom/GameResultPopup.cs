@@ -20,10 +20,10 @@ public class GameResultPopup : MonoBehaviour
         onClickLeave = onClick;
     }
 
-    public void ShowResult(bool draw, bool win)
+    public void ShowResult(GameResult result)
     {
-        if (draw) resultText.text = "公铰何";
-        else if (win) resultText.text = "铰府";
+        if (result == GameResult.Draw) resultText.text = "公铰何";
+        else if (result == GameResult.Win) resultText.text = "铰府";
         else resultText.text = "菩硅";
 
         gameObject.SetActive(true);

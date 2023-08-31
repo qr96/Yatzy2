@@ -99,7 +99,7 @@ public class RoomListTab : MonoBehaviour
         if (req == null) return;
 
         if (req.success)
-            SceneManager.LoadScene(2);
+            SceneManager.Instance.MoveScene(2);
         else
         {
             ErrorManager.Instance.HideLoadingIndicator();

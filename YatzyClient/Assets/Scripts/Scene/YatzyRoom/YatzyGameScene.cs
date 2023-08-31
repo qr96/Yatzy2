@@ -141,7 +141,7 @@ public class YatzyGameScene : MonoBehaviour
             if (leaveRoom.leavePlayerIndex == myServerIndex)
             {
                 ErrorManager.Instance.HideLoadingIndicator();
-                SceneManager.LoadScene(1);
+                SceneManager.Instance.MoveScene(1);
             }
             else
             {
@@ -259,9 +259,11 @@ public class YatzyGameScene : MonoBehaviour
         if (endGame == null) return;
 
         if (endGame.drawGame)
-            gameResult.ShowResult(true, false);
+            gameResult.ShowResult(GameResult.Draw);
+        else if (endGame.winner == myServerIndex)
+            gameResult.ShowResult(GameResult.Win);
         else
-            gameResult.ShowResult(false, endGame.winner == myServerIndex);
+            gameResult.ShowResult(GameResult.Defeat);
     }
 
     void RecvLockDice(IPacket packet)

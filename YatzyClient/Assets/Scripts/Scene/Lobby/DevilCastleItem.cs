@@ -34,6 +34,27 @@ public class DevilCastleItem : MonoBehaviour
         PacketHandler.RemoveAction(PacketID.ToC_ResGetDevilCastleReward);
     }
 
+    public void DoMoveSceneEvent(int eventId)
+    {
+        if (eventId == 0)
+        {
+            if (DataCacheManager.Instance.lastDevilCastleResult == GameResult.Defeat)
+                ErrorManager.Instance.Conversation("마몬", new List<string> {
+                    "오잉? 자네 보기보다 별거 없구만~",
+                    "다음엔 더 재밌는 모습을 보여주길 기대하겠네."});
+            else if (DataCacheManager.Instance.lastDevilCastleResult == GameResult.Win)
+                ErrorManager.Instance.Conversation("마몬", new List<string> {
+                    "오오! 자네 꽤 하는구만!",
+                    "더 도전해도 되고, 멈춰도 된다네",
+                    "자네의 끝이 궁금하지 않은가?"});
+            else
+                ErrorManager.Instance.Conversation("마몬", new List<string> {
+                    "재밌는 경기였네!",
+                    "아쉽게도 무승부는 연승으로 치지도 않네",
+                    "대신, 보상도 초기화되지 않지."});
+        }
+    }
+
     // Packets
     void ReqDevilCastleInfo()
     {
@@ -78,7 +99,7 @@ public class DevilCastleItem : MonoBehaviour
     void RecvEnterSingleGame(IPacket packet)
     {
         ToC_ResEnterSingleRoom res = packet as ToC_ResEnterSingleRoom;
-        SceneManager.LoadScene(3);
+        SceneManager.Instance.MoveScene(3);
     }
 
     void SendGetDevilCastleReward()

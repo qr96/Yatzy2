@@ -204,7 +204,7 @@ public class YatzySingleGame : MonoBehaviour
     {
         ToC_ResLeaveSingleRoom res = packet as ToC_ResLeaveSingleRoom;
         ErrorManager.Instance.ShowLoadingIndicator();
-        SceneManager.LoadScene(1);
+        SceneManager.Instance.MoveScene(1, 0);
     }
 
 
@@ -419,12 +419,21 @@ public class YatzySingleGame : MonoBehaviour
         if (nowTurn >= 24)
         {
             if (scoreBoard0.GetTotalScore() > scoreBoard1.GetTotalScore())
-                gameResult.ShowResult(false, true);
+            {
+                DataCacheManager.Instance.lastDevilCastleResult = GameResult.Win;
+                gameResult.ShowResult(GameResult.Win);
+            }
             else if (scoreBoard0.GetTotalScore() == scoreBoard1.GetTotalScore())
-                gameResult.ShowResult(true, true);
+            {
+                DataCacheManager.Instance.lastDevilCastleResult = GameResult.Draw;
+                gameResult.ShowResult(GameResult.Draw);
+            }
             else
-                gameResult.ShowResult(false, false);
-
+            {
+                DataCacheManager.Instance.lastDevilCastleResult = GameResult.Defeat;
+                gameResult.ShowResult(GameResult.Defeat);
+            }
+            
             yield break;
         }
 

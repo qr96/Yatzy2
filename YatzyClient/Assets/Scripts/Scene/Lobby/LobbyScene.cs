@@ -16,20 +16,32 @@ public class LobbyScene : MonoBehaviour
     void Start()
     {
         ErrorManager.Instance.HideLoadingIndicator();
-
-        // Request user Info
-        // name, money, ruby
-        moneyText.text = "0";
-        rubyText.text = "0";
+        DoMoveSceneEvent(SceneManager.Instance.GetEventId());
     }
 
-    private void Update()
+    void Update()
     {
         degree += Time.deltaTime / 2;
         if (degree >= 360)
             degree = 0;
 
         RenderSettings.skybox.SetFloat("_Rotation", degree);
+    }
+
+    void DoMoveSceneEvent(int eventId)
+    {
+        if (eventId < 0) return;
+
+        if (eventId == 0)
+        {
+            ShowDevilCastleItem();
+        }
+    }
+
+    void ShowDevilCastleItem()
+    {
+        selectGameTab.gameObject.SetActive(true);
+        selectGameTab.DoMoveSceneEvent(0);
     }
 
     public void OnClickNormalGame()

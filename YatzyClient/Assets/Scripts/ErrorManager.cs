@@ -119,7 +119,7 @@ public class ErrorManager : MonoBehaviour
         questionPopup.SetActive(false);
     }
 
-    public void Conversation(string talkerName, List<string> conversation, Action onEnd)
+    public void Conversation(string talkerName, List<string> conversation, Action onEnd = null)
     {
         conversationPopup.ShowConversation(talkerName, conversation, onEnd);
     }

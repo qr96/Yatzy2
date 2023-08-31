@@ -67,7 +67,7 @@ public class NetworkManager : MonoBehaviour
         ErrorManager.Instance.ShowLoadingIndicator();
         ErrorManager.Instance.ShowPopup("안내", "서버와 연결이 끊어졌습니다", () =>
         {
-            SceneManager.LoadScene(0);
+            SceneManager.Instance.MoveScene(0);
         });
     }
 }
