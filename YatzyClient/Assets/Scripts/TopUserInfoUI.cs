@@ -36,7 +36,8 @@ public class TopUserInfoUI : MonoBehaviour
         ToC_ResMyInfo res = packet as ToC_ResMyInfo;
         if (res == null) return;
 
-        Debug.Log(nickName.name);
+        DataCacheManager.Instance.myMoney = res.money;
+        DataCacheManager.Instance.myRuby = res.ruby;
         nickName.text = res.nickName;
         money.text = res.money.ToString();
         ruby.text = res.ruby.ToString();

@@ -11,5 +11,8 @@ public class DataCacheManager : MonoBehaviour
         Instance = this;
     }
 
+    public long myMoney = 0;
+    public long myRuby = 0;
+
     public GameResult lastDevilCastleResult = GameResult.None;
 }
