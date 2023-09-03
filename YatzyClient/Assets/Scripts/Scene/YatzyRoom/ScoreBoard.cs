@@ -109,6 +109,8 @@ public class ScoreBoard : MonoBehaviour
             if (scoreList[i].GetScore() > 0)
                 sum += scoreList[i].GetScore();
         }
+        if (GetSubTotalScore() >= 63)
+            sum += 35;
             
         return sum;
     }

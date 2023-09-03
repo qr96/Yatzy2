@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class NavigationBar : MonoBehaviour
 {
     public RectTransform selected;
     public Button shopButton;
-    public Button questButton;
+    public Button profileButton;
     public Button homeButton;
     public Button communityButton;
     public Button settingButton;
@@ -19,7 +20,7 @@ public class NavigationBar : MonoBehaviour
         {
             MoveSelected(-280f);
         });
-        questButton.onClick.AddListener(() =>
+        profileButton.onClick.AddListener(() =>
         {
             MoveSelected(-140f);
         });
@@ -40,5 +41,23 @@ public class NavigationBar : MonoBehaviour
     void MoveSelected(float posX)
     {
         selected.DOAnchorPos(new Vector2(posX, -15f), 0.2f);
+    }
+
+    public void SetShopButtonListener(Action onClick)
+    {
+        if (onClick != null)
+            shopButton.onClick.AddListener(() => onClick());
+    }
+
+    public void SetProfileButtonListener(Action onClick)
+    {
+        if (onClick != null)
+            profileButton.onClick.AddListener(() => onClick());
+    }
+
+    public void SetHomeButtonListener(Action onClick)
+    {
+        if (onClick != null)
+            homeButton.onClick.AddListener(() => onClick());
     }
 }

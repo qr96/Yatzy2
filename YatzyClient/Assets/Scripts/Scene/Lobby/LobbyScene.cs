@@ -7,14 +7,26 @@ public class LobbyScene : MonoBehaviour
 {
     public RoomListTab roomListTab;
     public SelectGameTab selectGameTab;
+    public NavigationBar navigationBar;
 
-    public TextMeshProUGUI moneyText;
-    public TextMeshProUGUI rubyText;
+    public GameObject mainTab;
+    public GameObject profileTab;
 
     float degree;
 
     void Start()
     {
+        navigationBar.SetHomeButtonListener(() =>
+        {
+            HideAllTab();
+            mainTab.SetActive(true);
+        });
+        navigationBar.SetProfileButtonListener(() =>
+        {
+            HideAllTab();
+            profileTab.SetActive(true);
+        });
+
         ErrorManager.Instance.HideLoadingIndicator();
         DoMoveSceneEvent(SceneManager.Instance.GetEventId());
     }
@@ -42,6 +54,12 @@ public class LobbyScene : MonoBehaviour
     {
         selectGameTab.gameObject.SetActive(true);
         selectGameTab.DoMoveSceneEvent(0);
+    }
+
+    void HideAllTab()
+    {
+        mainTab.SetActive(false);
+        profileTab.SetActive(false);
     }
 
     public void OnClickNormalGame()

@@ -339,11 +339,8 @@ public class YatzyGameScene : MonoBehaviour
             total = scoreBoard0.GetTotalScore();
 
             subTotalScore0.text = $"{subTotal}/63";
-            if (subTotal >= 63)
-            {
-                total += 35;
-                bonusScore0.text = "+35";
-            }
+            if (subTotal >= 63) bonusScore0.text = "+35";
+
             totalScore0.text = total.ToString();
         }
         else if (player == 1)
@@ -352,11 +349,8 @@ public class YatzyGameScene : MonoBehaviour
             total = scoreBoard1.GetTotalScore();
 
             subTotalScore1.text = $"{subTotal}/63";
-            if (subTotal >= 63)
-            {
-                total += 35;
-                bonusScore1.text = "+35";
-            }
+            if (subTotal >= 63) bonusScore1.text = "+35";
+
             totalScore1.text = total.ToString();
         }
     }

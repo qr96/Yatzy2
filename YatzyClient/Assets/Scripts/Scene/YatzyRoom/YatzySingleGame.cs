@@ -378,7 +378,7 @@ public class YatzySingleGame : MonoBehaviour
                 }
             }
 
-            EnableAllUnlockDices(true);
+            EnableAllUnlockDices(myServerIndex == playerIndex);
         });
     }
 
