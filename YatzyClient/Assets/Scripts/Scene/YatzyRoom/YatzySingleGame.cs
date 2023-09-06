@@ -258,11 +258,7 @@ public class YatzySingleGame : MonoBehaviour
             total = scoreBoard0.GetTotalScore();
 
             subTotalScore0.text = $"{subTotal}/63";
-            if (subTotal >= 63)
-            {
-                total += 35;
-                bonusScore0.text = "+35";
-            }
+            if (subTotal >= 63) bonusScore0.text = "+35";
             totalScore0.text = total.ToString();
         }
         else if (player == 1)
@@ -271,11 +267,7 @@ public class YatzySingleGame : MonoBehaviour
             total = scoreBoard1.GetTotalScore();
 
             subTotalScore1.text = $"{subTotal}/63";
-            if (subTotal >= 63)
-            {
-                total += 35;
-                bonusScore1.text = "+35";
-            }
+            if (subTotal >= 63) bonusScore1.text = "+35";
             totalScore1.text = total.ToString();
         }
     }
@@ -327,10 +319,12 @@ public class YatzySingleGame : MonoBehaviour
     void CheckAllScoreButton()
     {
         int selected = -1;
-
+        int score = -1;
+        
         selected = scoreBoard0.SelectedIndex();
+        score = scoreBoard0.GetScore(selected);
 
-        EnableRecordScoreButton(selected >= 0);
+        EnableRecordScoreButton(selected >= 0 && score < 0);
         if (selected == -1) return;
 
         AllScoreToggleOff();
@@ -369,12 +363,16 @@ public class YatzySingleGame : MonoBehaviour
                 if (playerIndex == 0)
                 {
                     scoreBoard0.SetPreviewScore(i, YatzyUtil.GetScore(diceList, i));
-                    scoreBoard0.SetEnableScore(i);
+
+                    if (playerIndex == myServerIndex && scoreBoard0.GetScore(i) < 0)
+                        scoreBoard0.SetEnableScore(i);
                 }
                 else if (playerIndex == 1)
                 {
                     scoreBoard1.SetPreviewScore(i, YatzyUtil.GetScore(diceList, i));
-                    scoreBoard1.SetEnableScore(i);
+
+                    if (playerIndex == myServerIndex && scoreBoard1.GetScore(i) < 0)
+                        scoreBoard1.SetEnableScore(i);
                 }
             }
 

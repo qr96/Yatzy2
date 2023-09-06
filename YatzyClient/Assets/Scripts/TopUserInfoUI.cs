@@ -38,7 +38,7 @@ public class TopUserInfoUI : MonoBehaviour
 
         DataCacheManager.Instance.myMoney = res.money;
         DataCacheManager.Instance.myRuby = res.ruby;
-        nickName.text = res.nickName;
+        //nickName.text = res.nickName;
         money.text = res.money.ToString();
         ruby.text = res.ruby.ToString();
     }

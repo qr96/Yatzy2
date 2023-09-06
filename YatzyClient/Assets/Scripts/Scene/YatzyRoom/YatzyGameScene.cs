@@ -402,11 +402,20 @@ public class YatzyGameScene : MonoBehaviour
     void CheckAllScoreButton()
     {
         int selected = -1;
+        int score = -1;
 
-        if (myServerIndex == 0) selected = scoreBoard0.SelectedIndex();
-        else if (myServerIndex == 1) selected = scoreBoard1.SelectedIndex();
+        if (myServerIndex == 0)
+        {
+            selected = scoreBoard0.SelectedIndex();
+            score = scoreBoard0.GetScore(selected);
+        }
+        else if (myServerIndex == 1)
+        {
+            selected = scoreBoard1.SelectedIndex();
+            score = scoreBoard1.GetScore(selected);
+        }
 
-        EnableRecordScoreButton(selected >= 0);
+        EnableRecordScoreButton(selected >= 0 && score < 0);
         if (selected == -1) return;
 
         ToS_SelectScore toS_SelectScore = new ToS_SelectScore();

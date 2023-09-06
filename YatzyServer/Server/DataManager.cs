@@ -16,6 +16,8 @@ namespace Server
 
         public Dictionary<string, UserInfo> _userInfoDic = new Dictionary<string, UserInfo>();
 
+
+
         public bool AddUser(UserInfo userInfo)
         {
             lock (_userInfoDic)
