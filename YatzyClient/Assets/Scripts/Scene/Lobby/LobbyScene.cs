@@ -12,6 +12,8 @@ public class LobbyScene : MonoBehaviour
     public GameObject mainTab;
     public GameObject profileTab;
 
+    public RankingPopup rankingPopup;
+
     float degree;
 
     void Start()
@@ -70,5 +72,10 @@ public class LobbyScene : MonoBehaviour
     public void OnClickSingleGame()
     {
         selectGameTab.gameObject.SetActive(true);
+    }
+
+    public void OnClickRanking()
+    {
+        rankingPopup.Show();
     }
 }

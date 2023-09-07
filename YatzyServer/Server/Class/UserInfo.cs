@@ -19,5 +19,6 @@ namespace Server
     {
         public bool opened;
         public int level;
+        public int maxLevel;
     }
 }

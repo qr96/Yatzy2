@@ -962,7 +962,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dfb3ff37e5aae94d92d7fa446abc966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isDev: 0
+  _isDev: 1
   _connected: 0
 --- !u!4 &400752003
 Transform:

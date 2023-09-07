@@ -191,6 +191,23 @@ class PacketHandler
         lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResGetDevilCastleReward() { success = result }));
     }
 
+    public static void ToS_ReqDevilCastleRankingHandler(PacketSession session, IPacket packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        if (clientSession.Lobby == null) return;
+
+         GameRoom lobby = clientSession.Lobby;
+        if (clientSession.Lobby == null) return;
+
+        List<Tuple<string, int>> ranking = DataManager.Instance.GetDevilCastleRanking();
+        ToC_RecDevilCastleRanking res = new ToC_RecDevilCastleRanking();
+        foreach (var rank in ranking)
+        {
+            res.rankings.Add(new ToC_RecDevilCastleRanking.Ranking() { userName = rank.Item1, maxLevel = rank.Item2 });
+        }
+
+        lobby.Push(() => lobby.UniCast(clientSession, res));
+    }
 
 
     // ROOM

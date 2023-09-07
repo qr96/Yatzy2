@@ -28,28 +28,30 @@ public enum PacketID
 	ToC_ResOpenDevilCastle = 20,
 	ToS_ReqGetDevilCastleReward = 21,
 	ToC_ResGetDevilCastleReward = 22,
-	ToS_ReqRoomInfo = 23,
-	ToC_ResRoomInfo = 24,
-	ToC_PlayerEnterRoom = 25,
-	ToS_ReadyToStart = 26,
-	ToC_PlayerTurn = 27,
-	ToS_RollDice = 28,
-	ToC_DiceResult = 29,
-	ToS_WriteScore = 30,
-	ToC_WriteScore = 31,
-	ToC_EndGame = 32,
-	ToS_LockDice = 33,
-	ToC_LockDice = 34,
-	ToS_SelectScore = 35,
-	ToC_SelectScore = 36,
-	ToS_ReqSingleRoomInfo = 37,
-	ToC_ResSingleRoomInfo = 38,
-	ToS_SingleReadyToStart = 39,
-	ToC_SingleStartGame = 40,
-	ToS_SingleRollDice = 41,
-	ToC_SingleDiceResult = 42,
-	ToS_SingleWriteScore = 43,
-	ToC_SingleMobPlayResult = 44,
+	ToS_ReqDevilCastleRanking = 23,
+	ToC_RecDevilCastleRanking = 24,
+	ToS_ReqRoomInfo = 25,
+	ToC_ResRoomInfo = 26,
+	ToC_PlayerEnterRoom = 27,
+	ToS_ReadyToStart = 28,
+	ToC_PlayerTurn = 29,
+	ToS_RollDice = 30,
+	ToC_DiceResult = 31,
+	ToS_WriteScore = 32,
+	ToC_WriteScore = 33,
+	ToC_EndGame = 34,
+	ToS_LockDice = 35,
+	ToC_LockDice = 36,
+	ToS_SelectScore = 37,
+	ToC_SelectScore = 38,
+	ToS_ReqSingleRoomInfo = 39,
+	ToC_ResSingleRoomInfo = 40,
+	ToS_SingleReadyToStart = 41,
+	ToC_SingleStartGame = 42,
+	ToS_SingleRollDice = 43,
+	ToC_SingleDiceResult = 44,
+	ToS_SingleWriteScore = 45,
+	ToC_SingleMobPlayResult = 46,
 	
 }
 
@@ -958,6 +960,116 @@ class ToC_ResGetDevilCastleReward : IPacket
         count += sizeof(ushort);
         Array.Copy(BitConverter.GetBytes(this.success), 0, segment.Array, segment.Offset + count, sizeof(bool));
 		count += sizeof(bool);
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToS_ReqDevilCastleRanking : IPacket
+{
+    
+
+    public ushort Protocol { get { return (ushort)PacketID.ToS_ReqDevilCastleRanking; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToS_ReqDevilCastleRanking);
+        count += sizeof(ushort);
+        
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false) 
+            return null;
+        return SendBufferHelper.Close(count);
+    }
+}
+
+class ToC_RecDevilCastleRanking : IPacket
+{
+    public class Ranking
+	{
+		public string userName;
+		public int maxLevel;
+	
+		public void Read(ArraySegment<byte> segment, ref ushort count)
+		{
+			ushort userNameLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+			count += sizeof(ushort);
+			this.userName = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, userNameLen);
+			count += userNameLen;
+			this.maxLevel = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+			count += sizeof(int);
+		}
+	
+		public bool Write(ArraySegment<byte> segment, ref ushort count)
+		{
+			bool success = true;
+			ushort userNameLen = (ushort)Encoding.Unicode.GetBytes(this.userName, 0, this.userName.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+			Array.Copy(BitConverter.GetBytes(userNameLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+			count += sizeof(ushort);
+			count += userNameLen;
+			Array.Copy(BitConverter.GetBytes(this.maxLevel), 0, segment.Array, segment.Offset + count, sizeof(int));
+			count += sizeof(int);
+			return success;
+		}	
+	}
+	public List<Ranking> rankings = new List<Ranking>();
+
+    public ushort Protocol { get { return (ushort)PacketID.ToC_RecDevilCastleRanking; } }
+
+    public void Read(ArraySegment<byte> segment)
+    {
+        ushort count = 0;
+
+        ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        count += sizeof(ushort);
+        this.rankings.Clear();
+		ushort rankingLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+		count += sizeof(ushort);
+		for (int i = 0; i < rankingLen; i++)
+		{
+			Ranking ranking = new Ranking();
+			ranking.Read(segment, ref count);
+			rankings.Add(ranking);
+		}
+    }
+
+    public ArraySegment<byte> Write()
+    {
+        ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_RecDevilCastleRanking);
+        count += sizeof(ushort);
+        Array.Copy(BitConverter.GetBytes((ushort)this.rankings.Count), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		foreach (Ranking ranking in this.rankings)
+			ranking.Write(segment, ref count);
         success &= BitConverter.TryWriteBytes(s, count);
         if (success == false) 
             return null;

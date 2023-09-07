@@ -16,8 +16,6 @@ namespace Server
 
         public Dictionary<string, UserInfo> _userInfoDic = new Dictionary<string, UserInfo>();
 
-
-
         public bool AddUser(UserInfo userInfo)
         {
             lock (_userInfoDic)
@@ -95,6 +93,8 @@ namespace Server
                 if (info == null) return;
 
                 info.devilCastleInfo.level++;
+                if (info.devilCastleInfo.maxLevel < info.devilCastleInfo.level)
+                    info.devilCastleInfo.maxLevel = info.devilCastleInfo.level;
             }
         }
 
@@ -110,6 +110,22 @@ namespace Server
                 info.devilCastleInfo.level = 0;
                 info.devilCastleInfo.opened = false;
             }
+        }
+
+        public List<Tuple<string, int>> GetDevilCastleRanking()
+        {
+            List<Tuple<string, int>> ranking = new List<Tuple<string, int>>();
+
+            lock (_userInfoDic)
+            {
+                foreach (var userInfo in _userInfoDic.Values)
+                {
+                    ranking.Add(new Tuple<string, int>(userInfo.nickName, userInfo.devilCastleInfo.maxLevel));
+                }
+            }
+
+            ranking.Sort((a, b) => b.Item2.CompareTo(a.Item2));
+            return ranking;
         }
     }
 }

@@ -41,6 +41,8 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.ToS_ReqOpenDevilCastle, PacketHandler.ToS_ReqOpenDevilCastleHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReqGetDevilCastleReward, MakePacket<ToS_ReqGetDevilCastleReward>);
 		_handler.Add((ushort)PacketID.ToS_ReqGetDevilCastleReward, PacketHandler.ToS_ReqGetDevilCastleRewardHandler);
+		_makeFunc.Add((ushort)PacketID.ToS_ReqDevilCastleRanking, MakePacket<ToS_ReqDevilCastleRanking>);
+		_handler.Add((ushort)PacketID.ToS_ReqDevilCastleRanking, PacketHandler.ToS_ReqDevilCastleRankingHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReqRoomInfo, MakePacket<ToS_ReqRoomInfo>);
 		_handler.Add((ushort)PacketID.ToS_ReqRoomInfo, PacketHandler.ToS_ReqRoomInfoHandler);
 		_makeFunc.Add((ushort)PacketID.ToS_ReadyToStart, MakePacket<ToS_ReadyToStart>);

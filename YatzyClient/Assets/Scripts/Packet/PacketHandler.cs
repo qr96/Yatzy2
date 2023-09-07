@@ -112,6 +112,15 @@ class PacketHandler
             actionDic[(PacketID)packet.Protocol].Invoke(packet);
     }
 
+    public static void ToC_RecDevilCastleRankingHandler(PacketSession session, IPacket packet)
+    {
+        Debug.Log("Recv ToC_ResGetDevilCastleRewardHandler");
+
+        if (actionDic.ContainsKey((PacketID)packet.Protocol))
+            actionDic[(PacketID)packet.Protocol].Invoke(packet);
+    }
+
+
 
     // ROOM
 
