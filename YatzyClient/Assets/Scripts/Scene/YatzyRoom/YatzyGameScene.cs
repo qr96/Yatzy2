@@ -35,6 +35,8 @@ public class YatzyGameScene : MonoBehaviour
 
     public GameResultPopup gameResult;
 
+    public Animation yachtEffect;
+
     int myServerIndex = -1;
     int nowTurn = 0;
     
@@ -229,6 +231,22 @@ public class YatzyGameScene : MonoBehaviour
 
                 if (diceResult.playerIndex == myServerIndex)
                     EnableAllUnlockDices(true);
+
+                // yacht ¿Ã∆Â∆Æ
+                bool yacht = true;
+                for (int i = 0; i < dices.Count - 1; i++)
+                {
+                    if (dices[i] != dices[i + 1])
+                    {
+                        yacht = false;
+                        break;
+                    }
+                }
+                if (yacht)
+                {
+                    Debug.Log("Yacht!!");
+                    yachtEffect.Play();
+                }
             });
         }
     }
