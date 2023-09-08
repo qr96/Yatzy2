@@ -19,14 +19,17 @@ class PacketHandler
 
         if (loginPacket == null) return;
 
-        clientSession.SetInfo(loginPacket.nickName);
+        int errorCode = 0;
 
         // 닉네임 없으면 만듬
         if (!DataManager.Instance.ExistNickName(loginPacket.nickName))
             DataManager.Instance.AddUser(new UserInfo() { nickName = loginPacket.nickName, money = 10000, ruby = 0 });
 
+        errorCode = DataManager.Instance.LoginUser(loginPacket.nickName);
+        clientSession.SetInfo(loginPacket.nickName);
+
         GameRoom lobby = clientSession.Lobby;
-        lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResLogin() { loginSuccess = true }));
+        lobby.Push(() => lobby.UniCast(clientSession, new ToC_ResLogin() { errorCode = errorCode }));
     }
 
     public static void ToS_ReqMyInfoHandler(PacketSession session, IPacket packet)
@@ -193,6 +196,8 @@ class PacketHandler
 
     public static void ToS_ReqDevilCastleRankingHandler(PacketSession session, IPacket packet)
     {
+        Console.WriteLine("ToS_ReqDevilCastleRankingHandler");
+
         ClientSession clientSession = session as ClientSession;
         if (clientSession.Lobby == null) return;
 

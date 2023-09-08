@@ -107,7 +107,7 @@ class ToS_ReqLogin : IPacket
 
 class ToC_ResLogin : IPacket
 {
-    public bool loginSuccess;
+    public int errorCode;
 
     public ushort Protocol { get { return (ushort)PacketID.ToC_ResLogin; } }
 
@@ -119,8 +119,8 @@ class ToC_ResLogin : IPacket
 
         count += sizeof(ushort);
         count += sizeof(ushort);
-        this.loginSuccess = BitConverter.ToBoolean(segment.Array, segment.Offset + count);
-		count += sizeof(bool);
+        this.errorCode = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
     }
 
     public ArraySegment<byte> Write()
@@ -134,8 +134,8 @@ class ToC_ResLogin : IPacket
         count += sizeof(ushort);
         success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)PacketID.ToC_ResLogin);
         count += sizeof(ushort);
-        Array.Copy(BitConverter.GetBytes(this.loginSuccess), 0, segment.Array, segment.Offset + count, sizeof(bool));
-		count += sizeof(bool);
+        Array.Copy(BitConverter.GetBytes(this.errorCode), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
         success &= BitConverter.TryWriteBytes(s, count);
         if (success == false) 
             return null;

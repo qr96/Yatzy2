@@ -16,11 +16,12 @@ public class RankingPopup : MonoBehaviour
     {
         PacketHandler.AddAction(PacketID.ToC_RecDevilCastleRanking, RecvDevilCastleRanking);
 
+        ReqDevilCastleRanking();
     }
 
     void OnDestroy()
     {
-        PacketHandler.RemoveAction(PacketID.ToS_ReqDevilCastleRanking);
+        PacketHandler.RemoveAction(PacketID.ToC_RecDevilCastleRanking);
     }
 
     void ReqDevilCastleRanking()
@@ -58,9 +59,9 @@ public class RankingPopup : MonoBehaviour
                 var prefab = Instantiate(itemPrefab, content.transform);
                 itemPool.Add(prefab);
             }
-            
-            itemPool[i].GetComponentsInChildren<TextMeshProUGUI>()[0].text = ranking[i].userName;
-            itemPool[i].GetComponentsInChildren<TextMeshProUGUI>()[1].text = $"ÃÖ´ë {ranking[i].maxLevel}¿¬½Â";
+            itemPool[i].GetComponentsInChildren<TextMeshProUGUI>()[0].text = $"{i}.";
+            itemPool[i].GetComponentsInChildren<TextMeshProUGUI>()[1].text = ranking[i].userName;
+            itemPool[i].GetComponentsInChildren<TextMeshProUGUI>()[2].text = $"ÃÖ´ë {ranking[i].maxLevel}¿¬½Â";
             itemPool[i].SetActive(true);
         }
     }
@@ -68,7 +69,6 @@ public class RankingPopup : MonoBehaviour
     // Event
     public void Show()
     {
-        ReqDevilCastleRanking();
         dim.SetActive(true);
         gameObject.SetActive(true);
     }

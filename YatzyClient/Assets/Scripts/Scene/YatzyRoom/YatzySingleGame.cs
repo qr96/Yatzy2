@@ -322,10 +322,10 @@ public class YatzySingleGame : MonoBehaviour
         int score = -1;
         
         selected = scoreBoard0.SelectedIndex();
+        if (selected < 0) return;
         score = scoreBoard0.GetScore(selected);
 
         EnableRecordScoreButton(selected >= 0 && score < 0);
-        if (selected == -1) return;
 
         AllScoreToggleOff();
         scoreBoard0.SelectScore(selected);

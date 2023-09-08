@@ -73,7 +73,8 @@ namespace Server
 
             for (int i = 0; i < 5; i++)
             {
-                if (!fixDices.Contains(i)) _dices[i] = random.Next(1, 7);
+                if (!fixDices.Contains(i)) 
+                    _dices[i] = random.Next(1, 7);
                 diceResult.diceResults.Add(new ToC_SingleDiceResult.DiceResult() { dice = _dices[i] });
             }
 

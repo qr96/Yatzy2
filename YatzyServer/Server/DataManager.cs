@@ -15,20 +15,65 @@ namespace Server
         #endregion
 
         public Dictionary<string, UserInfo> _userInfoDic = new Dictionary<string, UserInfo>();
+        public Dictionary<string, bool> _userLogined = new Dictionary<string, bool>();
 
         public bool AddUser(UserInfo userInfo)
         {
+            bool result = false;
+
             lock (_userInfoDic)
             {
-                if (_userInfoDic.ContainsKey(userInfo.nickName)) return false;
+                if (_userInfoDic.ContainsKey(userInfo.nickName)) result = false;
 
-                return _userInfoDic.TryAdd(userInfo.nickName, userInfo);
+                result = _userInfoDic.TryAdd(userInfo.nickName, userInfo);
             }
+
+            if (result)
+            {
+                lock (_userLogined)
+                {
+                    result = _userLogined.TryAdd(userInfo.nickName, false);
+                }
+            }
+
+            return result;
         }
 
         public bool ExistNickName(string nickName)
         {
             return _userInfoDic.ContainsKey(nickName);
+        }
+
+        public int LoginUser(string nickName)
+        {
+            // 0: 성공, 1: 이미 로그인, 2: 없는 유저
+            lock (_userLogined)
+            {
+                if (_userLogined.ContainsKey(nickName))
+                {
+                    if (_userLogined[nickName] == false)
+                    {
+                        _userLogined[nickName] = true;
+                        return 0;
+                    }
+                    return 1;
+                }
+                else
+                {
+                    return 2;
+                }
+            }
+        }
+
+        public void Logout(string nickName)
+        {
+            lock (_userLogined)
+            {
+                if (_userLogined.ContainsKey(nickName))
+                {
+                    _userLogined[nickName] = false;
+                }
+            }
         }
 
         public UserInfo GetUserInfo(string nickName)

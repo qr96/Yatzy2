@@ -4,7 +4,7 @@
     <string name="nickName"/>
   </packet>
   <packet name="ToC_ResLogin">
-    <bool name="loginSuccess"/>
+    <int name="errorCode"/>
   </packet>
   <packet name="ToS_ReqMyInfo">
   </packet>

@@ -59,6 +59,8 @@ namespace Server
                 YatzySingleGame = null;
             }
 
+            DataManager.Instance.Logout(nickName);
+
             Console.WriteLine($"OnDisconnected : {endPoint}");
         }
 
