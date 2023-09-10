@@ -24,7 +24,7 @@ public class MakeRoomPopup : MonoBehaviour
     {
         if (roomNameInput.text.Length <= 2)
         {
-            ErrorManager.Instance.ShowPopup("¾È³»", "¹æÀÌ¸§Àº 2±ÛÀÚ ÀÌ»ó ÀÔ·ÂÇØÁÖ¼¼¿ä", null);
+            ErrorManager.Instance.ShowPopup("ì•ˆë‚´", "ë°©ì´ë¦„ì€ 2ê¸€ìž ì´ìƒ ìž…ë ¥í•´ì£¼ì„¸ìš”", null);
             return;
         }
 

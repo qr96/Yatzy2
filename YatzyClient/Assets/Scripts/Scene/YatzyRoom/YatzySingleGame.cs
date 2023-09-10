@@ -142,12 +142,12 @@ public class YatzySingleGame : MonoBehaviour
 
         if (diceResult != null)
         {
-            // µ•¿Ã≈Õ ∞°∞¯
+            // Îç∞Ïù¥ÌÑ∞ Í∞ÄÍ≥µ
             _dices.Clear();
             for (int i = 0; i < diceResult.diceResults.Count; i++)
                 _dices.Add(diceResult.diceResults[i].dice);
 
-            // ¥Ÿ¿ÃΩ∫ πˆ∆∞ º≥¡§
+            // Îã§Ïù¥Ïä§ Î≤ÑÌäº ÏÑ§Ï†ï
             RollDice(_dices, diceResult.leftDice, 0);
         }
     }
@@ -357,7 +357,7 @@ public class YatzySingleGame : MonoBehaviour
             for (int i = 0; i < diceList.Count; i++)
                 diceToggleList[i].SetDice(diceList[i]);
 
-            // Ω∫ƒ⁄æÓ πˆ∆∞ º≥¡§
+            // Ïä§ÏΩîÏñ¥ Î≤ÑÌäº ÏÑ§Ï†ï
             DisableAllScoreButton();
 
             for (int i = 0; i < 12; i++)
@@ -378,7 +378,7 @@ public class YatzySingleGame : MonoBehaviour
                 }
             }
 
-            // yacht ¿Ã∆Â∆Æ
+            // yacht Ïù¥ÌéôÌä∏
             bool yacht = true;
             for (int i = 0; i < diceList.Count - 1; i++)
             {
@@ -467,7 +467,7 @@ public class YatzySingleGame : MonoBehaviour
 
     public void OnClickLeaveRoom()
     {
-        ErrorManager.Instance.ShowQuestionPopup("æ»≥ª", "¡§∏ª∑Œ ±‚±««œ∞Ì ≥™∞°Ω√∞⁄Ω¿¥œ±Ó? ∞‘¿”¿Ã ∆–πË√≥∏Æ µÀ¥œ¥Ÿ.", () =>
+        ErrorManager.Instance.ShowQuestionPopup("ÏïàÎÇ¥", "Ï†ïÎßêÎ°ú Í∏∞Í∂åÌïòÍ≥† ÎÇòÍ∞ÄÏãúÍ≤†ÏäµÎãàÍπå? Í≤åÏûÑÏù¥ Ìå®Î∞∞Ï≤òÎ¶¨ Îê©ÎãàÎã§.", () =>
         {
             ErrorManager.Instance.ShowLoadingIndicator();
             ReqLeaveRoom();

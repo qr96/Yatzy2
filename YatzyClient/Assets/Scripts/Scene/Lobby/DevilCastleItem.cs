@@ -39,19 +39,19 @@ public class DevilCastleItem : MonoBehaviour
         if (eventId == 0)
         {
             if (DataCacheManager.Instance.lastDevilCastleResult == GameResult.Defeat)
-                ErrorManager.Instance.Conversation("¸¶¸ó", new List<string> {
-                    "¿ÀÀ×? ÀÚ³× º¸±âº¸´Ù º°°Å ¾ø±¸¸¸~",
-                    "´ÙÀ½¿£ ´õ Àç¹Õ´Â ¸ğ½À º¸¿©ÁÖ±æ ±â´ëÇÏ°Ú³×."});
+                ErrorManager.Instance.Conversation("ë§ˆëª¬", new List<string> {
+                    "ì˜¤ì‰? ìë„¤ ë³´ê¸°ë³´ë‹¤ ë³„ê±° ì—†êµ¬ë§Œ~",
+                    "ë‹¤ìŒì—” ë” ì¬ë°ŒëŠ” ëª¨ìŠµ ë³´ì—¬ì£¼ê¸¸ ê¸°ëŒ€í•˜ê² ë„¤."});
             else if (DataCacheManager.Instance.lastDevilCastleResult == GameResult.Win)
-                ErrorManager.Instance.Conversation("¸¶¸ó", new List<string> {
-                    "¿À~! ÀÚ³× ²Ï ÇÏ´Â±¸¸¸!",
-                    "µµÀüÀ» ÀÌ¾î°¡µµ µÇ°í, º¸»óÀ» ¹Ş°í ±×¸¸µÖµµ µÈ´Ù³×",
-                    "ÀÚ³×ÀÇ ÇÑ°è°¡ ±Ã±İÇÏÁö ¾ÊÀº°¡?"});
+                ErrorManager.Instance.Conversation("ë§ˆëª¬", new List<string> {
+                    "ì˜¤~! ìë„¤ ê½¤ í•˜ëŠ”êµ¬ë§Œ!",
+                    "ë„ì „ì„ ì´ì–´ê°€ë„ ë˜ê³ , ë³´ìƒì„ ë°›ê³  ê·¸ë§Œë‘¬ë„ ëœë‹¤ë„¤",
+                    "ìë„¤ì˜ í•œê³„ê°€ ê¶ê¸ˆí•˜ì§€ ì•Šì€ê°€?"});
             else
-                ErrorManager.Instance.Conversation("¸¶¸ó", new List<string> {
-                    "Àç¹Õ´Â °æ±â¿´³×!",
-                    "¾Æ½±°Ôµµ ¹«½ÂºÎ´Â ¿¬½ÂÀ¸·Î Ä¡Áöµµ ¾Ê³×",
-                    "´ë½Å, º¸»óµµ ÃÊ±âÈ­µÇÁö ¾Ê¾Æ."});
+                ErrorManager.Instance.Conversation("ë§ˆëª¬", new List<string> {
+                    "ì¬ë°ŒëŠ” ê²½ê¸°ì˜€ë„¤!",
+                    "ì•„ì‰½ê²Œë„ ë¬´ìŠ¹ë¶€ëŠ” ì—°ìŠ¹ìœ¼ë¡œ ì¹˜ì§€ë„ ì•Šë„¤",
+                    "ëŒ€ì‹ , ë³´ìƒë„ ì´ˆê¸°í™”ë˜ì§€ ì•Šì•„."});
         }
     }
 
@@ -119,7 +119,7 @@ public class DevilCastleItem : MonoBehaviour
         }
         else
         {
-            ErrorManager.Instance.ShowPopup("¾È³»", "º¸»ó ¹Ş±â¿¡ ½ÇÆĞÇß½À´Ï´Ù");
+            ErrorManager.Instance.ShowPopup("ì•ˆë‚´", "ë³´ìƒ ë°›ê¸°ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤");
         }
     }
 
@@ -128,7 +128,7 @@ public class DevilCastleItem : MonoBehaviour
     void SetDesc(int level, long reward)
     {
         this.level = level;
-        this.desc.text = $"ÇöÀç ´Ü°è : {level}´Ü°è\nÇöÀç »ó±İ : {reward}";
+        this.desc.text = $"í˜„ì¬ ë‹¨ê³„ : {level}ë‹¨ê³„\ní˜„ì¬ ìƒê¸ˆ : {reward}";
     }
 
     void SetButtons(bool isOpened)
@@ -150,22 +150,22 @@ public class DevilCastleItem : MonoBehaviour
     {
         if (PlayerPrefs.GetInt("FirstDevilCastle", 0) == 0)
         {
-            ErrorManager.Instance.Conversation("¸¶¸ó", new List<string>() {
-                "¾È³çÇÏ½Å°¡~\n¾Ç¸¶¼º¿¡ ¿Â°É È¯¿µÇÏ³×~",
-                "³ª´Â ¸¶¸óÀÌ¶ó°í ÇÏ³×",
-                "¾Ç¸¶¼ºÀº Ã³À½ÀÎ°Å °°À¸´Ï °£´ÜÇÏ°Ô ¼³¸í ÇØÁÖ°Ú³×",
-                "1000°ñµå¸¦ ³»¸é ³»°Ô µµÀüÀ» ÇÒ ¼ö ÀÖ¾î",
-                "³»°Ô ÀÌ±â¸é ÁöºÒÇÑ °ñµåÀÇ µÎ¹è·Î µ¹·ÁÁÖ°Ú³×",
-                "¹°·Ğ, ÀÌ°Å»ÓÀÌ¶ó¸é ÀÚ³×´Â Èï¹Ì¸¦ ´À³¢Áö ¸øÇÒ°Í °°±¸¸¸",
-                "ÀÚ³×°¡ ³»°Ô ÀÌ±æ¶§¸¶´Ù º¸»óÀ» µÎ¹è·Î ´Ã·ÁÁÖ°Ú³×",
-                "³»°Ô ÇÑ ¹ø ÀÌ±ä´Ù¸é 2000°ñµå, µÎ ¹ø ÀÌ±ä´Ù¸é 4000°ñµå, ¼¼ ¹ø ÀÌ±â¸é 8000°ñµåÀÏ¼¼",
-                "¿­ ¹ø¸¸ ½Â¸®ÇÑ´Ù¸é ¹«·Á 1024000 °ñµåÁö",
-                "ÇÏÁö¸¸ ¸í½ÉÇÏ°Ô. ÇÑ ¹øÀÌ¶óµµ ÆĞ¹èÇÑ´Ù¸é ÀÚ³×¿¡°Ô ÁÙ °ñµå´Â ¾ø¾î",
-                "Çà¿îÀ» ºô°Ú³×."},
+            ErrorManager.Instance.Conversation("ë§ˆëª¬", new List<string>() {
+                "ì•ˆë…•í•˜ì‹ ê°€~\nì•…ë§ˆì„±ì— ì˜¨ê±¸ í™˜ì˜í•˜ë„¤~",
+                "ë‚˜ëŠ” ë§ˆëª¬ì´ë¼ê³  í•˜ë„¤",
+                "ì•…ë§ˆì„±ì€ ì²˜ìŒì¸ê±° ê°™ìœ¼ë‹ˆ ê°„ë‹¨í•˜ê²Œ ì„¤ëª… í•´ì£¼ê² ë„¤",
+                "1000ê³¨ë“œë¥¼ ë‚´ë©´ ë‚´ê²Œ ë„ì „ì„ í•  ìˆ˜ ìˆì–´",
+                "ë‚´ê²Œ ì´ê¸°ë©´ ì§€ë¶ˆí•œ ê³¨ë“œì˜ ë‘ë°°ë¡œ ëŒë ¤ì£¼ê² ë„¤",
+                "ë¬¼ë¡ , ì´ê±°ë¿ì´ë¼ë©´ ìë„¤ëŠ” í¥ë¯¸ë¥¼ ëŠë¼ì§€ ëª»í• ê²ƒ ê°™êµ¬ë§Œ",
+                "ìë„¤ê°€ ë‚´ê²Œ ì´ê¸¸ë•Œë§ˆë‹¤ ë³´ìƒì„ ë‘ë°°ë¡œ ëŠ˜ë ¤ì£¼ê² ë„¤",
+                "ë‚´ê²Œ í•œ ë²ˆ ì´ê¸´ë‹¤ë©´ 2000ê³¨ë“œ, ë‘ ë²ˆ ì´ê¸´ë‹¤ë©´ 4000ê³¨ë“œ, ì„¸ ë²ˆ ì´ê¸°ë©´ 8000ê³¨ë“œì¼ì„¸",
+                "ì—´ ë²ˆë§Œ ìŠ¹ë¦¬í•œë‹¤ë©´ ë¬´ë ¤ 1024000 ê³¨ë“œì§€",
+                "í•˜ì§€ë§Œ ëª…ì‹¬í•˜ê²Œ. í•œ ë²ˆì´ë¼ë„ íŒ¨ë°°í•œë‹¤ë©´ ìë„¤ì—ê²Œ ì¤„ ê³¨ë“œëŠ” ì—†ì–´",
+                "í–‰ìš´ì„ ë¹Œê² ë„¤."},
                 () =>
                 {
                     PlayerPrefs.SetInt("FirstDevilCastle", 1);
-                    ErrorManager.Instance.ShowQuestionPopup("¾È³»", "¾Ç¸¶¼º ÄÁÅÙÃ÷¸¦ ½ÃÀÛÇÏ¸é 1,000°ñµå°¡ ¼Ò¸ğµË´Ï´Ù.\n½ÃÀÛÇÏ½Ã°Ú½À´Ï±î?", () =>
+                    ErrorManager.Instance.ShowQuestionPopup("ì•ˆë‚´", "ì•…ë§ˆì„± ì»¨í…ì¸ ë¥¼ ì‹œì‘í•˜ë©´ 1,000ê³¨ë“œê°€ ì†Œëª¨ë©ë‹ˆë‹¤.\nì‹œì‘í•˜ì‹œê² ìŠµë‹ˆê¹Œ?", () =>
                     {
                         ReqOpenDevilCastle();
                     });
@@ -173,7 +173,7 @@ public class DevilCastleItem : MonoBehaviour
         }
         else
         {
-            ErrorManager.Instance.ShowQuestionPopup("¾È³»", "¾Ç¸¶¼º ÄÁÅÙÃ÷¸¦ ½ÃÀÛÇÏ¸é 1,000°ñµå°¡ ¼Ò¸ğµË´Ï´Ù.\n½ÃÀÛÇÏ½Ã°Ú½À´Ï±î?", () =>
+            ErrorManager.Instance.ShowQuestionPopup("ì•ˆë‚´", "ì•…ë§ˆì„± ì»¨í…ì¸ ë¥¼ ì‹œì‘í•˜ë©´ 1,000ê³¨ë“œê°€ ì†Œëª¨ë©ë‹ˆë‹¤.\nì‹œì‘í•˜ì‹œê² ìŠµë‹ˆê¹Œ?", () =>
             {
                 ReqOpenDevilCastle();
             });
@@ -183,9 +183,9 @@ public class DevilCastleItem : MonoBehaviour
     public void OnClickChallengeBtn()
     {
         string ment = "";
-        if (level == 0) ment = "¾Ç¸¶¼ºÀÇ Ã¹ ´Ü°è¿¡ µµÀüÇÏ½Ã°Ú½À´Ï±î?";
-        else if (level > 0) ment = "¾Ç¸¶¼º¿¡ °è¼Ó µµÀüÇÏ½Ã°Ú½À´Ï±î?\n(ÆĞ¹èÇÒ °æ¿ì ¾Ç¸¶¼ºÀÌ ´İÈ÷°í º¸»óÀÌ ÃÊ±âÈ­ µË´Ï´Ù.)";
-        ErrorManager.Instance.ShowQuestionPopup("¾È³»", ment, () =>
+        if (level == 0) ment = "ì•…ë§ˆì„±ì˜ ì²« ë‹¨ê³„ì— ë„ì „í•˜ì‹œê² ìŠµë‹ˆê¹Œ?";
+        else if (level > 0) ment = "ì•…ë§ˆì„±ì— ê³„ì† ë„ì „í•˜ì‹œê² ìŠµë‹ˆê¹Œ?\n(íŒ¨ë°°í•  ê²½ìš° ì•…ë§ˆì„±ì´ ë‹«íˆê³  ë³´ìƒì´ ì´ˆê¸°í™” ë©ë‹ˆë‹¤.)";
+        ErrorManager.Instance.ShowQuestionPopup("ì•ˆë‚´", ment, () =>
         {
             ErrorManager.Instance.ShowLoadingIndicator();
             SendEnterSingleGame();
@@ -194,7 +194,7 @@ public class DevilCastleItem : MonoBehaviour
 
     public void OnClickGetReward()
     {
-        ErrorManager.Instance.ShowQuestionPopup("¾È³»", "º¸»óÀ» ¹Ş°í ¾Ç¸¶¼ºÀ» µµÀüÀ» ¸¶Ä¡½Ã°Ú½À´Ï±î?\n(¾Ç¸¶¼ºÀÌ ´İÈ÷°í ¿¬½ÂÀÌ ÃÊ±âÈ­ µË´Ï´Ù.)", () =>
+        ErrorManager.Instance.ShowQuestionPopup("ì•ˆë‚´", "ë³´ìƒì„ ë°›ê³  ì•…ë§ˆì„±ì„ ë„ì „ì„ ë§ˆì¹˜ì‹œê² ìŠµë‹ˆê¹Œ?\n(ì•…ë§ˆì„±ì´ ë‹«íˆê³  ì—°ìŠ¹ì´ ì´ˆê¸°í™” ë©ë‹ˆë‹¤.)", () =>
         {
             SendGetDevilCastleReward();
         });

@@ -192,12 +192,12 @@ public class YatzyGameScene : MonoBehaviour
         ToC_DiceResult diceResult = packet as ToC_DiceResult;
         if(diceResult != null)
         {
-            // µ•¿Ã≈Õ ∞°∞¯
+            // Îç∞Ïù¥ÌÑ∞ Í∞ÄÍ≥µ
             List<int> dices = new List<int>();
             for (int i = 0; i < diceResult.diceResults.Count; i++)
                 dices.Add(diceResult.diceResults[i].dice);
 
-            // ¥Ÿ¿ÃΩ∫ πˆ∆∞ º≥¡§
+            // Îã§Ïù¥Ïä§ Î≤ÑÌäº ÏÑ§Ï†ï
             leftDiceCount.text = $"Roll({diceResult.leftDice})";
             for (int i = 0; i < diceResult.diceResults.Count; i++)
                 diceViewer.SetDice(i, diceResult.diceResults[i].dice);
@@ -208,7 +208,7 @@ public class YatzyGameScene : MonoBehaviour
                 for (int i = 0; i < diceResult.diceResults.Count; i++)
                     diceToggleList[i].SetDice(diceResult.diceResults[i].dice);
 
-                // Ω∫ƒ⁄æÓ πˆ∆∞ º≥¡§
+                // Ïä§ÏΩîÏñ¥ Î≤ÑÌäº ÏÑ§Ï†ï
                 DisableAllScoreButton();
 
                 for (int i = 0; i < 12; i++)
@@ -232,7 +232,7 @@ public class YatzyGameScene : MonoBehaviour
                 if (diceResult.playerIndex == myServerIndex)
                     EnableAllUnlockDices(true);
 
-                // yacht ¿Ã∆Â∆Æ
+                // yacht Ïù¥ÌéôÌä∏
                 bool yacht = true;
                 for (int i = 0; i < dices.Count - 1; i++)
                 {

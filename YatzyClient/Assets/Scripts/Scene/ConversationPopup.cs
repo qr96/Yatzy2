@@ -11,7 +11,7 @@ public class ConversationPopup : MonoBehaviour
 
     List<string> conversation;
     int conversationIndex;
-    Action onEnd; // ´ëÈ­ Á¾·á ÀÌº¥Æ®
+    Action onEnd; // ëŒ€í™” ì¢…ë£Œ ì´ë²¤íŠ¸
 
     public void ShowConversation(string talkerName, List<string> conversation, Action onEnd)
     {

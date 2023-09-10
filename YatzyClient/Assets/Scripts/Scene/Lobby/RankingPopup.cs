@@ -61,7 +61,7 @@ public class RankingPopup : MonoBehaviour
             }
             itemPool[i].GetComponentsInChildren<TextMeshProUGUI>()[0].text = $"{i}.";
             itemPool[i].GetComponentsInChildren<TextMeshProUGUI>()[1].text = ranking[i].userName;
-            itemPool[i].GetComponentsInChildren<TextMeshProUGUI>()[2].text = $"ÃÖ´ë {ranking[i].maxLevel}¿¬½Â";
+            itemPool[i].GetComponentsInChildren<TextMeshProUGUI>()[2].text = $"ìµœëŒ€ {ranking[i].maxLevel}ì—°ìŠ¹";
             itemPool[i].SetActive(true);
         }
     }

@@ -65,7 +65,7 @@ public class NetworkManager : MonoBehaviour
     {
         _connected = false;
         ErrorManager.Instance.ShowLoadingIndicator();
-        ErrorManager.Instance.ShowPopup("¾È³»", "¼­¹ö¿Í ¿¬°áÀÌ ²÷¾îÁ³½À´Ï´Ù", () =>
+        ErrorManager.Instance.ShowPopup("ì•ˆë‚´", "ì„œë²„ì™€ ì—°ê²°ì´ ëŠì–´ì¡ŒìŠµë‹ˆë‹¤", () =>
         {
             SceneManager.Instance.MoveScene(0);
         });

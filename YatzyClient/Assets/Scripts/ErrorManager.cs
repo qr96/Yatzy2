@@ -17,13 +17,13 @@ public class ErrorManager : MonoBehaviour
     public TextMeshProUGUI errorPopupDesc;
     public Button errorPopupOk;
 
-    // Áú¹® ÆË¾÷
+    // ì§ˆë¬¸ íŒì—…
     public GameObject questionPopup;
     public TextMeshProUGUI questionPopupTitle;
     public TextMeshProUGUI questionPopupDesc;
     public Button questionPopupOk;
 
-    // ´ëÈ­ ÆË¾÷
+    // ëŒ€í™” íŒì—…
     public ConversationPopup conversationPopup;
 
     Coroutine loadingIndicatorCo;
@@ -59,7 +59,7 @@ public class ErrorManager : MonoBehaviour
             if (waitTime >= 15f)
             {
                 Debug.Log("Error");
-                ShowPopup("¾È³»", "¿¡·¯°¡ ¹ß»ýÇß½À´Ï´Ù.\n´Ù½Ã ½ÃµµÇØÁÖ¼¼¿ä", () =>
+                ShowPopup("ì•ˆë‚´", "ì—ëŸ¬ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.\në‹¤ì‹œ ì‹œë„í•´ì£¼ì„¸ìš”", () =>
                 {
                     HidePopup();
                     HideLoadingIndicator();

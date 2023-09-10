@@ -22,9 +22,9 @@ public class GameResultPopup : MonoBehaviour
 
     public void ShowResult(GameResult result)
     {
-        if (result == GameResult.Draw) resultText.text = "¹«½ÂºÎ";
-        else if (result == GameResult.Win) resultText.text = "½Â¸®";
-        else resultText.text = "ÆÐ¹è";
+        if (result == GameResult.Draw) resultText.text = "ë¬´ìŠ¹ë¶€";
+        else if (result == GameResult.Win) resultText.text = "ìŠ¹ë¦¬";
+        else resultText.text = "íŒ¨ë°°";
 
         gameObject.SetActive(true);
     }

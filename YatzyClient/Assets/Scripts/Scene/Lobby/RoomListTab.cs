@@ -74,8 +74,8 @@ public class RoomListTab : MonoBehaviour
             roomItemTmp.SetInfo(roomList.roomInfos[i].roomName, roomList.roomInfos[i].playerCount);
             roomItemTmp.SetClickEvent(() =>
             {
-                // ¹æÀÔÀå ¿©ºÎ ÀçÈ®ÀÎ
-                ErrorManager.Instance.ShowQuestionPopup("¾È³»", $"Á¤¸» \"{roomName}\"¹æ¿¡ ÀÔÀåÇÏ½Ã°Ú½À´Ï±î?", () =>
+                // ë°©ì…ì¥ ì—¬ë¶€ ì¬í™•ì¸
+                ErrorManager.Instance.ShowQuestionPopup("ì•ˆë‚´", $"ì •ë§ \"{roomName}\"ë°©ì— ì…ì¥í•˜ì‹œê² ìŠµë‹ˆê¹Œ?", () =>
                 {
                     ToS_ReqEnterRoom req = new ToS_ReqEnterRoom();
                     req.roomId = roomId;
@@ -103,7 +103,7 @@ public class RoomListTab : MonoBehaviour
         else
         {
             ErrorManager.Instance.HideLoadingIndicator();
-            ErrorManager.Instance.ShowPopup("¾È³»", "¹æÀÔÀå¿¡ ½ÇÆĞÇß½À´Ï´Ù");
+            ErrorManager.Instance.ShowPopup("ì•ˆë‚´", "ë°©ì…ì¥ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤");
         }
     }
 

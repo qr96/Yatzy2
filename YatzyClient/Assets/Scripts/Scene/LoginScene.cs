@@ -45,12 +45,12 @@ public class LoginScene : MonoBehaviour
         if (res.errorCode == 1)
         {
             ErrorManager.Instance.HideLoadingIndicator();
-            ErrorManager.Instance.ShowPopup("¾È³»", "ÀÌ¹Ì ·Î±×ÀÎ ÁßÀÎ °èÁ¤ÀÔ´Ï´Ù.");
+            ErrorManager.Instance.ShowPopup("ì•ˆë‚´", "ì´ë¯¸ ë¡œê·¸ì¸ ì¤‘ì¸ ê³„ì •ì…ë‹ˆë‹¤.");
         }
         else if (res.errorCode == 2)
         {
             ErrorManager.Instance.HideLoadingIndicator();
-            ErrorManager.Instance.ShowPopup("¾È³»", "´Ğ³×ÀÓÀÌ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.");
+            ErrorManager.Instance.ShowPopup("ì•ˆë‚´", "ë‹‰ë„¤ì„ì´ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
         }
     }
 
@@ -77,7 +77,7 @@ public class LoginScene : MonoBehaviour
             if (waitTime > 10f)
             {
                 ErrorManager.Instance.HideLoadingIndicator();
-                ErrorManager.Instance.ShowPopup("¾È³»", "¼­¹ö¿ÍÀÇ ¿¬°á¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
+                ErrorManager.Instance.ShowPopup("ì•ˆë‚´", "ì„œë²„ì™€ì˜ ì—°ê²°ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
                 yield break;
             }
         }
@@ -88,7 +88,7 @@ public class LoginScene : MonoBehaviour
     {
         if (nameInput.text.Length <= 2)
         {
-            ErrorManager.Instance.ShowPopup("¾È³»", "´Ğ³×ÀÓÀº 2±ÛÀÚ ÀÌ»ó ÀÔ·ÂÇØÁÖ¼¼¿ä.", null);
+            ErrorManager.Instance.ShowPopup("ì•ˆë‚´", "ë‹‰ë„¤ì„ì€ 2ê¸€ì ì´ìƒ ì…ë ¥í•´ì£¼ì„¸ìš”.", null);
             return;
         }
 
