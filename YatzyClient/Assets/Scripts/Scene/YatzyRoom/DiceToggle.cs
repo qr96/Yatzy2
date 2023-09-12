@@ -33,7 +33,7 @@ public class DiceToggle : MonoBehaviour
 
     public void EnableToggle(bool enable)
     {
-        toggle.enabled = enable;
+        toggle.interactable = enable;
     }
 
     public bool IsLocked()

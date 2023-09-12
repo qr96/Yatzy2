@@ -96,6 +96,7 @@
     <Compile Include="Assets\Scripts\Scene\YatzyRoom\DiceLabelDesc.cs" />
     <Compile Include="Assets\Scripts\Scene\Lobby\RoomItem.cs" />
     <Compile Include="Assets\Scripts\Packet\ClientPacketManager.cs" />
+    <Compile Include="Assets\Scripts\UI\CustomButton.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
     <Compile Include="Assets\Scripts\DataDefine.cs" />

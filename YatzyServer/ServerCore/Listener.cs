@@ -44,10 +44,17 @@ namespace ServerCore
             if (args.SocketError == SocketError.Success)
             {
                 Session session = _sessionFactory.Invoke();
-                if(session != null)
+                try
                 {
-                    session.Start(args.AcceptSocket);
-                    session.OnConnected(args.AcceptSocket.RemoteEndPoint);
+                    if (session != null)
+                    {
+                        session.Start(args.AcceptSocket);
+                        session.OnConnected(args.AcceptSocket.RemoteEndPoint);
+                    }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.ToString());
                 }
             }
             else
