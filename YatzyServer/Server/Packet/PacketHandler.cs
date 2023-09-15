@@ -19,13 +19,12 @@ class PacketHandler
 
         if (loginPacket == null) return;
 
-        int errorCode = 0;
+        int errorCode = DataManager.Instance.AddNewUser(new UserInfo() { nickName = loginPacket.nickName, money = 10000, ruby = 0 });
 
-        // 닉네임 없으면 만듬
-        if (!DataManager.Instance.ExistNickName(loginPacket.nickName))
-            DataManager.Instance.AddUser(new UserInfo() { nickName = loginPacket.nickName, money = 10000, ruby = 0 });
+        if (errorCode == 0 || errorCode == 3)
+            errorCode = DataManager.Instance.LoginUser(loginPacket.nickName);
+        else errorCode = 2;
 
-        errorCode = DataManager.Instance.LoginUser(loginPacket.nickName);
         clientSession.SetInfo(loginPacket.nickName);
 
         GameRoom lobby = clientSession.Lobby;

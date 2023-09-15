@@ -1,4 +1,6 @@
 ﻿
+using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,36 +19,92 @@ namespace Server
         public Dictionary<string, UserInfo> _userInfoDic = new Dictionary<string, UserInfo>();
         public Dictionary<string, bool> _userLogined = new Dictionary<string, bool>();
 
-        public bool AddUser(UserInfo userInfo)
+        public bool SqlQuery(string sql)
         {
-            bool result = false;
-
-            lock (_userInfoDic)
+            using (MySqlConnection connection = new MySqlConnection("Server=localhost;Port=3306;Database=yacht;Uid=root;Pwd=0000"))
             {
-                if (_userInfoDic.ContainsKey(userInfo.nickName)) result = false;
-
-                result = _userInfoDic.TryAdd(userInfo.nickName, userInfo);
-            }
-
-            if (result)
-            {
-                lock (_userLogined)
+                try
                 {
-                    result = _userLogined.TryAdd(userInfo.nickName, false);
+                    connection.Open();
+                    MySqlCommand command = new MySqlCommand(sql, connection);
+
+                    if (command.ExecuteNonQuery() == 1)
+                    {
+                        Console.WriteLine("success to insert user in db");
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("failed to insert user in db");
+                        return false;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("failed to sql in db : " + ex.ToString());
+                    return false;
                 }
             }
-
-            return result;
         }
 
-        public bool ExistNickName(string nickName)
+        public List<string> GetSqlData(string sql)
         {
-            return _userInfoDic.ContainsKey(nickName);
+            using (MySqlConnection connection = new MySqlConnection("Server=localhost;Port=3306;Database=yacht;Uid=root;Pwd=0000"))
+            {
+                try
+                {
+                    connection.Open();
+                    MySqlCommand command = new MySqlCommand(sql, connection);
+                    MySqlDataReader reader = command.ExecuteReader();
+                    List<string> result = new List<string>();
+
+                    while (reader.Read())
+                    {
+                        if (reader.IsDBNull(0)) result.Add("");
+                        else result.Add(reader.GetString(0));
+                    }
+
+                    reader.Close();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("failed to get data in db : " + ex.ToString());
+                }
+            }
+            return null;
+        }
+
+        // 0 : 성공, 1 : 닉네임 길이 문제, 2:db실패, 3: 이미 존재하는 닉네임
+        public int AddNewUser(UserInfo userInfo)
+        {
+            if (userInfo.nickName.Length < 2 || userInfo.nickName.Length > 20) return 1;
+
+            var reader = GetSqlData($"select max(nickname_seq) from user_info where nickname='{userInfo.nickName}'");
+            if (reader == null) return 2;
+            int maxNicknameSeq = -1;
+
+            if (!Int32.TryParse(reader[0], out maxNicknameSeq)) maxNicknameSeq = 0;
+            else maxNicknameSeq++;
+
+            // 로그인 붙이기 전 임시처리 (일단은 닉네임 한개만 만들도록)
+            if (maxNicknameSeq > 0) return 3;
+
+            string sql = $"insert into user_info(nickname, nickname_seq, money, ruby) values('{userInfo.nickName}', {maxNicknameSeq}, {10000}, {0})";
+
+            if (SqlQuery(sql))
+            {
+                Console.WriteLine("Added user success");
+                return 0;
+            }
+            
+            return 2;
         }
 
         public int LoginUser(string nickName)
         {
-            // 0: 성공, 1: 이미 로그인, 2: 없는 유저
+            // 0: 성공, 1: 이미 로그인
             lock (_userLogined)
             {
                 if (_userLogined.ContainsKey(nickName))
@@ -60,7 +118,8 @@ namespace Server
                 }
                 else
                 {
-                    return 2;
+                    _userLogined.Add(nickName, true);
+                    return 0;
                 }
             }
         }
