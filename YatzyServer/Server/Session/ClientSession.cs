@@ -16,11 +16,11 @@ namespace Server
         public YatzyGameRoom GameRoom { get; set; }
         public YatzySingleGame YatzySingleGame { get; set; }
 
-        public string nickName = "None";
+        public string userId = "None";
 
-        public void SetInfo(string nickName)
+        public void SetInfo(string userId)
         {
-            this.nickName = nickName;
+            this.userId = userId;
         }
 
         public override void OnConnected(EndPoint endPoint)
@@ -55,11 +55,11 @@ namespace Server
             if(YatzySingleGame != null)
             {
                 if (YatzySingleGame.gameEnd == false)
-                    DataManager.Instance.DevilCastleLevelReset(nickName);
+                    DataManager.Instance.DevilCastleLevelReset(userId);
                 YatzySingleGame = null;
             }
 
-            DataManager.Instance.Logout(nickName);
+            DataManager.Instance.Logout(userId);
 
             Console.WriteLine($"OnDisconnected : {endPoint}");
         }

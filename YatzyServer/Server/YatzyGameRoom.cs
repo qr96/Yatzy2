@@ -133,7 +133,7 @@ namespace Server
             foreach (var session in _sessions)
             {
                 if (session != null)
-                    userInfos.Add(session.nickName);
+                    userInfos.Add(session.userId);
             }
                 
 
