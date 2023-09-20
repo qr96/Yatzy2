@@ -229,7 +229,7 @@ public class YatzySingleGame : MonoBehaviour
 
     void SetUserNicknames(string user0, string user1)
     {
-        playerNickName0.text = user0;
+        playerNickName0.text = "플레이어";
         playerNickName1.text = user1;
     }
 

@@ -31,6 +31,8 @@ public class LoginScene : MonoBehaviour
         ToS_ReqLogin req = new ToS_ReqLogin();
         req.nickName = nameInput.text;
         NetworkManager.Instance.Send(req.Write());
+
+        Debug.Log("req nickname : " + nameInput.text);
     }
 
     void OnRecvLogin(IPacket packet)
@@ -50,7 +52,7 @@ public class LoginScene : MonoBehaviour
         else if (res.errorCode == 2)
         {
             ErrorManager.Instance.HideLoadingIndicator();
-            ErrorManager.Instance.ShowPopup("안내", "닉네임이 존재하지 않습니다.");
+            ErrorManager.Instance.ShowPopup("안내", "로그인에 실패했습니다.");
         }
     }
 
@@ -65,7 +67,7 @@ public class LoginScene : MonoBehaviour
 
         while (true)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1f);
 
             if (NetworkManager.Instance._connected)
             {
@@ -73,7 +75,7 @@ public class LoginScene : MonoBehaviour
                 yield break;
             }
             
-            waitTime += 0.5f;
+            waitTime += 1f;
             if (waitTime > 10f)
             {
                 ErrorManager.Instance.HideLoadingIndicator();
