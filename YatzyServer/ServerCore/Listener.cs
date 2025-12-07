@@ -46,7 +46,7 @@ namespace ServerCore
                 Session session = _sessionFactory.Invoke();
                 try
                 {
-                    if (session != null)
+                    if (session != null && args != null && args.AcceptSocket != null)
                     {
                         session.Start(args.AcceptSocket);
                         session.OnConnected(args.AcceptSocket.RemoteEndPoint);

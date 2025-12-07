@@ -21,9 +21,13 @@ namespace Server
         public Dictionary<string, UserInfo> _userInfoDic = new Dictionary<string, UserInfo>();
         public Dictionary<string, bool> _userLogined = new Dictionary<string, bool>();
 
+        object _userLoginedlock = new object();
+
+        string sqlConnectionInfo = "Server=133.186.247.63;Port=3306;Database=yacht;Uid=client;Pwd=Nhn!@#123";
+
         public bool SqlQuery(string sql)
         {
-            using (MySqlConnection connection = new MySqlConnection("Server=localhost;Port=3306;Database=yacht;Uid=root;Pwd=0000"))
+            using (MySqlConnection connection = new MySqlConnection(sqlConnectionInfo))
             {
                 try
                 {
@@ -49,7 +53,7 @@ namespace Server
 
         public bool SqlQueryTransaction(List<string> sqlList)
         {
-            using (MySqlConnection connection = new MySqlConnection("Server=localhost;Port=3306;Database=yacht;Uid=root;Pwd=0000"))
+            using (MySqlConnection connection = new MySqlConnection(sqlConnectionInfo))
             {
                 connection.Open();
 
@@ -82,7 +86,7 @@ namespace Server
         // 쿼리 성공 여부 반환
         public bool GetSqlData(string sql, Action<MySqlDataReader> readFunc)
         {
-            using (MySqlConnection connection = new MySqlConnection("Server=localhost;Port=3306;Database=yacht;Uid=root;Pwd=0000"))
+            using (MySqlConnection connection = new MySqlConnection(sqlConnectionInfo))
             {
                 try
                 {
@@ -102,30 +106,6 @@ namespace Server
                 {
                     Console.WriteLine("failed to get data in db : " + ex.ToString());
                     return false;
-                }
-            }
-        }
-
-        public List<IDataRecord> GetSqlData2(string sql, Action<MySqlDataReader> readFunc)
-        {
-            List<IDataRecord> dataList = new List<IDataRecord>();
-
-            using (MySqlConnection connection = new MySqlConnection("Server=localhost;Port=3306;Database=yacht;Uid=root;Pwd=0000"))
-            {
-                try
-                {
-                    connection.Open();
-                    MySqlCommand command = new MySqlCommand(sql, connection);
-                    MySqlDataReader reader = command.ExecuteReader();
-
-
-                    reader.Close();
-                    return dataList;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("failed to get data in db : " + ex.ToString());
-                    return null;
                 }
             }
         }
@@ -162,7 +142,7 @@ namespace Server
         // 0: 성공, 1: 이미 로그인
         public int LoginUser(string userId)
         {
-            lock (_userLogined)
+            lock (_userLoginedlock)
             {
                 if (_userLogined.ContainsKey(userId))
                 {
@@ -183,7 +163,7 @@ namespace Server
 
         public void Logout(string nickName)
         {
-            lock (_userLogined)
+            lock (_userLoginedlock)
             {
                 if (_userLogined.ContainsKey(nickName))
                 {

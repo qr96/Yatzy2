@@ -198,3 +198,17 @@ C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\obj\Debug\net7.0\linux-x64\r
 C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\obj\Debug\net7.0\linux-x64\Server.pdb
 C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\obj\Debug\net7.0\linux-x64\Server.genruntimeconfig.cache
 C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\obj\Debug\net7.0\linux-x64\ref\Server.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\Google.Protobuf.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\K4os.Compression.LZ4.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\K4os.Compression.LZ4.Streams.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\K4os.Hash.xxHash.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\Microsoft.Win32.SystemEvents.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\MySql.Data.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\BouncyCastle.Crypto.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\System.Configuration.ConfigurationManager.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\System.Drawing.Common.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\System.IO.Pipelines.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\System.Security.Permissions.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\System.Windows.Extensions.dll
+C:\Users\Lee\source\repos\Yatzy2\YatzyServer\Server\bin\Debug\net7.0\linux-x64\ZstdSharp.dll

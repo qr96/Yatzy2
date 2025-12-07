@@ -18,18 +18,24 @@ namespace Server
             JobTimer.Instance.Push(FlushRoom, 250);
         }
 
+        static IPEndPoint GetIPEndPoint(BuildType buildType)
+        {
+            if (buildType == BuildType.REAL)
+            {
+                string host = Dns.GetHostName();
+                IPHostEntry ipHost = Dns.GetHostEntry(host);
+                IPAddress ipAddr = ipHost.AddressList[0];
+                return new IPEndPoint(ipAddr, 7777);
+            }
+            else
+            {
+                return new IPEndPoint(IPAddress.Any, 7777);
+            }
+        }
+
         static void Main(string[] args)
         {
-            // Alpha
-            
-            string host = Dns.GetHostName();
-            IPHostEntry ipHost = Dns.GetHostEntry(host);
-            IPAddress ipAddr = ipHost.AddressList[0];
-            IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
-            
-
-            // Real
-            //IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 7777);
+            IPEndPoint endPoint = GetIPEndPoint(BuildType.ALPHA);
 
             _listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
             Console.WriteLine("Listening...");
@@ -42,5 +48,12 @@ namespace Server
                 JobTimer.Instance.Flush();
             }
         }
+    }
+
+    enum BuildType
+    {
+        ALPHA = 0,
+        REAL = 1,
+
     }
 }
